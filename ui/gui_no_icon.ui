@@ -279,7 +279,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icon.qrc">:/icon/confirm-96.png</pixmap>
+               <pixmap>:/icon/confirm-96.png</pixmap>
               </property>
              </widget>
             </item>
@@ -305,7 +305,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icon.qrc">:/icon/confirm-96.png</pixmap>
+               <pixmap>:/icon/confirm-96.png</pixmap>
               </property>
              </widget>
             </item>
@@ -357,7 +357,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icon.qrc">:/icon/confirm-96.png</pixmap>
+               <pixmap>:/icon/confirm-96.png</pixmap>
               </property>
              </widget>
             </item>
@@ -383,8 +383,15 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="icon.qrc"/>
- </resources>
+ <tabstops>
+  <tabstop>txt_asset</tabstop>
+  <tabstop>btn_validate_eq</tabstop>
+  <tabstop>txt_location</tabstop>
+  <tabstop>btn_validate_loc</tabstop>
+  <tabstop>bt_confirm</tabstop>
+  <tabstop>btn_clear</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+ </tabstops>
+ <resources/>
  <connections/>
 </ui>

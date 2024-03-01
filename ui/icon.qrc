@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>confirm-48.png</file>
+    <file>confirm-96.png</file>
+    <file>icons8-cancel-96.png</file>
+    <file>icons8-search-96.png</file>
+  </qresource>
+</RCC>
