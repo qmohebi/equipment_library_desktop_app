@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'gui.ui'
+## Form generated from reading UI file 'gui_no_icon.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
@@ -17,9 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
     QHBoxLayout, QLabel, QLineEdit, QMainWindow,
-    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QVBoxLayout, QWidget)
-# import icon_rc
+    QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
+    QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -82,19 +81,6 @@ class Ui_MainWindow(object):
 
 
         self.gridLayout.addWidget(self.frame, 1, 1, 1, 1)
-
-        self.groupBox = QGroupBox(self.centralwidget)
-        self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setFont(font)
-        self.horizontalLayout_5 = QHBoxLayout(self.groupBox)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.lbl_location = QLabel(self.groupBox)
-        self.lbl_location.setObjectName(u"lbl_location")
-
-        self.horizontalLayout_5.addWidget(self.lbl_location)
-
-
-        self.gridLayout.addWidget(self.groupBox, 2, 0, 1, 3)
 
         self.frame_3 = QFrame(self.centralwidget)
         self.frame_3.setObjectName(u"frame_3")
@@ -238,6 +224,31 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.frame_5, 0, 0, 1, 3)
 
+        self.groupBox = QGroupBox(self.centralwidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.groupBox.setFont(font)
+        self.horizontalLayout_5 = QHBoxLayout(self.groupBox)
+        self.horizontalLayout_5.setSpacing(50)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer)
+
+        self.lbl_details = QLabel(self.groupBox)
+        self.lbl_details.setObjectName(u"lbl_details")
+        font5 = QFont()
+        font5.setPointSize(26)
+        self.lbl_details.setFont(font5)
+
+        self.horizontalLayout_5.addWidget(self.lbl_details)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer_2)
+
+
+        self.gridLayout.addWidget(self.groupBox, 2, 0, 1, 3)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -246,6 +257,11 @@ class Ui_MainWindow(object):
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        QWidget.setTabOrder(self.txt_asset, self.btn_validate_eq)
+        QWidget.setTabOrder(self.btn_validate_eq, self.txt_location)
+        QWidget.setTabOrder(self.txt_location, self.btn_validate_loc)
+        QWidget.setTabOrder(self.btn_validate_loc, self.bt_confirm)
+        QWidget.setTabOrder(self.bt_confirm, self.btn_clear)
 
         self.retranslateUi(MainWindow)
 
@@ -256,8 +272,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.btn_validate_eq.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
         self.btn_validate_loc.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Location selected", None))
-        self.lbl_location.setText("")
         self.bt_confirm.setText(QCoreApplication.translate("MainWindow", u"Confirm", None))
         self.btn_clear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Equipment Number:", None))
@@ -268,5 +282,7 @@ class Ui_MainWindow(object):
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"2. Scan Location", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"3. Confirm", None))
         self.lbl_icon_confirm.setText("")
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Loan Details", None))
+        self.lbl_details.setText("")
     # retranslateUi
 
