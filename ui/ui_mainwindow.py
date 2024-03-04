@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'gui_no_icon.ui'
+## Form generated from reading UI file 'gui.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
@@ -25,37 +25,77 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1350, 877)
+        MainWindow.setStyleSheet(u"QWidget {\n"
+"	background-color: white\n"
+"}\n"
+"\n"
+"QHeaderView::section{\n"
+"	border: none;\n"
+"	border-bottom: none;\n"
+"	text-align: left;\n"
+"	padding: 5px 10px;\n"
+"	background: rgb(110, 141, 255);\n"
+"	font-size: 14px\n"
+"}\n"
+"\n"
+"QPushButton#btn_clear {\n"
+"	padding: 5px 10px;\n"
+"	border-radius: 10px;\n"
+"	background-color: rgb(255, 137, 116);\n"
+"}\n"
+"\n"
+"QPushButton#btn_confirm {\n"
+"	padding: 5px 10px;\n"
+"	border-radius: 10px;\n"
+"	background-color: #89CFF3;\n"
+"}\n"
+"\n"
+"QPushButton#btn_validate_eq {\n"
+"	padding: 5px 10px;\n"
+"	border-radius: 10px;\n"
+"	background-color: #89CFF3;\n"
+"}\n"
+"\n"
+"\n"
+"QPushButton#btn_validate_loc {\n"
+"	padding: 5px 10px;\n"
+"	border-radius: 10px;\n"
+"	background-color: #89CFF3;\n"
+"}\n"
+"\n"
+"\n"
+"QPushButton#btn_confirm:hover {\n"
+"	background-color: #00A9FF;\n"
+"\n"
+"}\n"
+"QPushButton#btn_validate_eq:hover {\n"
+"	background-color: #00A9FF;\n"
+"\n"
+"}\n"
+"QPushButton#btn_validate_loc:hover {\n"
+"	background-color: #00A9FF;\n"
+"\n"
+"}\n"
+"\n"
+"QPushButton#b"
+                        "tn_clear:hover {\n"
+"	background-color:rgb(255, 106, 92) ;\n"
+"\n"
+"}\n"
+"\n"
+"QLineEdit {\n"
+"	border: 3px;\n"
+"	border-radius: 10px;\n"
+"	border: 1px solid rgb(33, 44, 200)\n"
+"}\n"
+"	\n"
+"\n"
+"	")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setVerticalSpacing(20)
-        self.frame_9 = QFrame(self.centralwidget)
-        self.frame_9.setObjectName(u"frame_9")
-        self.frame_9.setFrameShape(QFrame.StyledPanel)
-        self.frame_9.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_3 = QVBoxLayout(self.frame_9)
-        self.verticalLayout_3.setSpacing(15)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.btn_validate_eq = QPushButton(self.frame_9)
-        self.btn_validate_eq.setObjectName(u"btn_validate_eq")
-        self.btn_validate_eq.setMinimumSize(QSize(200, 70))
-        font = QFont()
-        font.setPointSize(20)
-        self.btn_validate_eq.setFont(font)
-
-        self.verticalLayout_3.addWidget(self.btn_validate_eq)
-
-        self.btn_validate_loc = QPushButton(self.frame_9)
-        self.btn_validate_loc.setObjectName(u"btn_validate_loc")
-        self.btn_validate_loc.setMinimumSize(QSize(200, 70))
-        self.btn_validate_loc.setFont(font)
-
-        self.verticalLayout_3.addWidget(self.btn_validate_loc)
-
-
-        self.gridLayout.addWidget(self.frame_9, 1, 2, 1, 1)
-
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         self.frame.setFrameShape(QFrame.StyledPanel)
@@ -66,16 +106,16 @@ class Ui_MainWindow(object):
         self.txt_asset = QLineEdit(self.frame)
         self.txt_asset.setObjectName(u"txt_asset")
         self.txt_asset.setMinimumSize(QSize(0, 70))
-        font1 = QFont()
-        font1.setPointSize(30)
-        self.txt_asset.setFont(font1)
+        font = QFont()
+        font.setPointSize(30)
+        self.txt_asset.setFont(font)
 
         self.verticalLayout_2.addWidget(self.txt_asset)
 
         self.txt_location = QLineEdit(self.frame)
         self.txt_location.setObjectName(u"txt_location")
         self.txt_location.setMinimumSize(QSize(0, 70))
-        self.txt_location.setFont(font1)
+        self.txt_location.setFont(font)
 
         self.verticalLayout_2.addWidget(self.txt_location)
 
@@ -90,18 +130,20 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setSpacing(80)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(80, -1, 80, -1)
-        self.bt_confirm = QPushButton(self.frame_3)
-        self.bt_confirm.setObjectName(u"bt_confirm")
-        self.bt_confirm.setMinimumSize(QSize(0, 100))
-        font2 = QFont()
-        font2.setPointSize(40)
-        self.bt_confirm.setFont(font2)
+        self.btn_confirm = QPushButton(self.frame_3)
+        self.btn_confirm.setObjectName(u"btn_confirm")
+        self.btn_confirm.setMinimumSize(QSize(0, 100))
+        font1 = QFont()
+        font1.setPointSize(40)
+        self.btn_confirm.setFont(font1)
 
-        self.horizontalLayout.addWidget(self.bt_confirm)
+        self.horizontalLayout.addWidget(self.btn_confirm)
 
         self.btn_clear = QPushButton(self.frame_3)
         self.btn_clear.setObjectName(u"btn_clear")
         self.btn_clear.setMinimumSize(QSize(0, 100))
+        font2 = QFont()
+        font2.setPointSize(26)
         self.btn_clear.setFont(font2)
 
         self.horizontalLayout.addWidget(self.btn_clear)
@@ -109,30 +151,31 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.frame_3, 3, 0, 1, 3)
 
-        self.frame_8 = QFrame(self.centralwidget)
-        self.frame_8.setObjectName(u"frame_8")
-        self.frame_8.setFrameShape(QFrame.StyledPanel)
-        self.frame_8.setFrameShadow(QFrame.Raised)
-        self.verticalLayout = QVBoxLayout(self.frame_8)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label = QLabel(self.frame_8)
-        self.label.setObjectName(u"label")
-        self.label.setMinimumSize(QSize(0, 50))
+        self.frame_9 = QFrame(self.centralwidget)
+        self.frame_9.setObjectName(u"frame_9")
+        self.frame_9.setFrameShape(QFrame.StyledPanel)
+        self.frame_9.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_3 = QVBoxLayout(self.frame_9)
+        self.verticalLayout_3.setSpacing(15)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.btn_validate_eq = QPushButton(self.frame_9)
+        self.btn_validate_eq.setObjectName(u"btn_validate_eq")
+        self.btn_validate_eq.setMinimumSize(QSize(200, 70))
         font3 = QFont()
-        font3.setPointSize(25)
-        self.label.setFont(font3)
+        font3.setPointSize(20)
+        self.btn_validate_eq.setFont(font3)
 
-        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout_3.addWidget(self.btn_validate_eq)
 
-        self.label_3 = QLabel(self.frame_8)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setMinimumSize(QSize(0, 50))
-        self.label_3.setFont(font3)
+        self.btn_validate_loc = QPushButton(self.frame_9)
+        self.btn_validate_loc.setObjectName(u"btn_validate_loc")
+        self.btn_validate_loc.setMinimumSize(QSize(200, 70))
+        self.btn_validate_loc.setFont(font3)
 
-        self.verticalLayout.addWidget(self.label_3)
+        self.verticalLayout_3.addWidget(self.btn_validate_loc)
 
 
-        self.gridLayout.addWidget(self.frame_8, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.frame_9, 1, 2, 1, 1)
 
         self.frame_5 = QFrame(self.centralwidget)
         self.frame_5.setObjectName(u"frame_5")
@@ -152,7 +195,7 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName(u"label_4")
         font4 = QFont()
         font4.setFamilies([u"Franklin Gothic Book"])
-        font4.setPointSize(25)
+        font4.setPointSize(28)
         self.label_4.setFont(font4)
 
         self.gridLayout_2.addWidget(self.label_4, 0, 0, 1, 1)
@@ -226,7 +269,7 @@ class Ui_MainWindow(object):
 
         self.groupBox = QGroupBox(self.centralwidget)
         self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setFont(font)
+        self.groupBox.setFont(font3)
         self.horizontalLayout_5 = QHBoxLayout(self.groupBox)
         self.horizontalLayout_5.setSpacing(50)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
@@ -234,13 +277,24 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5.addItem(self.horizontalSpacer)
 
-        self.lbl_details = QLabel(self.groupBox)
-        self.lbl_details.setObjectName(u"lbl_details")
+        self.lbl_category = QLabel(self.groupBox)
+        self.lbl_category.setObjectName(u"lbl_category")
         font5 = QFont()
-        font5.setPointSize(26)
-        self.lbl_details.setFont(font5)
+        font5.setPointSize(25)
+        self.lbl_category.setFont(font5)
 
-        self.horizontalLayout_5.addWidget(self.lbl_details)
+        self.horizontalLayout_5.addWidget(self.lbl_category)
+
+        self.lbl_arrow = QLabel(self.groupBox)
+        self.lbl_arrow.setObjectName(u"lbl_arrow")
+
+        self.horizontalLayout_5.addWidget(self.lbl_arrow)
+
+        self.lbl_location = QLabel(self.groupBox)
+        self.lbl_location.setObjectName(u"lbl_location")
+        self.lbl_location.setFont(font5)
+
+        self.horizontalLayout_5.addWidget(self.lbl_location)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -248,6 +302,29 @@ class Ui_MainWindow(object):
 
 
         self.gridLayout.addWidget(self.groupBox, 2, 0, 1, 3)
+
+        self.frame_8 = QFrame(self.centralwidget)
+        self.frame_8.setObjectName(u"frame_8")
+        self.frame_8.setFrameShape(QFrame.StyledPanel)
+        self.frame_8.setFrameShadow(QFrame.Raised)
+        self.verticalLayout = QVBoxLayout(self.frame_8)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.label = QLabel(self.frame_8)
+        self.label.setObjectName(u"label")
+        self.label.setMinimumSize(QSize(0, 50))
+        self.label.setFont(font5)
+
+        self.verticalLayout.addWidget(self.label)
+
+        self.label_3 = QLabel(self.frame_8)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setMinimumSize(QSize(0, 50))
+        self.label_3.setFont(font5)
+
+        self.verticalLayout.addWidget(self.label_3)
+
+
+        self.gridLayout.addWidget(self.frame_8, 1, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -260,8 +337,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.txt_asset, self.btn_validate_eq)
         QWidget.setTabOrder(self.btn_validate_eq, self.txt_location)
         QWidget.setTabOrder(self.txt_location, self.btn_validate_loc)
-        QWidget.setTabOrder(self.btn_validate_loc, self.bt_confirm)
-        QWidget.setTabOrder(self.bt_confirm, self.btn_clear)
+        QWidget.setTabOrder(self.btn_validate_loc, self.btn_confirm)
+        QWidget.setTabOrder(self.btn_confirm, self.btn_clear)
 
         self.retranslateUi(MainWindow)
 
@@ -269,20 +346,22 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Library Loan", None))
+        self.btn_confirm.setText(QCoreApplication.translate("MainWindow", u"Confirm", None))
+        self.btn_clear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
         self.btn_validate_eq.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
         self.btn_validate_loc.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
-        self.bt_confirm.setText(QCoreApplication.translate("MainWindow", u"Confirm", None))
-        self.btn_clear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Equipment Number:", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Location for loan:", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"1. Scan equipment", None))
         self.lbl_icon_eq.setText("")
         self.lbl_icon_loc.setText("")
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"2. Scan Location", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"3. Confirm", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"2. Type Location", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"3. Press Confirm", None))
         self.lbl_icon_confirm.setText("")
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Loan Details", None))
-        self.lbl_details.setText("")
+        self.lbl_category.setText("")
+        self.lbl_arrow.setText("")
+        self.lbl_location.setText("")
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Equipment Number:", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Location for loan:", None))
     # retranslateUi
 
