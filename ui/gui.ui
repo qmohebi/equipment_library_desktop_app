@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1350</width>
-    <height>877</height>
+    <width>1310</width>
+    <height>853</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,53 +85,79 @@ QLineEdit {
     <property name="verticalSpacing">
      <number>20</number>
     </property>
-    <item row="1" column="1">
-     <widget class="QFrame" name="frame">
+    <item row="1" column="0">
+     <widget class="QFrame" name="frame_8">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="spacing">
-        <number>15</number>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <property name="verticalSpacing">
+        <number>0</number>
        </property>
-       <item>
-        <widget class="QLineEdit" name="txt_asset">
+       <item row="1" column="1">
+        <widget class="QLabel" name="label_3">
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>70</height>
+           <height>50</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>30</pointsize>
+           <pointsize>20</pointsize>
           </font>
+         </property>
+         <property name="text">
+          <string>Type Location for Loan:</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QLineEdit" name="txt_location">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label">
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>70</height>
+           <height>50</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>30</pointsize>
+           <pointsize>20</pointsize>
           </font>
+         </property>
+         <property name="text">
+          <string> Scan or Type Equipment No:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lbl_no_2">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="lbl_no_1">
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="3" column="0" colspan="3">
+    <item row="5" column="0" colspan="3">
      <widget class="QFrame" name="frame_3">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>150</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -187,188 +213,62 @@ QLineEdit {
       </layout>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QFrame" name="frame_9">
+    <item row="1" column="1">
+     <widget class="QFrame" name="frame">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
-        <number>15</number>
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>9</number>
        </property>
        <item>
-        <widget class="QPushButton" name="btn_validate_eq">
+        <widget class="QLineEdit" name="txt_asset">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>0</width>
            <height>70</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>20</pointsize>
+           <pointsize>30</pointsize>
           </font>
-         </property>
-         <property name="text">
-          <string>Validate</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_validate_loc">
+        <widget class="QLineEdit" name="txt_location">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>0</width>
            <height>70</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>20</pointsize>
+           <pointsize>30</pointsize>
           </font>
-         </property>
-         <property name="text">
-          <string>Validate</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="0" colspan="3">
-     <widget class="QFrame" name="frame_5">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QFrame" name="frame_4">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="font">
-               <font>
-                <family>Franklin Gothic Book</family>
-                <pointsize>28</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>1. Scan equipment</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="lbl_icon_eq">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap>:/icon/confirm-96.png</pixmap>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame_6">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="1">
-             <widget class="QLabel" name="lbl_icon_loc">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap>:/icon/confirm-96.png</pixmap>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="font">
-               <font>
-                <family>Franklin Gothic Book</family>
-                <pointsize>28</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>2. Type Location</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame_7">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="font">
-               <font>
-                <family>Franklin Gothic Book</family>
-                <pointsize>28</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>3. Press Confirm</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="lbl_icon_confirm">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap>:/icon/confirm-96.png</pixmap>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="3">
+    <item row="3" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="font">
        <font>
         <pointsize>20</pointsize>
@@ -441,50 +341,137 @@ QLineEdit {
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QFrame" name="frame_8">
+    <item row="1" column="2">
+     <widget class="QFrame" name="frame_9">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="label">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="verticalSpacing">
+        <number>15</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="lbl_eq_validate">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btn_validate_eq">
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>50</height>
+           <width>200</width>
+           <height>70</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>25</pointsize>
+           <pointsize>20</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Equipment Number:</string>
+          <string>Validate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lbl_loc_validate">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="btn_validate_loc">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Validate</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="3">
+     <widget class="QFrame" name="frame_5">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_3">
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>50</height>
-          </size>
-         </property>
+        <widget class="QLabel" name="lbl_confirm_info">
          <property name="font">
           <font>
-           <pointsize>25</pointsize>
+           <pointsize>20</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Location for loan:</string>
+          <string>Press confirm to take out equipment</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lbl_confirm_icon">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -496,7 +483,7 @@ QLineEdit {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1350</width>
+     <width>1310</width>
      <height>22</height>
     </rect>
    </property>
@@ -505,7 +492,6 @@ QLineEdit {
  </widget>
  <tabstops>
   <tabstop>txt_asset</tabstop>
-  <tabstop>btn_validate_eq</tabstop>
   <tabstop>txt_location</tabstop>
   <tabstop>btn_validate_loc</tabstop>
   <tabstop>btn_confirm</tabstop>
