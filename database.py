@@ -62,8 +62,69 @@ class Database:
 
         self.exec_command(sql_command=sql_command, params=parameters)
 
+    def get_mpce_personnel(self) -> dict:
+        personal_query = "EXEC LibraryAppUsers"
+        result = self.exec_command(personal_query)
+
+        # convert tuple to string so it can be loaded to json and parsed
+        result_string = f"[{result[0][0]}]"
+        return json.loads(result_string)
+
+    def return_load(
+        self,
+        job_type_id: str,
+        job_status_id: str,
+        equipemnt_id: str,
+        reported_fault: str,
+        work_end_date: str,
+        tech_id: str,
+        work_done: str,
+        user_id: str,
+        visual_inspection: bool = None,
+        est: bool = None,
+        function_check: bool = None,
+        battery_replaced: bool = None,
+        battery_checked: bool = None,
+        create_job: bool = None,
+    ) -> None:
+        """update the loan and create acceptance job"""
+
+        sql_command = """EXEC LibraryCreateJob\
+        @JobTypeId=:job_type_id,\
+        @JobStatusId=:job_status_id,\
+        @EquipmentId=:equipment_id,\
+        @ReportedFault=:reported_fault,\
+        @WorkEndDate=:workend_date,\
+        @TechnicianId=:technician_id,\
+        @WorkDone=:workdone,\
+        @UserId=:user_id,\
+        @VisualInspection=:visual_inspect,\
+        @ElectricalSafetyTest=:est,\
+        @FunctionCheck=:funct_check,\
+        @BatteryReplaced=:batt_replaced,\
+        @BatteryChecked=:batt_checked,\
+        @CreateJob=:create_job,\
+        """
+        parameters = {
+            "job_type_id": job_type_id,
+            "job_status_id": job_status_id,
+            "equipment_id": equipemnt_id,
+            "reported_fault": reported_fault,
+            "workend_date": work_end_date,
+            "technician_id": tech_id,
+            "workdone": work_done,
+            "user_id": user_id,
+            "visual_inspect": visual_inspection,
+            "est": est,
+            "funct_check": function_check,
+            "batt_replaced": battery_replaced,
+            "batt_checked": battery_checked,
+            "create_job": create_job,
+        }
+
 
 if __name__ == "__main__":
     db = Database()
-    location = db.get_location()
-    print("why is it pring this")
+    location = db.get_mpce_personnel()
+    print(location)
+

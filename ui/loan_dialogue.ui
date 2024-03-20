@@ -6,118 +6,131 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>897</width>
-    <height>760</height>
+    <width>892</width>
+    <height>794</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+	background-color: white
+}
+QLabel{
+	font-size: 14pt;
+}
+QLineEdit {
+	border: 1px;
+	border-radius: 5px;
+	font-size: 14pt;
+	border: 1px solid rgb(33, 44, 200)
+}
+
+QLineEdit:focus {
+	border: 2px solid #127eff
+}
+
+QPushButton {
+background-color:  #89CFF3;
+padding: 5px 10px;
+border-radius: 5px;	
+}
+QPushButton:hover{
+	background-color: #127eff
+}
+QPushButton#btn_clear{
+background-color: rgb(255, 137, 116);
+}
+QPushButton:hover#btn_clear{
+	background-color: rgb(255, 106, 92) ;
+}</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0">
-    <widget class="QFrame" name="frame_2">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="groupBox">
      <property name="font">
       <font>
        <pointsize>14</pointsize>
       </font>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+     <property name="title">
+      <string>Options</string>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="bottomMargin">
+       <number>15</number>
+      </property>
       <item>
-       <widget class="QLabel" name="label">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rb_return_loan">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>Enter your username or your Badge</string>
+         <string>Return Loan</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
+       <widget class="QRadioButton" name="rb_create_job">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>confirm</string>
+         <string>Create Job for Workshop</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QFrame" name="frame">
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Submit</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Clear</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="5" column="0">
+   <item row="7" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="font">
       <font>
@@ -141,8 +154,11 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
           <item>
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="chkbx_visual_insp">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
@@ -154,7 +170,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="chkbx_function">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
@@ -166,7 +182,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBox_3">
+           <widget class="QCheckBox" name="chkbx_batt_replace">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
@@ -196,7 +212,7 @@
            <number>20</number>
           </property>
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit"/>
+           <widget class="QPlainTextEdit" name="txt_work_done"/>
           </item>
          </layout>
         </widget>
@@ -207,8 +223,8 @@
       <attribute name="title">
        <string>Create Job</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
         <widget class="QFrame" name="frame_4">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -216,22 +232,7 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3" rowstretch="0">
-          <property name="horizontalSpacing">
-           <number>100</number>
-          </property>
-          <item row="0" column="2">
-           <widget class="QGroupBox" name="groupBox_3">
-            <property name="title">
-             <string>Reported fault</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <widget class="QTextEdit" name="textEdit"/>
-             </item>
-            </layout>
-           </widget>
-          </item>
+         <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
            <widget class="QFrame" name="frame_3">
             <property name="frameShape">
@@ -240,30 +241,69 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
+            <widget class="QRadioButton" name="rb_ppm">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>104</width>
+               <height>32</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>PPM Job</string>
+             </property>
+            </widget>
+            <widget class="QRadioButton" name="rb_job">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>48</y>
+               <width>119</width>
+               <height>32</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Repair Job</string>
+             </property>
+            </widget>
+           </widget>
+          </item>
+          <item row="0" column="1" rowspan="2">
+           <widget class="QGroupBox" name="groupBox_3">
+            <property name="title">
+             <string>Reported fault</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QTextEdit" name="txt_reported_fault"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QGroupBox" name="groupBox_5">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="title">
+             <string>Assign to technician</string>
+            </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <widget class="QRadioButton" name="radioButton_4">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>PPM Job</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_3">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Repair Job</string>
-               </property>
-              </widget>
+              <widget class="QLineEdit" name="txt_technician"/>
              </item>
             </layout>
            </widget>
@@ -275,7 +315,120 @@
      </widget>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="2" column="0">
+    <widget class="QFrame" name="frame_2">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="bottomMargin">
+       <number>9</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Enter your useranme to unlock the form:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="txt_username">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_confirm">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Confirm</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QFrame" name="frame">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="btn_submit_job">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Submit</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_print">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Print</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_clear">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QFrame" name="frame_6">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -288,7 +441,7 @@
        <widget class="QLabel" name="label_3">
         <property name="maximumSize">
          <size>
-          <width>160</width>
+          <width>100</width>
           <height>16777215</height>
          </size>
         </property>
@@ -303,7 +456,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="lbl_technician">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
@@ -333,21 +486,21 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>184</width>
+          <width>421</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="lbl_loan">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>This Equpment is on loan to {} select from options below</string>
+         <string>Loan Return</string>
         </property>
        </widget>
       </item>
@@ -358,49 +511,11 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>184</width>
+          <width>420</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="title">
-      <string>Options</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QRadioButton" name="radioButton">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Return Loan</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioButton_2">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Create Job for Workshop</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -416,20 +531,41 @@
       <string>Equipment Details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_4">
+      <property name="horizontalSpacing">
+       <number>30</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
+      </property>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="txt_loan_location">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>14</pointsize>
          </font>
         </property>
-        <property name="text">
-         <string>Equipment No:</string>
-        </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="txt_asset">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txt_category">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="font">
          <font>
           <pointsize>14</pointsize>
@@ -445,16 +581,31 @@
          </font>
         </property>
         <property name="text">
-         <string>Category</string>
+         <string>Category:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_3">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
          </font>
+        </property>
+        <property name="text">
+         <string>Loan Location:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Equipment No:</string>
         </property>
        </widget>
       </item>
@@ -463,6 +614,23 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_username</tabstop>
+  <tabstop>rb_return_loan</tabstop>
+  <tabstop>rb_create_job</tabstop>
+  <tabstop>chkbx_visual_insp</tabstop>
+  <tabstop>chkbx_function</tabstop>
+  <tabstop>chkbx_batt_replace</tabstop>
+  <tabstop>txt_work_done</tabstop>
+  <tabstop>btn_clear</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>rb_ppm</tabstop>
+  <tabstop>rb_job</tabstop>
+  <tabstop>txt_reported_fault</tabstop>
+  <tabstop>txt_category</tabstop>
+  <tabstop>txt_asset</tabstop>
+  <tabstop>txt_loan_location</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

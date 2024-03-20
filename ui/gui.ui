@@ -27,48 +27,31 @@ QHeaderView::section{
 	font-size: 14px
 }
 
+QPushButton{
+	padding: 5px 10px;
+	border-radius: 10px;
+	background-color: #89CFF3;
+}
+
+
+QLineEdit:focus {
+	border: 2px solid #127eff
+}
+
+QPushButton:hover {
+	background-color: #00A9FF;
+
+}
+
 QPushButton#btn_clear {
 	padding: 5px 10px;
 	border-radius: 10px;
 	background-color: rgb(255, 137, 116);
 }
 
-QPushButton#btn_confirm {
-	padding: 5px 10px;
-	border-radius: 10px;
-	background-color: #89CFF3;
-}
-
-QPushButton#btn_validate_eq {
-	padding: 5px 10px;
-	border-radius: 10px;
-	background-color: #89CFF3;
-}
-
-
-QPushButton#btn_validate_loc {
-	padding: 5px 10px;
-	border-radius: 10px;
-	background-color: #89CFF3;
-}
-
-
-QPushButton#btn_confirm:hover {
-	background-color: #00A9FF;
-
-}
-QPushButton#btn_validate_eq:hover {
-	background-color: #00A9FF;
-
-}
-QPushButton#btn_validate_loc:hover {
-	background-color: #00A9FF;
-
-}
 
 QPushButton#btn_clear:hover {
 	background-color:rgb(255, 106, 92) ;
-
 }
 
 QLineEdit {
@@ -76,7 +59,14 @@ QLineEdit {
 	border-radius: 10px;
 	border: 1px solid rgb(33, 44, 200)
 }
-	
+
+QMessageBox{
+	background-color: white;
+}
+
+QMessageBox:QPushButton{
+	background-color: #89CFF3;
+}
 
 	</string>
   </property>

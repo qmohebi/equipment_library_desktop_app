@@ -17,6 +17,31 @@ from ui.ui_dialogue import Ui_Dialog
 
 from database import Database
 
+# pyside6-uic .\ui\loan_dialogue.ui -o .\ui\ui_dialogue.py
+
+ASSET = {
+    "equipment_no": "",
+    "category": "",
+    "library_status_id": "",
+    "equipment_id": "",
+    "location_id": "",
+    "loan_location": "",
+    "loan_status_id": "",
+}
+
+PERSONNEL_RETURNING_LOAN = {}
+TECHNICIANS = {}
+JOB_TYPE = {
+    "Repair/Correction": "STG2005061300002",
+    "PPM": "STG2005061300001",
+    "Function Check": "591F356502204017989184484E650984",
+}
+
+JOB_STATUS = {
+    "Not Started": "STG2005071800000",
+    "Completed": "69914FCE64344265A0E72EC66528D9FA",
+}
+
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
@@ -31,19 +56,11 @@ class MainWindow(QMainWindow):
         self.location_name = []  # used for location auto complete
         self.location = {}  # use for getting location id
         self.location_id = ""
+
         # WWW1 - not a library item
         # WWW2 - available
         # WWW3 - on loan
         # STG2005061300002 - Loan in progress
-        self.asset = {
-            "equipment_no": "",
-            "category": "",
-            "library_status_id": "",
-            "equipment_id": "",
-            "location_id": "",
-            "loan_location": "",
-            "loan_status_id": "",
-        }
 
         self.confirm_pixmap = QPixmap("./ui/tick.png")
         self.error_pixmap = QPixmap("./ui/cancel.png")
@@ -67,6 +84,7 @@ class MainWindow(QMainWindow):
         self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
         self.number_3_pixmap = QPixmap("./ui/3.png")
         self.ui.lbl_3.setPixmap(self.number_3_pixmap)
+        self.get_mpce_personnel()
 
         self.confirm_labels = (
             self.ui.lbl_3,
@@ -95,9 +113,11 @@ class MainWindow(QMainWindow):
         self.get_location()
         self.disable_buttons()
 
-        completer = QCompleter(self.location_name, self)
-        completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-        self.ui.txt_location.setCompleter(completer)
+        location_completer = QCompleter(self.location_name, self)
+        location_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.ui.txt_location.setCompleter(location_completer)
+
+        self.return_loan = LoanReturn(self)
 
     def get_location(self):
         """get the location from database and create a list and dictionary
@@ -107,8 +127,34 @@ class MainWindow(QMainWindow):
         self.location = location
         self.location_name = list(location.keys())
 
-    def get_asset_info(self):
+    def get_mpce_personnel(self):
+        """populate the personnel dictionary with mpce personnel from the db"""
+        result = self.db.get_mpce_personnel()
 
+        # go through personnel json file, clean up spaces at the end of name and email and
+        # store it in a PERSONNEL dict.
+        for item in result:
+            try:
+                name = item["PersonnelShortName"].strip().title()
+
+            except Exception:
+                name = None
+            try:
+                username = item["DomainLogin"].strip().lower()
+            except Exception:
+                username = None
+            try:
+                user_id = item["UserId"]
+            except Exception:
+                user_id = None
+            try:
+                personnel_id = item["PersonnelId"]
+            except Exception:
+                personnel_id = None
+            PERSONNEL_RETURNING_LOAN[username] = [name, user_id, personnel_id, username]
+            TECHNICIANS[name] = [personnel_id, user_id]
+
+    def get_asset_info(self):
         search_value = self.ui.txt_asset.text().strip()
         self.ui.txt_location.clear()
 
@@ -125,35 +171,35 @@ class MainWindow(QMainWindow):
 
         if result:
             for row in result:
-                self.asset["equipment_id"] = row[0]
-                self.asset["category"] = row[1]
-                self.asset["library_status_id"] = row[2]
-                self.asset["loan_status_id"] = row[3]
-                self.asset["loan_location"] = row[4]
-            if self.asset["library_status_id"] == "WWW1":
+                ASSET["equipment_id"] = row[0]
+                ASSET["category"] = row[1]
+                ASSET["library_status_id"] = row[2]
+                ASSET["loan_status_id"] = row[3]
+                ASSET["loan_location"] = row[4]
+            if ASSET["library_status_id"] == "WWW1":
+                self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
                 QMessageBox.warning(
                     self,
                     "Equipment",
-                    f"Equipment No: {self.ui.txt_asset.text()}\n"
-                    "Is not a library item ",
+                    f"Equipment No:{search_value}is not a library item ",
                 )
-                self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
-            elif self.asset["library_status_id"] == "WWW3":
-                dlg = LoanReturn(self)
-                dlg.ui.label_2.setText(f"This Equpment is on loan to {self.asset['loan_location']} select from options below")
+
+            elif ASSET["library_status_id"] == "WWW3":
+                dlg = LoanReturn()
+                dlg.ui.txt_loan_location.setText(ASSET["loan_location"])
+                dlg.ui.txt_asset.setText(search_value)
+                dlg.ui.txt_category.setText(ASSET["category"])
                 dlg.exec()
             else:
 
                 self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
-                self.ui.lbl_category.setText(self.asset["category"])
+                self.ui.lbl_category.setText(ASSET["category"])
                 self.ui.lbl_arrow.setPixmap(self.arrow_pixmap)
                 self.ui.btn_validate_loc.setDisabled(False)
                 self.ui.txt_location.setDisabled(False)
                 self.ui.txt_location.setFocus()
         else:
-            QMessageBox.warning(
-                self, "Equipment search", "Unable to find an Asset!"
-            )
+            QMessageBox.warning(self, "Equipment search", "Unable to find an Asset!")
             self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
             # self.ui.lbl_category.setText("")
             self.ui.btn_confirm.setDisabled(True)
@@ -173,7 +219,7 @@ class MainWindow(QMainWindow):
         """
         loc_inputted = self.ui.txt_location.text().strip()
         try:
-            self.asset["location_id"] = self.location[loc_inputted]
+            ASSET["location_id"] = self.location[loc_inputted]
             self.ui.lbl_loc_validate.setPixmap(self.confirm_pixmap)
             self.ui.lbl_location.setText(loc_inputted)
             self.ui.btn_confirm.setDisabled(False)
@@ -191,8 +237,8 @@ class MainWindow(QMainWindow):
         """issues loan by called the db function"""
         try:
             self.db.issue_loan(
-                equipment_id=self.asset["equipment_id"],
-                location_id=self.asset["location_id"],
+                equipment_id=ASSET["equipment_id"],
+                location_id=ASSET["location_id"],
             )
             self.ui.lbl_confirm_icon.setPixmap(self.confirm_pixmap)
             QMessageBox.information(self, "Equipemnt Loan", "Succsefully issued loan!")
@@ -232,11 +278,152 @@ class LoanReturn(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
-        self.ui.pushButton_2.clicked.connect(self.check)
-        
+        self.setWindowTitle("Loan Return")
+        # self.ui.btn_clear.clicked.connect(self.check)
+        self.ui.btn_confirm.clicked.connect(self.validate_user)
+        self.radio_btn = (self.ui.rb_return_loan, self.ui.rb_create_job)
+        self.return_loan_options = (
+            self.ui.chkbx_visual_insp,
+            self.ui.chkbx_batt_replace,
+            self.ui.chkbx_function,
+            self.ui.txt_work_done,
+        )
+        self.user_id = ""
 
-    def check(self):
-        print("Clear clicked")
+        self.ui.txt_username.returnPressed.connect(self.validate_user)
+
+        self.ui.txt_technician.setPlaceholderText("Start typing technician's name")
+
+        self.loan_chkbox = (
+            self.ui.chkbx_batt_replace,
+            self.ui.chkbx_function,
+            self.ui.chkbx_visual_insp,
+        )
+        for button in self.radio_btn:
+            button.setDisabled(True)
+
+        self.ui.tabWidget.setDisabled(True)
+
+        self.loan_radio = (self.ui.rb_return_loan, self.ui.rb_create_job)
+        for button in self.loan_radio:
+            button.clicked.connect(self.loan_tab)
+
+        self.job_radio = (self.ui.rb_job, self.ui.rb_ppm)
+
+        # create auto completer for technicians in the job tab
+        tech_auto_complete = QCompleter(list(TECHNICIANS.keys()), self)
+        tech_auto_complete.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.ui.txt_technician.setCompleter(tech_auto_complete)
+        self.ui.btn_submit_job.clicked.connect(self.return_loan_create_job)
+
+        self.db = Database()
+
+    def validate_user(self):
+        """check user entered to see if it a valid mpce user
+        if so allow the user to use the rest of the form"""
+
+        try:
+            username_entered = self.ui.txt_username.text().lower()
+            technician_name = PERSONNEL_RETURNING_LOAN[username_entered][0]
+            self.user_id = PERSONNEL_RETURNING_LOAN[username_entered][1]
+            self.ui.lbl_technician.setText(technician_name)
+            for button in self.radio_btn:
+                button.setDisabled(False)
+            # self.ui.tabWidget.setDisabled(False)
+        except KeyError:
+            for button in self.radio_btn:
+                button.setDisabled(True)
+            self.ui.tabWidget.setDisabled(True)
+
+            QMessageBox.warning(
+                self,
+                "Username",
+                "Unable to find valid username, type your username name again!",
+            )
+
+    def loan_tab(self):
+        self.ui.tabWidget.setEnabled(True)
+        if self.ui.rb_create_job.isChecked():
+            self.ui.tabWidget.setCurrentIndex(1)
+        else:
+            self.ui.tabWidget.setCurrentIndex(0)
+
+    def return_loan_create_job(self):
+        work_done = self.ui.txt_work_done.toPlainText()
+        reported_fault = self.ui.txt_reported_fault.toPlainText()
+        func_chk = self.ui.chkbx_function
+        batt_rep = self.ui.chkbx_batt_replace
+        vis_inspec = self.ui.chkbx_visual_insp
+
+        repair_job = self.ui.rb_job
+        ppm_job = self.ui.rb_ppm
+
+        if self.ui.tabWidget.currentIndex() == 0:
+            job_type_id = JOB_TYPE["Function Check"]
+            job_status_id = JOB_STATUS["Completed"]
+            if (
+                func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
+            ) and work_done:
+                
+            elif work_done and not (
+                func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
+            ):
+                QMessageBox.information(
+                    self, "Loan Return", "At least one check box needs to be checked!"
+                )
+
+            elif not work_done and (
+                func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
+            ):
+                QMessageBox.information(
+                    self, "Loan Return", "Work done field is emtpy!"
+                )
+            else:
+                msg_box = QMessageBox.question(
+                    self,
+                    "Loan Return",
+                    "Do you want to return loan without creating a Function Check Job?",
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                )
+                if msg_box == QMessageBox.StandardButton.Yes:
+                    print("create loan return on only!")
+
+        else:
+            job_status_id = JOB_STATUS["Not Started"]
+            if repair_job.isChecked() or ppm_job.isChecked() or not reported_fault:
+                pass  # print("no job created")
+            elif repair_job.isChecked() and reported_fault:
+                job_type_id = JOB_TYPE["Repair/Correction"]
+            elif ppm_job.isChecked() and reported_fault:
+                job_type_id = JOB_TYPE["PPM"]
+
+    # def return_option(self):
+
+    #     print("why this function")
+    # work_done = self.ui.txt_work_done.toPlainText()
+    # reported_fault = self.ui.txt_reported_fault.toPlainText()
+    # func_chk = self.ui.chkbx_function
+    # batt_rep = self.ui.chkbx_batt_replace
+    # vis_inspec = self.ui.chkbx_visual_insp
+
+    # repair_job = self.ui.rb_job
+    # ppm_job = self.ui.rb_ppm
+
+    # if self.ui.tabWidget.currentIndex() == 1:
+    #     if (
+    #         func_chk.isChecked() is False
+    #         and batt_rep.isChecked is False
+    #         and vis_inspec.isChecked is False
+    #         and not reported_fault
+    #     ):
+    #         print("return loan")
+    # else:
+    #     if (
+    #         repair_job.isChecked() is False
+    #         and ppm_job.isChecked() is False
+    #         and not work_done
+    #     ):
+    #         print("no job created")
 
 
 if __name__ == "__main__":
