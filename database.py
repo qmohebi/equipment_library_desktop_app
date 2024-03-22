@@ -70,16 +70,16 @@ class Database:
         result_string = f"[{result[0][0]}]"
         return json.loads(result_string)
 
-    def return_load(
+    def create_job(
         self,
-        job_type_id: str,
-        job_status_id: str,
         equipemnt_id: str,
-        reported_fault: str,
-        work_end_date: str,
-        tech_id: str,
-        work_done: str,
-        user_id: str,
+        job_type_id: str = None,
+        job_status_id: str = None,
+        reported_fault: str = None,
+        tech_id: str = None,
+        user_id: str = None,
+        work_end_date: str = None,
+        work_done: str = None,
         visual_inspection: bool = None,
         est: bool = None,
         function_check: bool = None,
@@ -89,26 +89,31 @@ class Database:
     ) -> None:
         """update the loan and create acceptance job"""
 
-        sql_command = """EXEC LibraryCreateJob\
-        @JobTypeId=:job_type_id,\
-        @JobStatusId=:job_status_id,\
-        @EquipmentId=:equipment_id,\
-        @ReportedFault=:reported_fault,\
-        @WorkEndDate=:workend_date,\
-        @TechnicianId=:technician_id,\
-        @WorkDone=:workdone,\
-        @UserId=:user_id,\
-        @VisualInspection=:visual_inspect,\
-        @ElectricalSafetyTest=:est,\
-        @FunctionCheck=:funct_check,\
-        @BatteryReplaced=:batt_replaced,\
-        @BatteryChecked=:batt_checked,\
-        @CreateJob=:create_job,\
+        sql_command = """
+        SET NOCOUNT ON;
+        DECLARE @out int;
+        EXEC LibraryCreateJob
+        @EquipmentId=:equipment_id,
+        @JobTypeId=:job_type_id,
+        @JobStatusId=:job_status_id,
+        @ReportedFault=:reported_fault,
+        @WorkEndDate=:workend_date,
+        @TechnicianId=:technician_id,
+        @WorkDone=:workdone,
+        @UserId=:user_id,
+        @VisualInspection=:visual_inspect,
+        @ElectricalSafetyTest=:est,
+        @FunctionCheck=:funct_check,
+        @BatteryReplaced=:batt_replaced,
+        @BatteryChecked=:batt_checked,
+        @CreateJob=:create_job,
+        @JobNumber = @out OUTPUT;
+        SELECT @out AS job_number;
         """
         parameters = {
+            "equipment_id": equipemnt_id,
             "job_type_id": job_type_id,
             "job_status_id": job_status_id,
-            "equipment_id": equipemnt_id,
             "reported_fault": reported_fault,
             "workend_date": work_end_date,
             "technician_id": tech_id,
@@ -122,9 +127,43 @@ class Database:
             "create_job": create_job,
         }
 
+        # sql_command = """
+        # SET NOCOUNT ON;
+        # DECLARE @out int;
+        # EXEC LibraryCreateJob
+        # @EquipmentId=:equipment_id,
+        # @JobTypeId=:job_type_id,
+        # @JobStatusId=:job_status_id,
+        # @ReportedFault=:reported_fault,
+        # @TechnicianId=:technician_id,
+        # @UserId=:user_id,
+        # @CreateJob=:create_job,
+        # @JobNumber = @out OUTPUT;
+        # SELECT @out AS job_number;
+        #     """
+        # parameters = {
+        #     "equipment_id": equipment_id,
+        #     "job_type_id": job_type_id,
+        #     "job_status_id": job_status_id,
+        #     "reported_fault": reported_fault,
+        #     "technician_id": tech_id,
+        #     "user_id": user_id,
+        #     "create_job": create_job,
+        # }
+
+        with self.engine.begin() as conn:
+            result = conn.execute(text(sql_command), parameters).scalar()
+            return result
+
 
 if __name__ == "__main__":
     db = Database()
-    location = db.get_mpce_personnel()
-    print(location)
-
+    # db.create_job(
+    #     equipment_id="5F96806AEDDE45ADA9717BA14604665C                  ",
+    #     job_type_id="STG2005061300001",
+    #     job_status_id="STG2005071800000",
+    #     reported_fault="Test",
+    #     tech_id="4641D85257D046CABB36FB7A575DECC2                  ",
+    #     user_id="962A1467-EC25-42AE-9F86-9F572652C4E5",
+    #     create_job=True,
+    # )
