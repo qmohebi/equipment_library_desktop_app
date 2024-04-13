@@ -1,0 +1,33 @@
+<RCC>
+  <qresource>
+    <file>1.png</file>
+    <file>1_grey.png</file>
+    <file>2.png</file>
+    <file>2_grey.png</file>
+    <file>3.png</file>
+    <file>3_grey.png</file>
+    <file>arrow.png</file>
+    <file>cancel.png</file>
+    <file>icons8-enter-48.png</file>
+    <file>icons8-enter-48_1.png</file>
+    <file>icons8-enter-48_2.png</file>
+    <file>icons8-enter-96.png</file>
+    <file>icons8-enter-96_1.png</file>
+    <file>icons8-enter-96_2.png</file>
+    <file>icons8-exit-48.png</file>
+    <file>icons8-exit-48_1.png</file>
+    <file>icons8-exit-96.png</file>
+    <file>icons8-exit-96_1.png</file>
+    <file>icons8-key-24.png</file>
+    <file>icons8-key-24_1.png</file>
+    <file>icons8-key-48.png</file>
+    <file>icons8-key-48_1.png</file>
+    <file>icons8-key-96.png</file>
+    <file>icons8-key-96_1.png</file>
+    <file>icons8-logout-48.png</file>
+    <file>icons8-logout-48_1.png</file>
+    <file>icons8-logout-96.png</file>
+    <file>icons8-logout-96_1.png</file>
+    <file>tick.png</file>
+  </qresource>
+</RCC>
