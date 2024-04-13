@@ -51,6 +51,8 @@ with open("config.json", encoding="utf-8") as config:
     data = json.load(config)
     REPORTED_FAULT = data["reported_fault"]
     DB_NAME = data["database"]
+    LDAP_SERVER = data["ldap_server"]
+    SEARCH_BASE = data["search_base"]
 
 
 class MainWindow(QMainWindow):
@@ -72,9 +74,9 @@ class MainWindow(QMainWindow):
         # WWW3 - on loan
         # STG2005061300002 - Loan in progress
 
-        self.confirm_pixmap = QPixmap("./ui/tick.png")
-        self.error_pixmap = QPixmap("./ui/cancel.png")
-        self.arrow_pixmap = QPixmap("./ui/arrow.png")
+        self.confirm_pixmap = QPixmap("./logo/tick.png")
+        self.error_pixmap = QPixmap("./logo/cancel.png")
+        self.arrow_pixmap = QPixmap("./logo/arrow.png")
         self.setWindowTitle("Library Loan")
         self.ui.lbl_confirm_info.setVisible(False)
 
@@ -88,17 +90,17 @@ class MainWindow(QMainWindow):
         self.ui.btn_confirm.clicked.connect(self.confirm_loan)
         self.ui.btn_clear.clicked.connect(self.clear)
 
-        self.number_1_pixmap = QPixmap("./ui/1.png")
+        self.number_1_pixmap = QPixmap("./logo/1.png")
         self.ui.lbl_no_1.setPixmap(self.number_1_pixmap)
-        self.number_2_pixmap = QPixmap("./ui/2.png")
+        self.number_2_pixmap = QPixmap("./logo/2.png")
         self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
-        self.number_3_pixmap = QPixmap("./ui/3.png")
+        self.number_3_pixmap = QPixmap("./logo/3.png")
         self.ui.lbl_3.setPixmap(self.number_3_pixmap)
 
         # grey pixmap
-        self.number_1_grey = QPixmap("./ui/1_grey.png")
-        self.number_2_grey = QPixmap("./ui/2_grey.png")
-        self.number_3_grey = QPixmap("./ui/3_grey.png")
+        self.number_1_grey = QPixmap("./logo/1_grey.png")
+        self.number_2_grey = QPixmap("./logo/2_grey.png")
+        self.number_3_grey = QPixmap("./logo/3_grey.png")
         self.get_mpce_personnel()
 
         self.confirm_labels = (
@@ -128,14 +130,17 @@ class MainWindow(QMainWindow):
         self.get_location()
         self.disable_buttons()
 
-        self.status_bar = QStatusBar()
-        self.status_bar.showMessage(DB_NAME)
+
 
         location_completer = QCompleter(self.location_name, self)
         location_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.ui.txt_location.setCompleter(location_completer)
 
         self.return_loan = LoanReturn(self)
+        self.status_bar()
+
+    def status_bar(self):
+        self.statusBar().showMessage("Ready")
 
     def get_location(self):
         """get the location from database and create a list and dictionary
@@ -199,7 +204,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(
                     self,
                     "Equipment",
-                    f"Equipment No:{search_value}is not a library item ",
+                    f"Equipment No: {search_value}is not a library item ",
                 )
 
             elif ASSET["library_status_id"] == "WWW3":
@@ -220,19 +225,11 @@ class MainWindow(QMainWindow):
                 self.ui.lbl_no_1.setPixmap(self.number_1_grey)
                 self.ui.txt_asset.setStyleSheet("color:grey")
         else:
-            QMessageBox.warning(self, "Equipment search", "Unable to find an Asset!")
             self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
+            self.ui.lbl_loc_validate.clear()
+            QMessageBox.critical(self, "Equipment search", "Unable to find an Asset!")
             # self.ui.lbl_category.setText("")
             self.ui.btn_confirm.setDisabled(True)
-
-    def asset_library_status(self) -> str:
-        """By looking at the EquipmentLibrarySatusId it will check
-        1 - checks whether an asset is library loan able,
-        If so, return library_item
-        2 - check if the asset is already on loan
-        if so return is on loan
-        """
-        pass
 
     def validate_location(self):
         """Checks to make sure the location entered is a correct one
@@ -265,7 +262,13 @@ class MainWindow(QMainWindow):
                 location_id=ASSET["location_id"],
             )
             self.ui.lbl_confirm_icon.setPixmap(self.confirm_pixmap)
-            QMessageBox.information(self, "Equipemnt Loan", " Loan succesfully issued!")
+            QMessageBox.question(
+                self,
+                "Equipment Loan",
+                " Loan succesfully issued!",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                defaultButton=QMessageBox.StandardButton.No,
+            )
             self.clear()
         except Exception:
             self.ui.lbl_confirm_icon.setPixmap(self.error_pixmap)
@@ -317,7 +320,7 @@ class LoanReturn(QDialog):
             "job_type": "",
             "equipment_no": "",
         }
-
+        self.loan_returned = False
         # date passed to MSSQL needs to be in ISO standard: YY-MM-DD
         self.today = datetime.today().strftime("%Y-%m-%d")
         self.ui.txt_username.setPlaceholderText(
@@ -339,6 +342,12 @@ class LoanReturn(QDialog):
         self.ui.txt_username.returnPressed.connect(self.validate_user)
 
         self.ui.txt_technician.setPlaceholderText("Start typing technician's name")
+
+        self.txt_boxes = (
+            self.ui.txt_technician,
+            self.ui.txt_reported_fault,
+            self.ui.txt_work_done,
+        )
 
         self.loan_chkbox = (
             self.ui.chkbx_batt_replace,
@@ -363,6 +372,7 @@ class LoanReturn(QDialog):
         self.ui.btn_submit.clicked.connect(self.return_loan_create_job)
 
         self.ui.btn_print.clicked.connect(self.print_label)
+        self.ui.btn_clear.clicked.connect(self.clear_form)
 
     def validate_user(self):
         """check user entered to see if it a valid mpce user
@@ -416,10 +426,12 @@ class LoanReturn(QDialog):
         repair_job = self.ui.rb_job
         ppm_job = self.ui.rb_ppm
         assigned_tech = self.ui.txt_technician.text()
+        tech_returning_loan = PERSONNEL_RETURNING_LOAN[self.ui.txt_username.text()][2]
 
         if self.ui.tabWidget.currentIndex() == 0:
             job_type_id = JOB_TYPE["Function Check"]
             job_status_id = JOB_STATUS["Completed"]
+
             if (
                 func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
             ) and work_done:
@@ -430,10 +442,11 @@ class LoanReturn(QDialog):
                 job = self.db.create_job(
                     job_type_id=job_type_id,
                     job_status_id=job_status_id,
-                    equipemnt_id=ASSET["equipment_id"],
+                    equipment_id=ASSET["equipment_id"],
                     reported_fault=REPORTED_FAULT,
                     work_end_date=self.today,
-                    tech_id=PERSONNEL_RETURNING_LOAN[self.ui.txt_username.text()][2],
+                    tech_id=tech_returning_loan,
+                    taken_by_id=tech_returning_loan,
                     work_done=work_done,
                     user_id=self.user_id,
                     visual_inspection=vis_inspec.isChecked(),
@@ -441,8 +454,14 @@ class LoanReturn(QDialog):
                     battery_replaced=batt_rep.isChecked(),
                     create_job=True,
                 )
+
                 if job:
-                    print(f"create job: {job}")
+                    QMessageBox.information(
+                        self,
+                        "Loan Return",
+                        f"Loan returned and a Function Job created, job no: {job}",
+                    )
+                    self.ui.btn_confirm.setDisabled(True)
 
             elif work_done and not (
                 func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
@@ -463,17 +482,19 @@ class LoanReturn(QDialog):
                     "Loan Return",
                     "Do you want to return loan without creating a Function Check Job?",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    defaultButton=QMessageBox.StandardButton.No,
                 )
                 if msg_box == QMessageBox.StandardButton.Yes:
                     # if user doesn't
                     self.db.create_job(
-                        equipemnt_id=ASSET["equipment_id"],
+                        equipment_id=ASSET["equipment_id"],
                     )
                     QMessageBox.information(
                         self,
                         "Loan Return",
                         f"Successfully returned equipment: {ASSET['equipment_no']} to the library",
                     )
+                    self.ui.btn_confirm.setDisabled(True)
         else:
             job_status_id = JOB_STATUS["Not Started"]
             assigned_tech = TECHNICIANS[self.ui.txt_technician.text()][0]
@@ -485,6 +506,7 @@ class LoanReturn(QDialog):
                     reported_fault=reported_fault,
                     tech_id=assigned_tech,
                     user_id=self.user_id,
+                    taken_by_id=tech_returning_loan,
                     create_job=True,
                 )
                 if job:
@@ -497,6 +519,7 @@ class LoanReturn(QDialog):
                         "Successful Job Creation",
                         f"A 'Repair Job' with Job number: [{job}] has been created!",
                     )
+                    self.ui.btn_confirm.setDisabled(True)
             elif ppm_job.isChecked() and reported_fault and assigned_tech:
                 job_type_id = JOB_TYPE["PPM"]
                 job = self.db.create_job(
@@ -505,6 +528,7 @@ class LoanReturn(QDialog):
                     equipment_id=ASSET["equipment_id"],
                     reported_fault=reported_fault,
                     tech_id=assigned_tech,
+                    taken_by_id=tech_returning_loan,
                     user_id=self.user_id,
                     create_job=True,
                 )
@@ -518,6 +542,7 @@ class LoanReturn(QDialog):
                         "Successful Job Creation",
                         f"A PPM Job with Job number: [{job}] has been created!",
                     )
+                    self.ui.btn_confirm.setDisabled(True)
                 else:
                     QMessageBox.information(
                         self,
@@ -534,11 +559,24 @@ class LoanReturn(QDialog):
     def print_label(self):
         print(self.job_sticker)
 
-    # create print label by taking the info from the self.job_sticker dictionary
+    def clear_form(self):
+        """Clear the form off all entries"""
+        for text in self.txt_boxes:
+            text.clear()
+        for checkbox in self.loan_chkbox:
+            checkbox.setChecked(False)
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyleSheet(
+        """QMessageBox QPushButton{min-width: 100px;
+        background-color:#89cff3;
+                    }
+        QPushButton:default{
+        background-color:#00a9ff;
+        }"""
+    )
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

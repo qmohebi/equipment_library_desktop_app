@@ -87,42 +87,6 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setVerticalSpacing(20)
-        self.frame_9 = QFrame(self.centralwidget)
-        self.frame_9.setObjectName(u"frame_9")
-        self.frame_9.setFrameShape(QFrame.StyledPanel)
-        self.frame_9.setFrameShadow(QFrame.Raised)
-        self.gridLayout_2 = QGridLayout(self.frame_9)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.gridLayout_2.setVerticalSpacing(30)
-        self.lbl_eq_validate = QLabel(self.frame_9)
-        self.lbl_eq_validate.setObjectName(u"lbl_eq_validate")
-
-        self.gridLayout_2.addWidget(self.lbl_eq_validate, 0, 0, 1, 1)
-
-        self.btn_validate_eq = QPushButton(self.frame_9)
-        self.btn_validate_eq.setObjectName(u"btn_validate_eq")
-        self.btn_validate_eq.setMinimumSize(QSize(200, 70))
-        font = QFont()
-        font.setPointSize(20)
-        self.btn_validate_eq.setFont(font)
-
-        self.gridLayout_2.addWidget(self.btn_validate_eq, 0, 1, 1, 1)
-
-        self.lbl_loc_validate = QLabel(self.frame_9)
-        self.lbl_loc_validate.setObjectName(u"lbl_loc_validate")
-
-        self.gridLayout_2.addWidget(self.lbl_loc_validate, 1, 0, 1, 1)
-
-        self.btn_validate_loc = QPushButton(self.frame_9)
-        self.btn_validate_loc.setObjectName(u"btn_validate_loc")
-        self.btn_validate_loc.setMinimumSize(QSize(200, 70))
-        self.btn_validate_loc.setFont(font)
-
-        self.gridLayout_2.addWidget(self.btn_validate_loc, 1, 1, 1, 1)
-
-
-        self.gridLayout.addWidget(self.frame_9, 1, 2, 1, 1)
-
         self.frame_3 = QFrame(self.centralwidget)
         self.frame_3.setObjectName(u"frame_3")
         self.frame_3.setMaximumSize(QSize(16777215, 150))
@@ -135,18 +99,18 @@ class Ui_MainWindow(object):
         self.btn_confirm = QPushButton(self.frame_3)
         self.btn_confirm.setObjectName(u"btn_confirm")
         self.btn_confirm.setMinimumSize(QSize(0, 100))
-        font1 = QFont()
-        font1.setPointSize(40)
-        self.btn_confirm.setFont(font1)
+        font = QFont()
+        font.setPointSize(40)
+        self.btn_confirm.setFont(font)
 
         self.horizontalLayout.addWidget(self.btn_confirm)
 
         self.btn_clear = QPushButton(self.frame_3)
         self.btn_clear.setObjectName(u"btn_clear")
         self.btn_clear.setMinimumSize(QSize(0, 100))
-        font2 = QFont()
-        font2.setPointSize(26)
-        self.btn_clear.setFont(font2)
+        font1 = QFont()
+        font1.setPointSize(26)
+        self.btn_clear.setFont(font1)
 
         self.horizontalLayout.addWidget(self.btn_clear)
 
@@ -160,20 +124,20 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QVBoxLayout(self.frame)
         self.verticalLayout_2.setSpacing(30)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(-1, -1, -1, 9)
+        self.verticalLayout_2.setContentsMargins(-1, -1, 20, 9)
         self.txt_asset = QLineEdit(self.frame)
         self.txt_asset.setObjectName(u"txt_asset")
         self.txt_asset.setMinimumSize(QSize(0, 50))
-        font3 = QFont()
-        font3.setPointSize(30)
-        self.txt_asset.setFont(font3)
+        font2 = QFont()
+        font2.setPointSize(30)
+        self.txt_asset.setFont(font2)
 
         self.verticalLayout_2.addWidget(self.txt_asset)
 
         self.txt_location = QLineEdit(self.frame)
         self.txt_location.setObjectName(u"txt_location")
         self.txt_location.setMinimumSize(QSize(0, 50))
-        self.txt_location.setFont(font3)
+        self.txt_location.setFont(font2)
 
         self.verticalLayout_2.addWidget(self.txt_location)
 
@@ -190,14 +154,16 @@ class Ui_MainWindow(object):
         self.lbl_loan = QLabel(self.frame_8)
         self.lbl_loan.setObjectName(u"lbl_loan")
         self.lbl_loan.setMinimumSize(QSize(0, 50))
-        self.lbl_loan.setFont(font)
+        font3 = QFont()
+        font3.setPointSize(20)
+        self.lbl_loan.setFont(font3)
 
         self.gridLayout_3.addWidget(self.lbl_loan, 1, 1, 1, 1)
 
         self.lbl_equipment = QLabel(self.frame_8)
         self.lbl_equipment.setObjectName(u"lbl_equipment")
         self.lbl_equipment.setMinimumSize(QSize(0, 50))
-        self.lbl_equipment.setFont(font)
+        self.lbl_equipment.setFont(font3)
 
         self.gridLayout_3.addWidget(self.lbl_equipment, 0, 1, 1, 1)
 
@@ -217,7 +183,7 @@ class Ui_MainWindow(object):
         self.groupBox = QGroupBox(self.centralwidget)
         self.groupBox.setObjectName(u"groupBox")
         self.groupBox.setMaximumSize(QSize(16777215, 16777215))
-        self.groupBox.setFont(font)
+        self.groupBox.setFont(font3)
         self.horizontalLayout_5 = QHBoxLayout(self.groupBox)
         self.horizontalLayout_5.setSpacing(50)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
@@ -304,6 +270,42 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.frame_4, 5, 0, 1, 2)
 
+        self.frame_9 = QFrame(self.centralwidget)
+        self.frame_9.setObjectName(u"frame_9")
+        self.frame_9.setFrameShape(QFrame.StyledPanel)
+        self.frame_9.setFrameShadow(QFrame.Raised)
+        self.gridLayout_2 = QGridLayout(self.frame_9)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.setVerticalSpacing(30)
+        self.gridLayout_2.setContentsMargins(9, -1, -1, -1)
+        self.lbl_eq_validate = QLabel(self.frame_9)
+        self.lbl_eq_validate.setObjectName(u"lbl_eq_validate")
+        self.lbl_eq_validate.setMinimumSize(QSize(60, 0))
+
+        self.gridLayout_2.addWidget(self.lbl_eq_validate, 0, 0, 1, 1)
+
+        self.btn_validate_eq = QPushButton(self.frame_9)
+        self.btn_validate_eq.setObjectName(u"btn_validate_eq")
+        self.btn_validate_eq.setMinimumSize(QSize(200, 70))
+        self.btn_validate_eq.setFont(font3)
+
+        self.gridLayout_2.addWidget(self.btn_validate_eq, 0, 1, 1, 1)
+
+        self.lbl_loc_validate = QLabel(self.frame_9)
+        self.lbl_loc_validate.setObjectName(u"lbl_loc_validate")
+
+        self.gridLayout_2.addWidget(self.lbl_loc_validate, 1, 0, 1, 1)
+
+        self.btn_validate_loc = QPushButton(self.frame_9)
+        self.btn_validate_loc.setObjectName(u"btn_validate_loc")
+        self.btn_validate_loc.setMinimumSize(QSize(200, 70))
+        self.btn_validate_loc.setFont(font3)
+
+        self.gridLayout_2.addWidget(self.btn_validate_loc, 1, 1, 1, 1)
+
+
+        self.gridLayout.addWidget(self.frame_9, 1, 2, 1, 1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -324,10 +326,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Library Loan", None))
-        self.lbl_eq_validate.setText("")
-        self.btn_validate_eq.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
-        self.lbl_loc_validate.setText("")
-        self.btn_validate_loc.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
         self.btn_confirm.setText(QCoreApplication.translate("MainWindow", u"Confirm", None))
         self.btn_clear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
         self.lbl_loan.setText(QCoreApplication.translate("MainWindow", u"Type Location for Loan:", None))
@@ -341,5 +339,9 @@ class Ui_MainWindow(object):
         self.lbl_3.setText("")
         self.lbl_confirm_info.setText(QCoreApplication.translate("MainWindow", u"Press confirm to take out equipment", None))
         self.lbl_confirm_icon.setText("")
+        self.lbl_eq_validate.setText("")
+        self.btn_validate_eq.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
+        self.lbl_loc_validate.setText("")
+        self.btn_validate_loc.setText(QCoreApplication.translate("MainWindow", u"Validate", None))
     # retranslateUi
 

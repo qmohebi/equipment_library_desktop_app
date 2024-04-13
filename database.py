@@ -4,14 +4,24 @@ from sqlalchemy import create_engine, text
 import sqlalchemy_access as sa_a
 import sqlalchemy_access.pyodbc as sa_a_pyodbc
 
+from cryptography.fernet import Fernet
+
 
 with open("config.json", encoding="utf-8") as config:
     data = json.load(config)
     SERVER = data["server"]
     DB_NAME = data["database"]
     USERNAME = data["username"]
-    PASSWORD = data["password"]
+    pwd = data["password"]
     DRIVER = data["driver"]
+
+# Decode the password.
+key = b"p7JzAptU00KJFTT30ezqTr0_j0YW30UZVH57wnscOwU="
+cipher_suite = Fernet(key)
+encrypted_pwd = pwd.encode()
+byte_pwd = cipher_suite.decrypt(encrypted_pwd.decode())
+
+PASSWORD = byte_pwd.decode("utf-8")
 
 
 class Database:
@@ -72,12 +82,13 @@ class Database:
 
     def create_job(
         self,
-        equipemnt_id: str,
+        equipment_id: str,
         job_type_id: str = None,
         job_status_id: str = None,
         reported_fault: str = None,
         tech_id: str = None,
         user_id: str = None,
+        taken_by_id: str = None,
         work_end_date: str = None,
         work_done: str = None,
         visual_inspection: bool = None,
@@ -99,6 +110,7 @@ class Database:
         @ReportedFault=:reported_fault,
         @WorkEndDate=:workend_date,
         @TechnicianId=:technician_id,
+        @TakenById=:taken_by_id,
         @WorkDone=:workdone,
         @UserId=:user_id,
         @VisualInspection=:visual_inspect,
@@ -111,12 +123,13 @@ class Database:
         SELECT @out AS job_number;
         """
         parameters = {
-            "equipment_id": equipemnt_id,
+            "equipment_id": equipment_id,
             "job_type_id": job_type_id,
             "job_status_id": job_status_id,
             "reported_fault": reported_fault,
             "workend_date": work_end_date,
             "technician_id": tech_id,
+            "taken_by_id": taken_by_id,
             "workdone": work_done,
             "user_id": user_id,
             "visual_inspect": visual_inspection,
@@ -126,30 +139,6 @@ class Database:
             "batt_checked": battery_checked,
             "create_job": create_job,
         }
-
-        # sql_command = """
-        # SET NOCOUNT ON;
-        # DECLARE @out int;
-        # EXEC LibraryCreateJob
-        # @EquipmentId=:equipment_id,
-        # @JobTypeId=:job_type_id,
-        # @JobStatusId=:job_status_id,
-        # @ReportedFault=:reported_fault,
-        # @TechnicianId=:technician_id,
-        # @UserId=:user_id,
-        # @CreateJob=:create_job,
-        # @JobNumber = @out OUTPUT;
-        # SELECT @out AS job_number;
-        #     """
-        # parameters = {
-        #     "equipment_id": equipment_id,
-        #     "job_type_id": job_type_id,
-        #     "job_status_id": job_status_id,
-        #     "reported_fault": reported_fault,
-        #     "technician_id": tech_id,
-        #     "user_id": user_id,
-        #     "create_job": create_job,
-        # }
 
         with self.engine.begin() as conn:
             result = conn.execute(text(sql_command), parameters).scalar()

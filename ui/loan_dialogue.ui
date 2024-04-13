@@ -554,7 +554,13 @@ QPushButton:hover#btn_clear{
            <number>20</number>
           </property>
           <item>
-           <widget class="QPlainTextEdit" name="txt_work_done"/>
+           <widget class="QPlainTextEdit" name="txt_work_done">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -604,7 +610,13 @@ QPushButton:hover#btn_clear{
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
-              <widget class="QPlainTextEdit" name="txt_reported_fault"/>
+              <widget class="QPlainTextEdit" name="txt_reported_fault">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

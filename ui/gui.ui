@@ -77,71 +77,6 @@ QMessageBox:QPushButton{
     <property name="verticalSpacing">
      <number>20</number>
     </property>
-    <item row="1" column="2">
-     <widget class="QFrame" name="frame_9">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="verticalSpacing">
-        <number>30</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="lbl_eq_validate">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btn_validate_eq">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>70</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Validate</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="lbl_loc_validate">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btn_validate_loc">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>70</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Validate</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="6" column="0" colspan="3">
      <widget class="QFrame" name="frame_3">
       <property name="maximumSize">
@@ -216,6 +151,9 @@ QMessageBox:QPushButton{
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
         <number>30</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>9</number>
@@ -504,6 +442,80 @@ QMessageBox:QPushButton{
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QFrame" name="frame_9">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>30</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="lbl_eq_validate">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btn_validate_eq">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Validate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lbl_loc_validate">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="btn_validate_loc">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Validate</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>

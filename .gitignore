@@ -4,3 +4,7 @@ config.json
 __pycahe__
 
 .env
+dist
+build
+*.spec
+ui/__pycahe__
