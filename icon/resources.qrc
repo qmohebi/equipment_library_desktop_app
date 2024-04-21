@@ -1,5 +1,21 @@
 <RCC>
   <qresource>
+    <file>icons8-menu-vertical-60.png</file>
+    <file>icons8-home-60.png</file>
+    <file>icons8-user-60.png</file>
+    <file>icons8-dashboard-60.png</file>
+    <file>icons8-enter-60.png</file>
+    <file>icons8-chevron-left-60.png</file>
+    <file>icons8-enter-96_1.png</file>
+    <file>icons8-help-60.png</file>
+    <file>icons8-issue-60.png</file>
+    <file>icons8-checkout-60.png</file>
+    <file>icons8-chevron-left-60.png</file>
+    <file>icons8-enter-48_1.png</file>
+    <file>icons8-issue-60.png</file>
+    <file>icons8-log-out-60.png</file>
+    <file>icons8-menu-60.png</file>
+    <file>icons8-setting-60.png</file>
     <file>1.png</file>
     <file>1_grey.png</file>
     <file>2.png</file>
