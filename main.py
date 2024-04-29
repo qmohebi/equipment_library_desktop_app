@@ -5,7 +5,7 @@ from datetime import datetime
 import csv
 import os
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from PySide6.QtGui import QPixmap, Qt
+from PySide6.QtGui import QPixmap
 
 from ui_mainwindow import Ui_MainWindow
 
@@ -89,8 +89,8 @@ class MainWindow(QMainWindow):
 
         self.db = Database()
 
-        # self.login_window = LoginWindow(self)
-        # self.login_window.hide()
+        self.login_window = LoginWindow(self)
+        self.login_window.hide()
 
         self.ui.btn_login.hide()
         self.ui.btn_login_2.hide()
@@ -170,6 +170,7 @@ class MainWindow(QMainWindow):
 
         self.ui.btn_login_2.clicked.connect(self.login_page)
 
+        self.login_window.login_successfull.connect(self.on_successful_login)
         # self.return_loan = LoanReturn(self)
         self.status_bar()
 
@@ -193,10 +194,12 @@ class MainWindow(QMainWindow):
             button.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
 
     def login_page(self):
-        login_window = LoginWindow(self)
-        login_window.setModal(True)
-        login_window.raise_()
-        login_window.exec()
+        self.login_window.setModal(True)
+        self.login_window.raise_()
+        self.login_window.exec()
+
+    def on_successful_login(self, first_name):
+        self.ui.btn_user_2.setText(first_name)
 
     def toggle_login_icon(self):
         if self.ui.btn_login_2.isVisible():
@@ -393,14 +396,13 @@ class MainWindow(QMainWindow):
 
 
 class LoginWindow(QDialog):
+    login_successfull =  Signal(str)
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowTitle("Login")
-
-        username_inputted = self.ui.txt_username.text()
-        password_inputted = self.ui.txt_password.text()
 
         self.ui.frame_error.hide()
         self.ui.txt_password.setEchoMode(QLineEdit.Password)
@@ -423,23 +425,29 @@ class LoginWindow(QDialog):
 
         check_mpce_staff = self.mpce_staff(username=username_enetered)
 
-        if authenticate is not True:
+        if authenticate is False:
             self.ui.frame_error.show()
 
-        elif authenticate is True or check_mpce_staff is False:
+        elif authenticate is True and check_mpce_staff is False:
             self.ui.frame_error.show()
             self.ui.lbl_error.setText(
                 "User not part of MPCE staff list, please contact system adminstrator!"
             )
         else:
-            print(PERSONNEL_RETURNING_LOAN[username_enetered][0])
+            self.login_successfull.emit(PERSONNEL_RETURNING_LOAN[username_enetered][0])
+            self.close()
 
     def authenticate_user(self, username: str, password: str) -> bool:
 
         ldap_autho = LDAPAuthentication(
             ldap_server=LDAP_SERVER, serach_base=SEARCH_BASE
         )
-        return ldap_autho.authenticate(username=username, password=password)
+        authentiate = ldap_autho.authenticate(username=username, password=password)
+        if authentiate is True:
+            return True
+
+        else:
+            return False
 
     def mpce_staff(self, username: str) -> bool:
         """check if user is MPCE member"""
