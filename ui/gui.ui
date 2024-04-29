@@ -203,25 +203,7 @@ QMessageBox:QPushButton{
        <property name="verticalSpacing">
         <number>5</number>
        </property>
-       <item row="1" column="1">
-        <widget class="QLabel" name="lbl_loan">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Type Location for Loan:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
+       <item row="0" column="0">
         <widget class="QLabel" name="lbl_equipment">
          <property name="minimumSize">
           <size>
@@ -240,16 +222,20 @@ QMessageBox:QPushButton{
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="lbl_no_2">
-         <property name="text">
-          <string/>
+        <widget class="QLabel" name="lbl_loan">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="lbl_no_1">
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string/>
+          <string>Type Location for Loan:</string>
          </property>
         </widget>
        </item>

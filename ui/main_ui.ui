@@ -238,7 +238,7 @@ background: #3561fb;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="btn_login_2">
          <property name="text">
           <string>Login</string>
          </property>
@@ -600,7 +600,7 @@ background: #3561fb;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="btn_login">
          <property name="text">
           <string/>
          </property>
@@ -2250,38 +2250,6 @@ background: #3561fb;
     <hint type="destinationlabel">
      <x>218</x>
      <y>853</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_user_2</sender>
-   <signal>pressed()</signal>
-   <receiver>pushButton_2</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>196</x>
-     <y>53</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>176</x>
-     <y>110</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_user</sender>
-   <signal>pressed()</signal>
-   <receiver>pushButton</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>51</x>
-     <y>52</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>46</x>
-     <y>101</y>
     </hint>
    </hints>
   </connection>

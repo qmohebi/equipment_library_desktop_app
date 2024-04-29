@@ -1,17 +1,20 @@
 <RCC>
   <qresource>
+    <file>close-30.png</file>
+    <file>print-60.png</file>
+    <file>clear-60.png</file>
+    <file>error-30.png</file>
+    <file>clear_30.png</file>
+    <file>mpce.png</file>
+    <file>user_bw.png</file>
     <file>icons8-menu-vertical-60.png</file>
     <file>icons8-home-60.png</file>
     <file>icons8-user-60.png</file>
     <file>icons8-dashboard-60.png</file>
     <file>icons8-enter-60.png</file>
-    <file>icons8-chevron-left-60.png</file>
-    <file>icons8-enter-96_1.png</file>
     <file>icons8-help-60.png</file>
-    <file>icons8-issue-60.png</file>
     <file>icons8-checkout-60.png</file>
     <file>icons8-chevron-left-60.png</file>
-    <file>icons8-enter-48_1.png</file>
     <file>icons8-issue-60.png</file>
     <file>icons8-log-out-60.png</file>
     <file>icons8-menu-60.png</file>

@@ -1,4 +1,5 @@
 from ldap3 import Server, Connection, ALL, AUTO_BIND_TLS_BEFORE_BIND
+from ldap3.utils.conv import escape_bytes
 
 
 class LDAPAuthentication:
@@ -14,17 +15,15 @@ class LDAPAuthentication:
             # Establish connection
             with Connection(
                 self.server,
-                user=f"{username}",
+                user=f"stgeorges\{username}",
                 password=password,
-                authentication="SIMPLE",
+                authentication="NTLM",
                 auto_bind=AUTO_BIND_TLS_BEFORE_BIND,
                 read_only=True,
-                raise_exceptions=True,
+                # raise_exceptions=True,
             ) as conn:
-                print(conn)
                 if conn.bind():
                     return True
-
                 else:
                     return False
 
@@ -37,4 +36,6 @@ if __name__ == "__main__":
         ldap_server="net.stgeorges.nhs.uk",
         serach_base="DC=net,DC=stgeorges,DC=nhs,DC=uk",
     )
-    auth.authenticate("", "")
+    authenticate = auth.authenticate("", "")
+
+    print(authenticate)
