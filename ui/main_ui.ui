@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1507</width>
-    <height>937</height>
+    <width>1515</width>
+    <height>894</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,9 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="styleSheet">
     <string notr="true">QWidget{
 background-color: white;
@@ -47,6 +50,13 @@ QPushButton{
 	padding-left:7px;
 	border-radius: 20px;
 }
+
+
+QPushButton:disabled {
+	background-color: #5c5c5c;
+}
+
+
 QPushButton:hover{
 background-color:#3561fb;
 }
@@ -82,23 +92,20 @@ QPushButton#btn_confirm{
 }
 
 QPushButton#btn_clear{
-	background-color: transparent;
+	background-color: #e5e5e5;
 	color: black;
 	border: 1px solid transparent;
 	font: 30px;
-	padding: 10px 20px;
+	padding: 10px 50px;
 }
 
 QPushButton#btn_clear:hover{
-	background-color: transparent;
+	background-color: #b2b2b2;
 	color:black;
-	border: 1px solid black;
 	font: 30px;
-	padding: 10px 20px;
 }
 QPushButton#btn_clear:pressed{
-	background-color: #9696b2;
-	border: 1px solid #9696b2;
+	background-color: #989898;
 }
 
 QLineEdit#txt_technician{
@@ -137,22 +144,19 @@ padding: 10px 30px;
 
 QPushButton#btn_clear_2{
 	text-align: centre;
-	background-color: transparent;
+	background-color: #e5e5e5;
 	color: black;
-	border: 1px solid transparent;
 	font: 25px;
 	padding: 10px 20px;
 }
 QPushButton#btn_clear_2:hover{
-	background-color: transparent;
+	background-color: #b2b2b2;
 	color: black;
-	border: 1px solid black;
 	font: 25px;
 	padding: 10px 20px;
 }
 QPushButton#btn_clear_2:pressed{
-	background-color: #9696b2;
-	border: 1px solid #9696b2;
+	background-color: #989898;
 }
 
 QLineEdit:focus{
@@ -184,7 +188,17 @@ QTabBar::tab:selected{
 QTabBar::tab::hover{
 background: #3561fb;
 }
-</string>
+QLineEdit#txt_asset_2{
+padding: 0px 20px;
+}
+
+QMessageBox#QPushButton{
+min-width: 100px;
+ background-color: #d0d0d0;
+    }
+  QMessageBox#QPushButton:default{
+ background-color:#2544af;
+   }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="1" rowspan="2">
@@ -342,6 +356,9 @@ background: #3561fb;
        </item>
        <item>
         <widget class="QPushButton" name="btn_check_in_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>210</width>
@@ -374,6 +391,9 @@ background: #3561fb;
        </item>
        <item>
         <widget class="QPushButton" name="btn_dashboard_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>210</width>
@@ -419,6 +439,9 @@ background: #3561fb;
        </item>
        <item>
         <widget class="QPushButton" name="btn_setting_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>210</width>
@@ -707,6 +730,9 @@ background: #3561fb;
        </item>
        <item>
         <widget class="QPushButton" name="btn_check_in">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>70</width>
@@ -739,6 +765,9 @@ background: #3561fb;
        </item>
        <item>
         <widget class="QPushButton" name="btn_dashboard">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>70</width>
@@ -784,6 +813,9 @@ background: #3561fb;
        </item>
        <item>
         <widget class="QPushButton" name="btn_setting">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>70</width>
@@ -1194,6 +1226,9 @@ background: #3561fb;
               </item>
               <item row="1" column="1">
                <widget class="QPushButton" name="btn_validate_loc">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>150</width>
@@ -1372,6 +1407,9 @@ background: #3561fb;
            </item>
            <item>
             <widget class="QPushButton" name="btn_confirm">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="minimumSize">
               <size>
                <width>60</width>
@@ -1516,19 +1554,19 @@ background: #3561fb;
            <property name="verticalSpacing">
             <number>6</number>
            </property>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_3">
+           <item row="2" column="1">
+            <widget class="QLabel" name="label_2">
              <property name="font">
               <font>
                <pointsize>14</pointsize>
               </font>
              </property>
              <property name="text">
-              <string>Mobileview battery status</string>
+              <string>Current Loan Location:</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="1" column="1">
             <widget class="QLabel" name="label_6">
              <property name="font">
               <font>
@@ -1540,43 +1578,7 @@ background: #3561fb;
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="font">
-              <font>
-               <pointsize>14</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Equipment No:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLineEdit" name="txt_rtls_battery">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>14</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="txt_asset_2">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>14</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
+           <item row="1" column="3">
             <spacer name="horizontalSpacer_10">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1592,8 +1594,20 @@ background: #3561fb;
              </property>
             </spacer>
            </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="txt_category">
+           <item row="3" column="1">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Mobileview battery status:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QLineEdit" name="txt_rtls_battery">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1604,7 +1618,31 @@ background: #3561fb;
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="txt_asset_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
             <widget class="QLineEdit" name="txt_loan_location">
              <property name="enabled">
               <bool>false</bool>
@@ -1616,17 +1654,45 @@ background: #3561fb;
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_2">
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_4">
              <property name="font">
               <font>
                <pointsize>14</pointsize>
               </font>
              </property>
              <property name="text">
-              <string>Current Loan Location</string>
+              <string>Equipment No:</string>
              </property>
             </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLineEdit" name="txt_category">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <spacer name="horizontalSpacer_11">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Maximum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -1672,7 +1738,7 @@ background: #3561fb;
                </font>
               </property>
               <property name="cursor">
-               <cursorShape>WaitCursor</cursorShape>
+               <cursorShape>ArrowCursor</cursorShape>
               </property>
               <property name="title">
                <string>Checks</string>
@@ -1688,6 +1754,9 @@ background: #3561fb;
                    <pointsize>14</pointsize>
                   </font>
                  </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
                  <property name="text">
                   <string>Visual Inspection</string>
                  </property>
@@ -1699,6 +1768,9 @@ background: #3561fb;
                   <font>
                    <pointsize>14</pointsize>
                   </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="text">
                   <string>Battery replaced</string>
@@ -1712,6 +1784,9 @@ background: #3561fb;
                    <pointsize>14</pointsize>
                   </font>
                  </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
                  <property name="text">
                   <string>Function Check</string>
                  </property>
@@ -1723,6 +1798,9 @@ background: #3561fb;
                   <font>
                    <pointsize>14</pointsize>
                   </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="text">
                   <string>Active RTLS tag battery replaced</string>
@@ -1754,6 +1832,12 @@ background: #3561fb;
                </property>
                <item>
                 <widget class="QPlainTextEdit" name="txt_work_done">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <pointsize>14</pointsize>
@@ -1779,84 +1863,8 @@ background: #3561fb;
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_7">
-               <item>
-                <widget class="QGroupBox" name="groupBox_9">
-                 <property name="maximumSize">
-                  <size>
-                   <width>1200</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
-                 <property name="title">
-                  <string>Job Type</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_8">
-                  <property name="spacing">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QRadioButton" name="rb_ppm">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>PPM Job</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="rb_job">
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Repair Job</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_5">
-                 <property name="maximumSize">
-                  <size>
-                   <width>1200</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
-                 <property name="title">
-                  <string>Assign to technician</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_5">
-                  <item>
-                   <widget class="QLineEdit" name="txt_technician">
-                    <property name="font">
-                     <font>
-                      <pointsize>12</pointsize>
-                     </font>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
+              <layout class="QGridLayout" name="gridLayout_10">
+               <item row="2" column="0">
                 <widget class="QGroupBox" name="groupBox_7">
                  <property name="maximumSize">
                   <size>
@@ -1885,6 +1893,111 @@ background: #3561fb;
                  </layout>
                 </widget>
                </item>
+               <item row="0" column="0">
+                <widget class="QGroupBox" name="groupBox_9">
+                 <property name="maximumSize">
+                  <size>
+                   <width>1200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>16</pointsize>
+                  </font>
+                 </property>
+                 <property name="title">
+                  <string>Job Type</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_8">
+                  <item row="1" column="0">
+                   <widget class="QRadioButton" name="rb_job">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                     </font>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="text">
+                     <string>Repair Job</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QRadioButton" name="rb_ppm">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                     </font>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="text">
+                     <string>PPM Job</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <spacer name="horizontalSpacer_7">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_9">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QGroupBox" name="groupBox_5">
+                 <property name="maximumSize">
+                  <size>
+                   <width>1200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>16</pointsize>
+                  </font>
+                 </property>
+                 <property name="title">
+                  <string>Assign to technician</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="0" column="0">
+                   <widget class="QLineEdit" name="txt_technician">
+                    <property name="font">
+                     <font>
+                      <pointsize>12</pointsize>
+                     </font>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -1897,7 +2010,7 @@ background: #3561fb;
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>50</height>
+            <height>80</height>
            </size>
           </property>
           <property name="font">
@@ -1917,6 +2030,9 @@ background: #3561fb;
            </property>
            <item>
             <widget class="QPushButton" name="btn_submit">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -1933,6 +2049,9 @@ background: #3561fb;
            </item>
            <item>
             <widget class="QPushButton" name="btn_print">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -1993,6 +2112,51 @@ background: #3561fb;
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>txt_asset</tabstop>
+  <tabstop>btn_validate_eq</tabstop>
+  <tabstop>txt_location</tabstop>
+  <tabstop>btn_validate_loc</tabstop>
+  <tabstop>btn_confirm</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>chkbx_visual_insp</tabstop>
+  <tabstop>chkbx_function</tabstop>
+  <tabstop>chkbx_batt_replace</tabstop>
+  <tabstop>chkbx_batt_replace_2</tabstop>
+  <tabstop>txt_work_done</tabstop>
+  <tabstop>btn_submit</tabstop>
+  <tabstop>btn_print</tabstop>
+  <tabstop>btn_clear_2</tabstop>
+  <tabstop>rb_ppm</tabstop>
+  <tabstop>rb_job</tabstop>
+  <tabstop>txt_technician</tabstop>
+  <tabstop>txt_reported_fault</tabstop>
+  <tabstop>btn_user_2</tabstop>
+  <tabstop>btn_home_2</tabstop>
+  <tabstop>btn_check_in_2</tabstop>
+  <tabstop>btn_dashboard_2</tabstop>
+  <tabstop>btn_setting_2</tabstop>
+  <tabstop>btn_help_2</tabstop>
+  <tabstop>btn_report_2</tabstop>
+  <tabstop>btn_logout_2</tabstop>
+  <tabstop>txt_category</tabstop>
+  <tabstop>txt_loan_location</tabstop>
+  <tabstop>btn_menu_2</tabstop>
+  <tabstop>btn_clear</tabstop>
+  <tabstop>txt_asset_2</tabstop>
+  <tabstop>txt_rtls_battery</tabstop>
+  <tabstop>btn_user</tabstop>
+  <tabstop>btn_menu</tabstop>
+  <tabstop>btn_setting</tabstop>
+  <tabstop>btn_help</tabstop>
+  <tabstop>btn_report</tabstop>
+  <tabstop>btn_logout</tabstop>
+  <tabstop>btn_home</tabstop>
+  <tabstop>btn_check_in</tabstop>
+  <tabstop>btn_dashboard</tabstop>
+  <tabstop>btn_login</tabstop>
+  <tabstop>btn_login_2</tabstop>
+ </tabstops>
  <resources>
   <include location="../icon/resources.qrc"/>
  </resources>
@@ -2005,7 +2169,7 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>56</x>
-     <y>219</y>
+     <y>190</y>
     </hint>
     <hint type="destinationlabel">
      <x>187</x>
@@ -2021,7 +2185,7 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>74</x>
-     <y>214</y>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
      <x>57</x>
@@ -2037,7 +2201,7 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>266</x>
-     <y>223</y>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
      <x>235</x>
@@ -2053,7 +2217,7 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>240</x>
-     <y>223</y>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
      <x>64</x>
@@ -2069,11 +2233,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>193</x>
-     <y>279</y>
+     <y>257</y>
     </hint>
     <hint type="destinationlabel">
      <x>64</x>
-     <y>275</y>
+     <y>246</y>
     </hint>
    </hints>
   </connection>
@@ -2085,11 +2249,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>209</x>
-     <y>335</y>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
      <x>63</x>
-     <y>331</y>
+     <y>302</y>
     </hint>
    </hints>
   </connection>
@@ -2101,11 +2265,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>230</x>
-     <y>391</y>
+     <y>369</y>
     </hint>
     <hint type="destinationlabel">
      <x>71</x>
-     <y>387</y>
+     <y>358</y>
     </hint>
    </hints>
   </connection>
@@ -2117,11 +2281,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>239</x>
-     <y>741</y>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>56</x>
-     <y>741</y>
+     <y>698</y>
     </hint>
    </hints>
   </connection>
@@ -2133,11 +2297,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>104</x>
-     <y>765</y>
+     <y>722</y>
     </hint>
     <hint type="destinationlabel">
      <x>38</x>
-     <y>764</y>
+     <y>721</y>
     </hint>
    </hints>
   </connection>
@@ -2149,7 +2313,7 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>143</x>
-     <y>817</y>
+     <y>774</y>
     </hint>
     <hint type="destinationlabel">
      <x>63</x>
@@ -2165,11 +2329,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>65</x>
-     <y>275</y>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
      <x>232</x>
-     <y>279</y>
+     <y>257</y>
     </hint>
    </hints>
   </connection>
@@ -2181,11 +2345,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>74</x>
-     <y>331</y>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>242</x>
-     <y>335</y>
+     <y>313</y>
     </hint>
    </hints>
   </connection>
@@ -2197,11 +2361,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>63</x>
-     <y>387</y>
+     <y>358</y>
     </hint>
     <hint type="destinationlabel">
      <x>236</x>
-     <y>391</y>
+     <y>369</y>
     </hint>
    </hints>
   </connection>
@@ -2213,11 +2377,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>76</x>
-     <y>741</y>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>228</x>
-     <y>741</y>
+     <y>698</y>
     </hint>
    </hints>
   </connection>
@@ -2229,11 +2393,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>51</x>
-     <y>797</y>
+     <y>754</y>
     </hint>
     <hint type="destinationlabel">
      <x>217</x>
-     <y>797</y>
+     <y>754</y>
     </hint>
    </hints>
   </connection>
@@ -2245,11 +2409,11 @@ background: #3561fb;
    <hints>
     <hint type="sourcelabel">
      <x>43</x>
-     <y>853</y>
+     <y>810</y>
     </hint>
     <hint type="destinationlabel">
      <x>218</x>
-     <y>853</y>
+     <y>810</y>
     </hint>
    </hints>
   </connection>

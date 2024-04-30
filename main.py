@@ -95,6 +95,8 @@ class MainWindow(QMainWindow):
         self.ui.btn_login.hide()
         self.ui.btn_login_2.hide()
 
+        self.mpce_staff_logged = False
+
         # self.dialogue.setupUi(self)
 
         self.location_name = []  # used for location auto complete
@@ -172,20 +174,26 @@ class MainWindow(QMainWindow):
 
         self.login_window.login_successfull.connect(self.on_successful_login)
         # self.return_loan = LoanReturn(self)
-        self.status_bar()
+        # self.status_bar()
 
         self.home_btn = (self.ui.btn_home, self.ui.btn_home_2)
         self.return_loan_btn = (self.ui.btn_check_in, self.ui.btn_check_in_2)
 
-        logged_user_btn = (
-            self.return_loan_btn,
+        self.logged_user_btn = (
+            self.ui.btn_check_in,
+            self.ui.btn_check_in_2,
             self.ui.btn_setting,
             self.ui.btn_setting_2,
             self.ui.btn_dashboard,
             self.ui.btn_dashboard_2,
-            self.ui.btn_logout,
-            self.ui.btn_logout_2,
         )
+
+        self.ui.side_menu.hide()
+        self.ui.btn_menu_2.hide()
+        self.ui.btn_menu.hide()
+
+        for item in self.logged_user_btn:
+            item.hide()
 
         for button in self.return_loan_btn:
             button.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
@@ -193,13 +201,12 @@ class MainWindow(QMainWindow):
         for button in self.home_btn:
             button.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
 
+        self.ui.btn_logout_2.clicked.connect(self.log_out)
+
     def login_page(self):
         self.login_window.setModal(True)
         self.login_window.raise_()
         self.login_window.exec()
-
-    def on_successful_login(self, first_name):
-        self.ui.btn_user_2.setText(first_name)
 
     def toggle_login_icon(self):
         if self.ui.btn_login_2.isVisible():
@@ -283,6 +290,8 @@ class MainWindow(QMainWindow):
                 ASSET["library_status_id"] = row[2]
                 ASSET["loan_status_id"] = row[3]
                 ASSET["loan_location"] = row[4]
+
+            # if not a library item
             if ASSET["library_status_id"] == "WWW1":
                 self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
                 QMessageBox.warning(
@@ -290,21 +299,29 @@ class MainWindow(QMainWindow):
                     "Equipment",
                     f"Equipment No: {search_value} is not a library item ",
                 )
-
+                # If on loan check that mpce staff is logged in
             elif ASSET["library_status_id"] == "WWW3":
+                # if mpce staff logged in, take to checkin page
+                if self.mpce_staff_logged is True:
+                    self.ui.stackedWidget.setCurrentIndex(1)
+                    try:
+                        index = RTLS_BATTERY["rtls_equipment_no"].index(search_value)
+                        battery_capacity = RTLS_BATTERY["battery_capacity"][index]
+                        print(battery_capacity)
+                    except Exception:
+                        print("not on the rtls battery list")
 
-                index = RTLS_BATTERY["rtls_equipment_no"].index(search_value)
-                battery_capacity = RTLS_BATTERY["battery_capacity"][index]
-                print(battery_capacity)
-
-                # Open the dialogue windows and display the information
-                dlg = LoanReturn()
-                dlg.ui.txt_loan_location.setText(ASSET["loan_location"])
-                dlg.ui.txt_asset.setText(search_value)
-                dlg.ui.txt_category.setText(ASSET["category"])
-                dlg.exec()
+                    self.ui.txt_loan_location.setText(ASSET["loan_location"])
+                    self.ui.txt_asset_2.setText(search_value)
+                    self.ui.txt_category.setText(ASSET["category"])
+                    self.ui.btn_check_in_2.setChecked(True)
+                else:
+                    QMessageBox.warning(
+                        self,
+                        "Equipment loan",
+                        "This equipment has not been checked in, please leave this to a side and pick another one",
+                    )
             else:
-
                 self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
                 self.ui.lbl_category.setText(ASSET["category"])
                 self.ui.lbl_arrow.setPixmap(self.arrow_pixmap)
@@ -394,12 +411,38 @@ class MainWindow(QMainWindow):
         for text in self.txt_boxes:
             text.setStyleSheet("color:black")
 
+    def on_successful_login(self, first_name):
+        self.ui.btn_user_2.setText(first_name)
+        self.mpce_staff_logged = True
+        for item in self.logged_user_btn:
+            item.show()
+            item.setEnabled(True)
+        self.ui.btn_user_2.setStyleSheet("background-color:#009639")
+
+    def log_out(self) -> None:
+
+        logout_option = QMessageBox.question(
+            self,
+            "Logging out",
+            "Are you sure you want to log out",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            defaultButton=QMessageBox.StandardButton.No,
+        )
+
+        if logout_option == QMessageBox.StandardButton.Yes:
+            self.ui.btn_user_2.setText("Guest")
+            self.ui.btn_user_2.setStyleSheet("color:white")
+            self.mpce_staff_logged = False
+            for item in self.logged_user_btn:
+                item.hide()
+
 
 class LoginWindow(QDialog):
-    login_successfull =  Signal(str)
+    login_successfull = Signal(str)
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        
+
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowTitle("Login")

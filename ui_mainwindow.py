@@ -26,10 +26,11 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1507, 937)
+        MainWindow.resize(1515, 894)
         MainWindow.setStyleSheet(u"")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
+        self.centralwidget.setEnabled(True)
         self.centralwidget.setStyleSheet(u"QWidget{\n"
 "background-color: white;\n"
 "}\n"
@@ -59,6 +60,13 @@ class Ui_MainWindow(object):
 "	padding-left:7px;\n"
 "	border-radius: 20px;\n"
 "}\n"
+"\n"
+"\n"
+"QPushButton:disabled {\n"
+"	background-color: #5c5c5c;\n"
+"}\n"
+"\n"
+"\n"
 "QPushButton:hover{\n"
 "background-color:#3561fb;\n"
 "}\n"
@@ -80,12 +88,12 @@ class Ui_MainWindow(object):
 "	text-align: centre;\n"
 "}\n"
 "\n"
-"QPushButton#btn_user_2{\n"
+"QPushBu"
+                        "tton#btn_user_2{\n"
 "	color: white;\n"
 "	font:14pt;\n"
 "	font-weight: bold;\n"
-"	padd"
-                        "ing: 10px 10px;\n"
+"	padding: 10px 10px;\n"
 "	border-radius: 30px;\n"
 "}\n"
 "\n"
@@ -95,23 +103,20 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton#btn_clear{\n"
-"	background-color: transparent;\n"
+"	background-color: #e5e5e5;\n"
 "	color: black;\n"
 "	border: 1px solid transparent;\n"
 "	font: 30px;\n"
-"	padding: 10px 20px;\n"
+"	padding: 10px 50px;\n"
 "}\n"
 "\n"
 "QPushButton#btn_clear:hover{\n"
-"	background-color: transparent;\n"
+"	background-color: #b2b2b2;\n"
 "	color:black;\n"
-"	border: 1px solid black;\n"
 "	font: 30px;\n"
-"	padding: 10px 20px;\n"
 "}\n"
 "QPushButton#btn_clear:pressed{\n"
-"	background-color: #9696b2;\n"
-"	border: 1px solid #9696b2;\n"
+"	background-color: #989898;\n"
 "}\n"
 "\n"
 "QLineEdit#txt_technician{\n"
@@ -137,9 +142,9 @@ class Ui_MainWindow(object):
 "padding-left: 20px;\n"
 "}\n"
 "QPushButton#btn_submit{\n"
-"text-align: "
-                        "centre;\n"
-"font: 25px;\n"
+"text-align: centre;\n"
+""
+                        "font: 25px;\n"
 "padding: 10px 30px;\n"
 "}\n"
 "\n"
@@ -151,22 +156,19 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton#btn_clear_2{\n"
 "	text-align: centre;\n"
-"	background-color: transparent;\n"
+"	background-color: #e5e5e5;\n"
 "	color: black;\n"
-"	border: 1px solid transparent;\n"
 "	font: 25px;\n"
 "	padding: 10px 20px;\n"
 "}\n"
 "QPushButton#btn_clear_2:hover{\n"
-"	background-color: transparent;\n"
+"	background-color: #b2b2b2;\n"
 "	color: black;\n"
-"	border: 1px solid black;\n"
 "	font: 25px;\n"
 "	padding: 10px 20px;\n"
 "}\n"
 "QPushButton#btn_clear_2:pressed{\n"
-"	background-color: #9696b2;\n"
-"	border: 1px solid #9696b2;\n"
+"	background-color: #989898;\n"
 "}\n"
 "\n"
 "QLineEdit:focus{\n"
@@ -186,20 +188,30 @@ class Ui_MainWindow(object):
 "    border: 2px solid black;\n"
 "	color: white;\n"
 "    border-bottom-color: #C2C7CB;\n"
-"    border-top-le"
-                        "ft-radius: 4px;\n"
+"    border-top-left-radius: 4px;\n"
 "    border-top-right-radius: 4px;\n"
 "    min-width: 8ex;\n"
 "    padding: 2px;\n"
 "}*/\n"
 "\n"
-"QTabBar::tab:selected{\n"
+"Q"
+                        "TabBar::tab:selected{\n"
 "    background: \n"
 "}\n"
 "QTabBar::tab::hover{\n"
 "background: #3561fb;\n"
 "}\n"
-"")
+"QLineEdit#txt_asset_2{\n"
+"padding: 0px 20px;\n"
+"}\n"
+"\n"
+"QMessageBox#QPushButton{\n"
+"min-width: 100px;\n"
+" background-color: #d0d0d0;\n"
+"    }\n"
+"  QMessageBox#QPushButton:default{\n"
+" background-color:#2544af;\n"
+"   }")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.side_menu_2 = QWidget(self.centralwidget)
@@ -266,6 +278,7 @@ class Ui_MainWindow(object):
 
         self.btn_check_in_2 = QPushButton(self.side_menu_2)
         self.btn_check_in_2.setObjectName(u"btn_check_in_2")
+        self.btn_check_in_2.setEnabled(True)
         self.btn_check_in_2.setMinimumSize(QSize(210, 0))
         self.btn_check_in_2.setCursor(QCursor(Qt.PointingHandCursor))
         icon4 = QIcon()
@@ -279,6 +292,7 @@ class Ui_MainWindow(object):
 
         self.btn_dashboard_2 = QPushButton(self.side_menu_2)
         self.btn_dashboard_2.setObjectName(u"btn_dashboard_2")
+        self.btn_dashboard_2.setEnabled(True)
         self.btn_dashboard_2.setMinimumSize(QSize(210, 0))
         self.btn_dashboard_2.setCursor(QCursor(Qt.PointingHandCursor))
         icon5 = QIcon()
@@ -296,6 +310,7 @@ class Ui_MainWindow(object):
 
         self.btn_setting_2 = QPushButton(self.side_menu_2)
         self.btn_setting_2.setObjectName(u"btn_setting_2")
+        self.btn_setting_2.setEnabled(True)
         self.btn_setting_2.setMinimumSize(QSize(210, 0))
         self.btn_setting_2.setCursor(QCursor(Qt.PointingHandCursor))
         icon6 = QIcon()
@@ -413,6 +428,7 @@ class Ui_MainWindow(object):
 
         self.btn_check_in = QPushButton(self.side_menu)
         self.btn_check_in.setObjectName(u"btn_check_in")
+        self.btn_check_in.setEnabled(True)
         self.btn_check_in.setMinimumSize(QSize(70, 0))
         self.btn_check_in.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_check_in.setIcon(icon4)
@@ -424,6 +440,7 @@ class Ui_MainWindow(object):
 
         self.btn_dashboard = QPushButton(self.side_menu)
         self.btn_dashboard.setObjectName(u"btn_dashboard")
+        self.btn_dashboard.setEnabled(True)
         self.btn_dashboard.setMinimumSize(QSize(70, 0))
         self.btn_dashboard.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_dashboard.setIcon(icon5)
@@ -439,6 +456,7 @@ class Ui_MainWindow(object):
 
         self.btn_setting = QPushButton(self.side_menu)
         self.btn_setting.setObjectName(u"btn_setting")
+        self.btn_setting.setEnabled(True)
         self.btn_setting.setMinimumSize(QSize(70, 0))
         self.btn_setting.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_setting.setIcon(icon6)
@@ -637,6 +655,7 @@ class Ui_MainWindow(object):
 
         self.btn_validate_loc = QPushButton(self.frame_9)
         self.btn_validate_loc.setObjectName(u"btn_validate_loc")
+        self.btn_validate_loc.setEnabled(False)
         self.btn_validate_loc.setMinimumSize(QSize(150, 70))
         self.btn_validate_loc.setFont(font3)
         self.btn_validate_loc.setCursor(QCursor(Qt.PointingHandCursor))
@@ -710,6 +729,7 @@ class Ui_MainWindow(object):
 
         self.btn_confirm = QPushButton(self.frame_3)
         self.btn_confirm.setObjectName(u"btn_confirm")
+        self.btn_confirm.setEnabled(False)
         self.btn_confirm.setMinimumSize(QSize(60, 100))
         font5 = QFont()
         font5.setPointSize(30)
@@ -768,61 +788,68 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setHorizontalSpacing(30)
         self.gridLayout_5.setVerticalSpacing(6)
         self.gridLayout_5.setContentsMargins(20, -1, -1, 20)
-        self.label_3 = QLabel(self.groupBox_4)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setFont(font7)
+        self.label_2 = QLabel(self.groupBox_4)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setFont(font7)
 
-        self.gridLayout_5.addWidget(self.label_3, 3, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.label_2, 2, 1, 1, 1)
 
         self.label_6 = QLabel(self.groupBox_4)
         self.label_6.setObjectName(u"label_6")
         self.label_6.setFont(font7)
 
-        self.gridLayout_5.addWidget(self.label_6, 1, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.label_6, 1, 1, 1, 1)
 
-        self.label_4 = QLabel(self.groupBox_4)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setFont(font7)
+        self.horizontalSpacer_10 = QSpacerItem(200, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_5.addWidget(self.label_4, 0, 0, 1, 1)
+        self.gridLayout_5.addItem(self.horizontalSpacer_10, 1, 3, 1, 1)
+
+        self.label_3 = QLabel(self.groupBox_4)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setFont(font7)
+
+        self.gridLayout_5.addWidget(self.label_3, 3, 1, 1, 1)
 
         self.txt_rtls_battery = QLineEdit(self.groupBox_4)
         self.txt_rtls_battery.setObjectName(u"txt_rtls_battery")
         self.txt_rtls_battery.setEnabled(False)
         self.txt_rtls_battery.setFont(font7)
 
-        self.gridLayout_5.addWidget(self.txt_rtls_battery, 3, 1, 1, 1)
+        self.gridLayout_5.addWidget(self.txt_rtls_battery, 3, 2, 1, 1)
 
         self.txt_asset_2 = QLineEdit(self.groupBox_4)
         self.txt_asset_2.setObjectName(u"txt_asset_2")
         self.txt_asset_2.setEnabled(False)
         self.txt_asset_2.setFont(font7)
+        self.txt_asset_2.setLayoutDirection(Qt.LeftToRight)
+        self.txt_asset_2.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.txt_asset_2.setReadOnly(False)
 
-        self.gridLayout_5.addWidget(self.txt_asset_2, 0, 1, 1, 1)
-
-        self.horizontalSpacer_10 = QSpacerItem(200, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_10, 1, 2, 1, 1)
-
-        self.txt_category = QLineEdit(self.groupBox_4)
-        self.txt_category.setObjectName(u"txt_category")
-        self.txt_category.setEnabled(False)
-        self.txt_category.setFont(font7)
-
-        self.gridLayout_5.addWidget(self.txt_category, 1, 1, 1, 1)
+        self.gridLayout_5.addWidget(self.txt_asset_2, 0, 2, 1, 1)
 
         self.txt_loan_location = QLineEdit(self.groupBox_4)
         self.txt_loan_location.setObjectName(u"txt_loan_location")
         self.txt_loan_location.setEnabled(False)
         self.txt_loan_location.setFont(font7)
 
-        self.gridLayout_5.addWidget(self.txt_loan_location, 2, 1, 1, 1)
+        self.gridLayout_5.addWidget(self.txt_loan_location, 2, 2, 1, 1)
 
-        self.label_2 = QLabel(self.groupBox_4)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setFont(font7)
+        self.label_4 = QLabel(self.groupBox_4)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setFont(font7)
 
-        self.gridLayout_5.addWidget(self.label_2, 2, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.label_4, 0, 1, 1, 1)
+
+        self.txt_category = QLineEdit(self.groupBox_4)
+        self.txt_category.setObjectName(u"txt_category")
+        self.txt_category.setEnabled(False)
+        self.txt_category.setFont(font7)
+
+        self.gridLayout_5.addWidget(self.txt_category, 1, 2, 1, 1)
+
+        self.horizontalSpacer_11 = QSpacerItem(20, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_11, 1, 0, 1, 1)
 
 
         self.verticalLayout_10.addWidget(self.groupBox_4)
@@ -842,31 +869,35 @@ class Ui_MainWindow(object):
         font8 = QFont()
         font8.setPointSize(16)
         self.groupBox_8.setFont(font8)
-        self.groupBox_8.setCursor(QCursor(Qt.WaitCursor))
+        self.groupBox_8.setCursor(QCursor(Qt.ArrowCursor))
         self.gridLayout_4 = QGridLayout(self.groupBox_8)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.gridLayout_4.setContentsMargins(-1, -1, 400, -1)
         self.chkbx_visual_insp = QCheckBox(self.groupBox_8)
         self.chkbx_visual_insp.setObjectName(u"chkbx_visual_insp")
         self.chkbx_visual_insp.setFont(font7)
+        self.chkbx_visual_insp.setCursor(QCursor(Qt.PointingHandCursor))
 
         self.gridLayout_4.addWidget(self.chkbx_visual_insp, 0, 0, 1, 1)
 
         self.chkbx_batt_replace = QCheckBox(self.groupBox_8)
         self.chkbx_batt_replace.setObjectName(u"chkbx_batt_replace")
         self.chkbx_batt_replace.setFont(font7)
+        self.chkbx_batt_replace.setCursor(QCursor(Qt.PointingHandCursor))
 
         self.gridLayout_4.addWidget(self.chkbx_batt_replace, 0, 1, 2, 1)
 
         self.chkbx_function = QCheckBox(self.groupBox_8)
         self.chkbx_function.setObjectName(u"chkbx_function")
         self.chkbx_function.setFont(font7)
+        self.chkbx_function.setCursor(QCursor(Qt.PointingHandCursor))
 
         self.gridLayout_4.addWidget(self.chkbx_function, 1, 0, 2, 1)
 
         self.chkbx_batt_replace_2 = QCheckBox(self.groupBox_8)
         self.chkbx_batt_replace_2.setObjectName(u"chkbx_batt_replace_2")
         self.chkbx_batt_replace_2.setFont(font7)
+        self.chkbx_batt_replace_2.setCursor(QCursor(Qt.PointingHandCursor))
 
         self.gridLayout_4.addWidget(self.chkbx_batt_replace_2, 2, 1, 1, 1)
 
@@ -882,6 +913,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.txt_work_done = QPlainTextEdit(self.groupBox_3)
         self.txt_work_done.setObjectName(u"txt_work_done")
+        self.txt_work_done.setMinimumSize(QSize(0, 0))
         self.txt_work_done.setFont(font7)
 
         self.horizontalLayout_6.addWidget(self.txt_work_done)
@@ -898,47 +930,8 @@ class Ui_MainWindow(object):
         self.frame_4.setObjectName(u"frame_4")
         self.frame_4.setFrameShape(QFrame.StyledPanel)
         self.frame_4.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_7 = QVBoxLayout(self.frame_4)
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.groupBox_9 = QGroupBox(self.frame_4)
-        self.groupBox_9.setObjectName(u"groupBox_9")
-        self.groupBox_9.setMaximumSize(QSize(1200, 16777215))
-        self.groupBox_9.setFont(font8)
-        self.verticalLayout_8 = QVBoxLayout(self.groupBox_9)
-        self.verticalLayout_8.setSpacing(0)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.rb_ppm = QRadioButton(self.groupBox_9)
-        self.rb_ppm.setObjectName(u"rb_ppm")
-        self.rb_ppm.setFont(font7)
-
-        self.verticalLayout_8.addWidget(self.rb_ppm)
-
-        self.rb_job = QRadioButton(self.groupBox_9)
-        self.rb_job.setObjectName(u"rb_job")
-        self.rb_job.setFont(font7)
-
-        self.verticalLayout_8.addWidget(self.rb_job)
-
-
-        self.verticalLayout_7.addWidget(self.groupBox_9)
-
-        self.groupBox_5 = QGroupBox(self.frame_4)
-        self.groupBox_5.setObjectName(u"groupBox_5")
-        self.groupBox_5.setMaximumSize(QSize(1200, 16777215))
-        self.groupBox_5.setFont(font8)
-        self.verticalLayout_5 = QVBoxLayout(self.groupBox_5)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.txt_technician = QLineEdit(self.groupBox_5)
-        self.txt_technician.setObjectName(u"txt_technician")
-        font9 = QFont()
-        font9.setPointSize(12)
-        self.txt_technician.setFont(font9)
-
-        self.verticalLayout_5.addWidget(self.txt_technician)
-
-
-        self.verticalLayout_7.addWidget(self.groupBox_5)
-
+        self.gridLayout_10 = QGridLayout(self.frame_4)
+        self.gridLayout_10.setObjectName(u"gridLayout_10")
         self.groupBox_7 = QGroupBox(self.frame_4)
         self.groupBox_7.setObjectName(u"groupBox_7")
         self.groupBox_7.setMaximumSize(QSize(1200, 16777215))
@@ -952,7 +945,55 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.txt_reported_fault, 0, 0, 1, 1)
 
 
-        self.verticalLayout_7.addWidget(self.groupBox_7)
+        self.gridLayout_10.addWidget(self.groupBox_7, 2, 0, 1, 1)
+
+        self.groupBox_9 = QGroupBox(self.frame_4)
+        self.groupBox_9.setObjectName(u"groupBox_9")
+        self.groupBox_9.setMaximumSize(QSize(1200, 16777215))
+        self.groupBox_9.setFont(font8)
+        self.gridLayout_8 = QGridLayout(self.groupBox_9)
+        self.gridLayout_8.setObjectName(u"gridLayout_8")
+        self.rb_job = QRadioButton(self.groupBox_9)
+        self.rb_job.setObjectName(u"rb_job")
+        self.rb_job.setFont(font7)
+        self.rb_job.setCursor(QCursor(Qt.PointingHandCursor))
+
+        self.gridLayout_8.addWidget(self.rb_job, 1, 0, 1, 1)
+
+        self.rb_ppm = QRadioButton(self.groupBox_9)
+        self.rb_ppm.setObjectName(u"rb_ppm")
+        self.rb_ppm.setFont(font7)
+        self.rb_ppm.setCursor(QCursor(Qt.PointingHandCursor))
+
+        self.gridLayout_8.addWidget(self.rb_ppm, 0, 0, 1, 1)
+
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_8.addItem(self.horizontalSpacer_7, 1, 1, 1, 1)
+
+        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_8.addItem(self.horizontalSpacer_9, 0, 1, 1, 1)
+
+
+        self.gridLayout_10.addWidget(self.groupBox_9, 0, 0, 1, 1)
+
+        self.groupBox_5 = QGroupBox(self.frame_4)
+        self.groupBox_5.setObjectName(u"groupBox_5")
+        self.groupBox_5.setMaximumSize(QSize(1200, 16777215))
+        self.groupBox_5.setFont(font8)
+        self.gridLayout_9 = QGridLayout(self.groupBox_5)
+        self.gridLayout_9.setObjectName(u"gridLayout_9")
+        self.txt_technician = QLineEdit(self.groupBox_5)
+        self.txt_technician.setObjectName(u"txt_technician")
+        font9 = QFont()
+        font9.setPointSize(12)
+        self.txt_technician.setFont(font9)
+
+        self.gridLayout_9.addWidget(self.txt_technician, 0, 0, 1, 1)
+
+
+        self.gridLayout_10.addWidget(self.groupBox_5, 1, 0, 1, 1)
 
 
         self.horizontalLayout_9.addWidget(self.frame_4)
@@ -963,7 +1004,7 @@ class Ui_MainWindow(object):
 
         self.frame_7 = QFrame(self.page_check_in)
         self.frame_7.setObjectName(u"frame_7")
-        self.frame_7.setMinimumSize(QSize(0, 50))
+        self.frame_7.setMinimumSize(QSize(0, 80))
         self.frame_7.setFont(font7)
         self.frame_7.setFrameShape(QFrame.StyledPanel)
         self.frame_7.setFrameShadow(QFrame.Raised)
@@ -972,6 +1013,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.btn_submit = QPushButton(self.frame_7)
         self.btn_submit.setObjectName(u"btn_submit")
+        self.btn_submit.setEnabled(True)
         self.btn_submit.setMinimumSize(QSize(0, 50))
         self.btn_submit.setCursor(QCursor(Qt.PointingHandCursor))
 
@@ -979,6 +1021,7 @@ class Ui_MainWindow(object):
 
         self.btn_print = QPushButton(self.frame_7)
         self.btn_print.setObjectName(u"btn_print")
+        self.btn_print.setEnabled(True)
         self.btn_print.setMinimumSize(QSize(0, 50))
         self.btn_print.setFont(font6)
         self.btn_print.setCursor(QCursor(Qt.PointingHandCursor))
@@ -1004,6 +1047,48 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.stackedWidget, 0, 2, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
+        QWidget.setTabOrder(self.txt_asset, self.btn_validate_eq)
+        QWidget.setTabOrder(self.btn_validate_eq, self.txt_location)
+        QWidget.setTabOrder(self.txt_location, self.btn_validate_loc)
+        QWidget.setTabOrder(self.btn_validate_loc, self.btn_confirm)
+        QWidget.setTabOrder(self.btn_confirm, self.tabWidget)
+        QWidget.setTabOrder(self.tabWidget, self.chkbx_visual_insp)
+        QWidget.setTabOrder(self.chkbx_visual_insp, self.chkbx_function)
+        QWidget.setTabOrder(self.chkbx_function, self.chkbx_batt_replace)
+        QWidget.setTabOrder(self.chkbx_batt_replace, self.chkbx_batt_replace_2)
+        QWidget.setTabOrder(self.chkbx_batt_replace_2, self.txt_work_done)
+        QWidget.setTabOrder(self.txt_work_done, self.btn_submit)
+        QWidget.setTabOrder(self.btn_submit, self.btn_print)
+        QWidget.setTabOrder(self.btn_print, self.btn_clear_2)
+        QWidget.setTabOrder(self.btn_clear_2, self.rb_ppm)
+        QWidget.setTabOrder(self.rb_ppm, self.rb_job)
+        QWidget.setTabOrder(self.rb_job, self.txt_technician)
+        QWidget.setTabOrder(self.txt_technician, self.txt_reported_fault)
+        QWidget.setTabOrder(self.txt_reported_fault, self.btn_user_2)
+        QWidget.setTabOrder(self.btn_user_2, self.btn_home_2)
+        QWidget.setTabOrder(self.btn_home_2, self.btn_check_in_2)
+        QWidget.setTabOrder(self.btn_check_in_2, self.btn_dashboard_2)
+        QWidget.setTabOrder(self.btn_dashboard_2, self.btn_setting_2)
+        QWidget.setTabOrder(self.btn_setting_2, self.btn_help_2)
+        QWidget.setTabOrder(self.btn_help_2, self.btn_report_2)
+        QWidget.setTabOrder(self.btn_report_2, self.btn_logout_2)
+        QWidget.setTabOrder(self.btn_logout_2, self.txt_category)
+        QWidget.setTabOrder(self.txt_category, self.txt_loan_location)
+        QWidget.setTabOrder(self.txt_loan_location, self.btn_menu_2)
+        QWidget.setTabOrder(self.btn_menu_2, self.btn_clear)
+        QWidget.setTabOrder(self.btn_clear, self.txt_asset_2)
+        QWidget.setTabOrder(self.txt_asset_2, self.txt_rtls_battery)
+        QWidget.setTabOrder(self.txt_rtls_battery, self.btn_user)
+        QWidget.setTabOrder(self.btn_user, self.btn_menu)
+        QWidget.setTabOrder(self.btn_menu, self.btn_setting)
+        QWidget.setTabOrder(self.btn_setting, self.btn_help)
+        QWidget.setTabOrder(self.btn_help, self.btn_report)
+        QWidget.setTabOrder(self.btn_report, self.btn_logout)
+        QWidget.setTabOrder(self.btn_logout, self.btn_home)
+        QWidget.setTabOrder(self.btn_home, self.btn_check_in)
+        QWidget.setTabOrder(self.btn_check_in, self.btn_dashboard)
+        QWidget.setTabOrder(self.btn_dashboard, self.btn_login)
+        QWidget.setTabOrder(self.btn_login, self.btn_login_2)
 
         self.retranslateUi(MainWindow)
         self.btn_menu.pressed.connect(self.side_menu_2.show)
@@ -1070,10 +1155,11 @@ class Ui_MainWindow(object):
         self.btn_confirm.setText(QCoreApplication.translate("MainWindow", u"Confirm", None))
         self.btn_clear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Equipment Details", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Mobileview battery status", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Current Loan Location:", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Category:", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Mobileview battery status:", None))
+        self.txt_asset_2.setText("")
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Equipment No:", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Current Loan Location", None))
         self.groupBox_8.setTitle(QCoreApplication.translate("MainWindow", u"Checks", None))
         self.chkbx_visual_insp.setText(QCoreApplication.translate("MainWindow", u"Visual Inspection", None))
         self.chkbx_batt_replace.setText(QCoreApplication.translate("MainWindow", u"Battery replaced", None))
@@ -1081,11 +1167,11 @@ class Ui_MainWindow(object):
         self.chkbx_batt_replace_2.setText(QCoreApplication.translate("MainWindow", u"Active RTLS tag battery replaced", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Work Done", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Return Loan", None))
-        self.groupBox_9.setTitle(QCoreApplication.translate("MainWindow", u"Job Type", None))
-        self.rb_ppm.setText(QCoreApplication.translate("MainWindow", u"PPM Job", None))
-        self.rb_job.setText(QCoreApplication.translate("MainWindow", u"Repair Job", None))
-        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Assign to technician", None))
         self.groupBox_7.setTitle(QCoreApplication.translate("MainWindow", u"Reported fault", None))
+        self.groupBox_9.setTitle(QCoreApplication.translate("MainWindow", u"Job Type", None))
+        self.rb_job.setText(QCoreApplication.translate("MainWindow", u"Repair Job", None))
+        self.rb_ppm.setText(QCoreApplication.translate("MainWindow", u"PPM Job", None))
+        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Assign to technician", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Create Job", None))
         self.btn_submit.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
