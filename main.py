@@ -5,7 +5,8 @@ from datetime import datetime
 import csv
 import os
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer, QEvent
+
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -13,11 +14,11 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QDialog,
     QLineEdit,
-    QStackedWidget,
-    QWidget,
 )
 
-from PySide6.QtGui import QPixmap
+from logout_timer import LogoutTimer
+
+from PySide6.QtGui import QMouseEvent, QPixmap
 
 from ui_mainwindow import Ui_MainWindow
 
@@ -87,18 +88,15 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.db = Database()
-
         self.login_window = LoginWindow(self)
         self.login_window.hide()
 
-        self.ui.btn_login.hide()
-        self.ui.btn_login_2.hide()
+        self.db = Database()
 
-        self.mpce_staff_logged = False
+        self.mpce_staff_logged_in = False
+        self.username_logged_in = ""
 
-        # self.dialogue.setupUi(self)
-
+        # logout countdown
         self.location_name = []  # used for location auto complete
         self.location = {}  # use for getting location id
         self.location_id = ""
@@ -136,6 +134,7 @@ class MainWindow(QMainWindow):
         self.number_2_grey = QPixmap("./icon/2_grey.png")
         self.number_3_grey = QPixmap("./icon/3_grey.png")
         self.get_mpce_personnel()
+        self.ui.stackedWidget.setCurrentIndex(0)
 
         self.confirm_labels = (
             self.ui.lbl_3,
@@ -164,17 +163,15 @@ class MainWindow(QMainWindow):
         self.get_location()
         self.disable_buttons()
 
-        self.ui.btn_user_2.clicked.connect(self.login_page)
+        self.ui.btn_user_2.clicked.connect(self.on_login_pressed)
 
         location_completer = QCompleter(self.location_name, self)
         location_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.ui.txt_location.setCompleter(location_completer)
 
-        self.ui.btn_login_2.clicked.connect(self.login_page)
-
+        # capture the value returned from the login windows
         self.login_window.login_successfull.connect(self.on_successful_login)
-        # self.return_loan = LoanReturn(self)
-        # self.status_bar()
+        # self.logout_timer_window.logout_user.connect(self.action_from_timer)
 
         self.home_btn = (self.ui.btn_home, self.ui.btn_home_2)
         self.return_loan_btn = (self.ui.btn_check_in, self.ui.btn_check_in_2)
@@ -188,9 +185,31 @@ class MainWindow(QMainWindow):
             self.ui.btn_dashboard_2,
         )
 
+        self.authenticated_user_btn = (
+            self.ui.btn_change_user,
+            self.ui.btn_change_user_3,
+            self.ui.btn_logout_4,
+            self.ui.btn_logout_8,
+        )
+
+        self.logout_buttons = (
+            self.ui.btn_logout_4,
+            self.ui.btn_logout_8,
+            self.ui.btn_logout_2,
+            self.ui.btn_logout,
+        )
+
+        self.switch_user_buttons = (self.ui.btn_change_user, self.ui.btn_change_user_3)
+
         self.ui.side_menu.hide()
         self.ui.btn_menu_2.hide()
         self.ui.btn_menu.hide()
+
+        for button in self.switch_user_buttons:
+            button.clicked.connect(self.switch_user)
+
+        for button in self.authenticated_user_btn:
+            button.hide()
 
         for item in self.logged_user_btn:
             item.hide()
@@ -201,21 +220,20 @@ class MainWindow(QMainWindow):
         for button in self.home_btn:
             button.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
 
-        self.ui.btn_logout_2.clicked.connect(self.log_out)
+        for button in self.logout_buttons:
+            button.clicked.connect(self.log_out)
 
-    def login_page(self):
-        self.login_window.setModal(True)
-        self.login_window.raise_()
-        self.login_window.exec()
-
-    def toggle_login_icon(self):
-        if self.ui.btn_login_2.isVisible():
-            self.ui.btn_login_2.hide()
+    def on_login_pressed(self):
+        if self.mpce_staff_logged_in is False:
+            self.login_window.setModal(True)
+            self.login_window.raise_()
+            self.login_window.exec()
+        elif self.ui.btn_change_user.isVisible():
+            for button in self.authenticated_user_btn:
+                button.hide()
         else:
-            self.ui.btn_login_2.show()
-
-    def status_bar(self):
-        self.statusBar().showMessage("Ready")
+            for button in self.authenticated_user_btn:
+                button.show()
 
     def get_location(self):
         """get the location from database and create a list and dictionary
@@ -302,7 +320,7 @@ class MainWindow(QMainWindow):
                 # If on loan check that mpce staff is logged in
             elif ASSET["library_status_id"] == "WWW3":
                 # if mpce staff logged in, take to checkin page
-                if self.mpce_staff_logged is True:
+                if self.mpce_staff_logged_in is True:
                     self.ui.stackedWidget.setCurrentIndex(1)
                     try:
                         index = RTLS_BATTERY["rtls_equipment_no"].index(search_value)
@@ -411,34 +429,111 @@ class MainWindow(QMainWindow):
         for text in self.txt_boxes:
             text.setStyleSheet("color:black")
 
-    def on_successful_login(self, first_name):
+    def on_successful_login(self, value_returned: list):
+        """capture the first name and change the user button text
+        caputre the username that is logged in
+        enable buttons for a authenticated user
+        and set stylesheet for user button"""
+
+        first_name = value_returned[0]
+        self.username_logged_in = value_returned[1]
         self.ui.btn_user_2.setText(first_name)
-        self.mpce_staff_logged = True
+        self.mpce_staff_logged_in = True
         for item in self.logged_user_btn:
             item.show()
             item.setEnabled(True)
+        self.ui.btn_user_2.setChecked(True)
         self.ui.btn_user_2.setStyleSheet("background-color:#009639")
+        self.ui.btn_user_2.setChecked(True)
+        self.ui.txt_asset.setFocus()
+        self.start_countdown()
 
     def log_out(self) -> None:
+        if self.mpce_staff_logged_in is True:
+            logout_option = QMessageBox.question(
+                self,
+                "Logging out",
+                "Are you sure you want to log out",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                defaultButton=QMessageBox.StandardButton.No,
+            )
 
-        logout_option = QMessageBox.question(
-            self,
-            "Logging out",
-            "Are you sure you want to log out",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            defaultButton=QMessageBox.StandardButton.No,
-        )
+            if logout_option == QMessageBox.StandardButton.Yes:
+                self.reset_window_on_logout()
 
-        if logout_option == QMessageBox.StandardButton.Yes:
-            self.ui.btn_user_2.setText("Guest")
-            self.ui.btn_user_2.setStyleSheet("color:white")
-            self.mpce_staff_logged = False
-            for item in self.logged_user_btn:
-                item.hide()
+    def reset_window_on_logout(self):
+        """Resets the windows fields for guest users"""
+        self.ui.btn_user_2.setText("Guest")
+        self.ui.btn_user_2.setStyleSheet("color:white")
+        self.mpce_staff_logged_in = False
+        self.username_logged_in = ""
+        for item in self.logged_user_btn:
+            item.hide()
+
+        for button in self.authenticated_user_btn:
+            button.hide()
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.txt_asset.setFocus()
+        self.clear()
+        self.timer.stop()
+
+    def switch_user(self):
+        """Log the current user and
+        open the login page when switch user is pressed."""
+
+        self.ui.btn_user_2.setText("Guest")
+        self.ui.btn_user_2.setStyleSheet("color:white")
+        self.mpce_staff_logged_in = False
+        self.username_logged_in = ""
+        for item in self.logged_user_btn:
+            item.hide()
+
+        for button in self.authenticated_user_btn:
+            button.hide()
+        self.login_window.setModal(True)
+        self.login_window.raise_()
+        self.login_window.exec()
+
+    def start_countdown(self):
+        self.inactivity_timeout = 1 * 60 * 1000
+        self.timer = QTimer(self)
+        # tigger the timeout to logout when a user is logged in.
+        self.timer.timeout.connect(self.status_bar)
+        self.timer.start(1000)
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        super().mousePressEvent(event)
+        self.reset_timer()
+
+    def reset_timer(self):
+        self.timer.stop()
+        self.timer.start(self.inactivity_timeout)
+        self.start_countdown()
+
+    def open_logout_timer_window(self):
+        self.logout_timer_window = LogoutTimer(self)
+        self.logout_timer_window.start_countdown()
+        self.timer.stop()
+        self.logout_timer_window.setModal(True)
+        # self.logout_timer_window.raise_()
+        self.logout_timer_window.show()
+
+        self.logout_timer_window.continue_using_app.connect(self.start_countdown)
+        self.logout_timer_window.logout_user.connect(self.reset_window_on_logout)
+
+    def status_bar(self):
+        self.inactivity_timeout -= 1000
+        remaining_time = max(0, self.inactivity_timeout)
+        minutes = remaining_time // 60000
+        seconds = (remaining_time % 60000) // 1000
+        self.statusBar().showMessage(f"Timeout in {minutes:02}:{seconds:02}")
+        # print(f"Timeout in {minutes:02}:{seconds:02}")
+        if self.inactivity_timeout <= 50000:
+            self.open_logout_timer_window()
 
 
 class LoginWindow(QDialog):
-    login_successfull = Signal(str)
+    login_successfull = Signal(list)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -477,7 +572,15 @@ class LoginWindow(QDialog):
                 "User not part of MPCE staff list, please contact system adminstrator!"
             )
         else:
-            self.login_successfull.emit(PERSONNEL_RETURNING_LOAN[username_enetered][0])
+            return_value = [
+                PERSONNEL_RETURNING_LOAN[username_enetered][0],
+                username_enetered,
+            ]
+            self.login_successfull.emit(return_value)
+            self.ui.txt_password.clear()
+            self.ui.txt_username.clear()
+            self.ui.txt_username.setFocus()
+            self.ui.frame_error.hide()
             self.close()
 
     def authenticate_user(self, username: str, password: str) -> bool:
@@ -498,12 +601,6 @@ class LoginWindow(QDialog):
             return True
         else:
             return False
-
-        # if username in PERSONNEL_RETURNING_LOAN and user_authenticated is True:
-        #     return PERSONNEL_RETURNING_LOAN[username][0]
-
-        # else:
-        #     return False
 
 
 class LoanReturn(QDialog):

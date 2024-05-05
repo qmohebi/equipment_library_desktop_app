@@ -201,7 +201,7 @@ class Ui_MainWindow(object):
 "QTabBar::tab::hover{\n"
 "background: #3561fb;\n"
 "}\n"
-"QLineEdit#txt_asset_2{\n"
+"QLineEdit#txt_asset_2, #txt_rtls_battery, #txt_loan_location, #txt_category{\n"
 "padding: 0px 20px;\n"
 "}\n"
 "\n"
@@ -211,7 +211,22 @@ class Ui_MainWindow(object):
 "    }\n"
 "  QMessageBox#QPushButton:default{\n"
 " background-color:#2544af;\n"
-"   }")
+"   }\n"
+"\n"
+"QFrame#frame_user{\n"
+"background-color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#btn_change_user, #btn_logout_4{\n"
+"	padding: 5px 15px;\n"
+"	border-radius: 10px;\n"
+"}\n"
+"\n"
+"QPushButton#btn_user_2:checked{\n"
+"background-color:#009639;\n"
+"border: 0px;\n"
+"}\n"
+"")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.side_menu_2 = QWidget(self.centralwidget)
@@ -235,18 +250,35 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.btn_user_2)
 
-        self.btn_login_2 = QPushButton(self.side_menu_2)
-        self.btn_login_2.setObjectName(u"btn_login_2")
+        self.frame_user = QFrame(self.side_menu_2)
+        self.frame_user.setObjectName(u"frame_user")
+        self.frame_user.setMinimumSize(QSize(0, 100))
+        self.frame_user.setFrameShape(QFrame.StyledPanel)
+        self.frame_user.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_5 = QVBoxLayout(self.frame_user)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.btn_change_user = QPushButton(self.frame_user)
+        self.btn_change_user.setObjectName(u"btn_change_user")
+        self.btn_change_user.setCursor(QCursor(Qt.PointingHandCursor))
         icon1 = QIcon()
-        icon1.addFile(u":/icons8-key-48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_login_2.setIcon(icon1)
-        self.btn_login_2.setIconSize(QSize(30, 30))
+        icon1.addFile(u":/change-user-30.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_change_user.setIcon(icon1)
+        self.btn_change_user.setIconSize(QSize(30, 30))
 
-        self.verticalLayout.addWidget(self.btn_login_2)
+        self.verticalLayout_5.addWidget(self.btn_change_user)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
+        self.btn_logout_4 = QPushButton(self.frame_user)
+        self.btn_logout_4.setObjectName(u"btn_logout_4")
+        self.btn_logout_4.setCursor(QCursor(Qt.PointingHandCursor))
+        icon2 = QIcon()
+        icon2.addFile(u":/icons8-log-out-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_logout_4.setIcon(icon2)
+        self.btn_logout_4.setIconSize(QSize(30, 30))
 
-        self.verticalLayout.addItem(self.verticalSpacer_4)
+        self.verticalLayout_5.addWidget(self.btn_logout_4)
+
+
+        self.verticalLayout.addWidget(self.frame_user)
 
         self.btn_menu_2 = QPushButton(self.side_menu_2)
         self.btn_menu_2.setObjectName(u"btn_menu_2")
@@ -254,9 +286,9 @@ class Ui_MainWindow(object):
         self.btn_menu_2.setMinimumSize(QSize(210, 0))
         self.btn_menu_2.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_menu_2.setLayoutDirection(Qt.LeftToRight)
-        icon2 = QIcon()
-        icon2.addFile(u":/icons8-menu-vertical-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_menu_2.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u":/icons8-menu-vertical-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_menu_2.setIcon(icon3)
         self.btn_menu_2.setIconSize(QSize(30, 40))
         self.btn_menu_2.setCheckable(True)
 
@@ -266,9 +298,9 @@ class Ui_MainWindow(object):
         self.btn_home_2.setObjectName(u"btn_home_2")
         self.btn_home_2.setMinimumSize(QSize(210, 0))
         self.btn_home_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon3 = QIcon()
-        icon3.addFile(u":/icons8-home-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_home_2.setIcon(icon3)
+        icon4 = QIcon()
+        icon4.addFile(u":/icons8-home-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_home_2.setIcon(icon4)
         self.btn_home_2.setIconSize(QSize(40, 40))
         self.btn_home_2.setCheckable(True)
         self.btn_home_2.setChecked(True)
@@ -281,9 +313,9 @@ class Ui_MainWindow(object):
         self.btn_check_in_2.setEnabled(True)
         self.btn_check_in_2.setMinimumSize(QSize(210, 0))
         self.btn_check_in_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon4 = QIcon()
-        icon4.addFile(u":/icons8-checkout-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_check_in_2.setIcon(icon4)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons8-checkout-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_check_in_2.setIcon(icon5)
         self.btn_check_in_2.setIconSize(QSize(40, 40))
         self.btn_check_in_2.setCheckable(True)
         self.btn_check_in_2.setAutoExclusive(True)
@@ -295,9 +327,9 @@ class Ui_MainWindow(object):
         self.btn_dashboard_2.setEnabled(True)
         self.btn_dashboard_2.setMinimumSize(QSize(210, 0))
         self.btn_dashboard_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon5 = QIcon()
-        icon5.addFile(u":/icons8-dashboard-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_dashboard_2.setIcon(icon5)
+        icon6 = QIcon()
+        icon6.addFile(u":/icons8-dashboard-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_dashboard_2.setIcon(icon6)
         self.btn_dashboard_2.setIconSize(QSize(40, 40))
         self.btn_dashboard_2.setCheckable(True)
         self.btn_dashboard_2.setAutoExclusive(True)
@@ -313,9 +345,9 @@ class Ui_MainWindow(object):
         self.btn_setting_2.setEnabled(True)
         self.btn_setting_2.setMinimumSize(QSize(210, 0))
         self.btn_setting_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon6 = QIcon()
-        icon6.addFile(u":/icons8-setting-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_setting_2.setIcon(icon6)
+        icon7 = QIcon()
+        icon7.addFile(u":/icons8-setting-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_setting_2.setIcon(icon7)
         self.btn_setting_2.setIconSize(QSize(40, 40))
         self.btn_setting_2.setCheckable(True)
         self.btn_setting_2.setAutoExclusive(True)
@@ -326,9 +358,9 @@ class Ui_MainWindow(object):
         self.btn_help_2.setObjectName(u"btn_help_2")
         self.btn_help_2.setMinimumSize(QSize(210, 0))
         self.btn_help_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon7 = QIcon()
-        icon7.addFile(u":/icons8-help-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_help_2.setIcon(icon7)
+        icon8 = QIcon()
+        icon8.addFile(u":/icons8-help-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_help_2.setIcon(icon8)
         self.btn_help_2.setIconSize(QSize(40, 40))
         self.btn_help_2.setCheckable(True)
         self.btn_help_2.setAutoExclusive(True)
@@ -339,9 +371,9 @@ class Ui_MainWindow(object):
         self.btn_report_2.setObjectName(u"btn_report_2")
         self.btn_report_2.setMinimumSize(QSize(210, 0))
         self.btn_report_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon8 = QIcon()
-        icon8.addFile(u":/icons8-issue-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_report_2.setIcon(icon8)
+        icon9 = QIcon()
+        icon9.addFile(u":/icons8-issue-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_report_2.setIcon(icon9)
         self.btn_report_2.setIconSize(QSize(40, 40))
         self.btn_report_2.setCheckable(True)
         self.btn_report_2.setAutoExclusive(True)
@@ -359,9 +391,7 @@ class Ui_MainWindow(object):
         self.btn_logout_2.setObjectName(u"btn_logout_2")
         self.btn_logout_2.setMinimumSize(QSize(210, 0))
         self.btn_logout_2.setStyleSheet(u"")
-        icon9 = QIcon()
-        icon9.addFile(u":/icons8-log-out-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_logout_2.setIcon(icon9)
+        self.btn_logout_2.setIcon(icon2)
         self.btn_logout_2.setIconSize(QSize(40, 40))
         self.btn_logout_2.setCheckable(False)
 
@@ -369,145 +399,6 @@ class Ui_MainWindow(object):
 
 
         self.gridLayout.addWidget(self.side_menu_2, 0, 1, 2, 1)
-
-        self.side_menu = QWidget(self.centralwidget)
-        self.side_menu.setObjectName(u"side_menu")
-        self.side_menu.setMaximumSize(QSize(80, 16777215))
-        self.side_menu.setStyleSheet(u"")
-        self.verticalLayout_3 = QVBoxLayout(self.side_menu)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(9, -1, -1, -1)
-        self.btn_user = QPushButton(self.side_menu)
-        self.btn_user.setObjectName(u"btn_user")
-        self.btn_user.setMinimumSize(QSize(35, 40))
-        self.btn_user.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_user.setStyleSheet(u"")
-        self.btn_user.setIcon(icon)
-        self.btn_user.setIconSize(QSize(50, 50))
-        self.btn_user.setCheckable(False)
-
-        self.verticalLayout_3.addWidget(self.btn_user)
-
-        self.btn_login = QPushButton(self.side_menu)
-        self.btn_login.setObjectName(u"btn_login")
-        self.btn_login.setIcon(icon1)
-        self.btn_login.setIconSize(QSize(30, 30))
-
-        self.verticalLayout_3.addWidget(self.btn_login)
-
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
-
-        self.verticalLayout_3.addItem(self.verticalSpacer_5)
-
-        self.btn_menu = QPushButton(self.side_menu)
-        self.btn_menu.setObjectName(u"btn_menu")
-        self.btn_menu.setMinimumSize(QSize(70, 0))
-        self.btn_menu.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_menu.setLayoutDirection(Qt.LeftToRight)
-        self.btn_menu.setStyleSheet(u"")
-        icon10 = QIcon()
-        icon10.addFile(u":/icons8-menu-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_menu.setIcon(icon10)
-        self.btn_menu.setIconSize(QSize(40, 40))
-        self.btn_menu.setCheckable(True)
-        self.btn_menu.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_menu)
-
-        self.btn_home = QPushButton(self.side_menu)
-        self.btn_home.setObjectName(u"btn_home")
-        self.btn_home.setMinimumSize(QSize(70, 0))
-        self.btn_home.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_home.setIcon(icon3)
-        self.btn_home.setIconSize(QSize(40, 40))
-        self.btn_home.setCheckable(True)
-        self.btn_home.setChecked(True)
-        self.btn_home.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_home)
-
-        self.btn_check_in = QPushButton(self.side_menu)
-        self.btn_check_in.setObjectName(u"btn_check_in")
-        self.btn_check_in.setEnabled(True)
-        self.btn_check_in.setMinimumSize(QSize(70, 0))
-        self.btn_check_in.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_check_in.setIcon(icon4)
-        self.btn_check_in.setIconSize(QSize(40, 40))
-        self.btn_check_in.setCheckable(True)
-        self.btn_check_in.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_check_in)
-
-        self.btn_dashboard = QPushButton(self.side_menu)
-        self.btn_dashboard.setObjectName(u"btn_dashboard")
-        self.btn_dashboard.setEnabled(True)
-        self.btn_dashboard.setMinimumSize(QSize(70, 0))
-        self.btn_dashboard.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_dashboard.setIcon(icon5)
-        self.btn_dashboard.setIconSize(QSize(40, 40))
-        self.btn_dashboard.setCheckable(True)
-        self.btn_dashboard.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_dashboard)
-
-        self.verticalSpacer = QSpacerItem(20, 300, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_3.addItem(self.verticalSpacer)
-
-        self.btn_setting = QPushButton(self.side_menu)
-        self.btn_setting.setObjectName(u"btn_setting")
-        self.btn_setting.setEnabled(True)
-        self.btn_setting.setMinimumSize(QSize(70, 0))
-        self.btn_setting.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_setting.setIcon(icon6)
-        self.btn_setting.setIconSize(QSize(40, 40))
-        self.btn_setting.setCheckable(True)
-        self.btn_setting.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_setting)
-
-        self.btn_help = QPushButton(self.side_menu)
-        self.btn_help.setObjectName(u"btn_help")
-        self.btn_help.setMinimumSize(QSize(70, 0))
-        self.btn_help.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_help.setIcon(icon7)
-        self.btn_help.setIconSize(QSize(40, 40))
-        self.btn_help.setCheckable(True)
-        self.btn_help.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_help)
-
-        self.btn_report = QPushButton(self.side_menu)
-        self.btn_report.setObjectName(u"btn_report")
-        self.btn_report.setMinimumSize(QSize(70, 0))
-        self.btn_report.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_report.setIcon(icon8)
-        self.btn_report.setIconSize(QSize(40, 40))
-        self.btn_report.setCheckable(True)
-        self.btn_report.setAutoExclusive(True)
-
-        self.verticalLayout_3.addWidget(self.btn_report)
-
-        self.line_2 = QFrame(self.side_menu)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.HLine)
-        self.line_2.setFrameShadow(QFrame.Sunken)
-
-        self.verticalLayout_3.addWidget(self.line_2)
-
-        self.btn_logout = QPushButton(self.side_menu)
-        self.btn_logout.setObjectName(u"btn_logout")
-        self.btn_logout.setMinimumSize(QSize(70, 0))
-        self.btn_logout.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_logout.setStyleSheet(u"")
-        self.btn_logout.setIcon(icon9)
-        self.btn_logout.setIconSize(QSize(40, 40))
-        self.btn_logout.setCheckable(False)
-
-        self.verticalLayout_3.addWidget(self.btn_logout)
-
-
-        self.gridLayout.addWidget(self.side_menu, 0, 0, 2, 1)
 
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
@@ -754,9 +645,9 @@ class Ui_MainWindow(object):
         self.btn_clear.setFont(font6)
         self.btn_clear.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_clear.setLayoutDirection(Qt.LeftToRight)
-        icon11 = QIcon()
-        icon11.addFile(u":/clear-60.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_clear.setIcon(icon11)
+        icon10 = QIcon()
+        icon10.addFile(u":/clear-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_clear.setIcon(icon10)
         self.btn_clear.setIconSize(QSize(50, 50))
 
         self.horizontalLayout.addWidget(self.btn_clear)
@@ -804,18 +695,15 @@ class Ui_MainWindow(object):
 
         self.gridLayout_5.addItem(self.horizontalSpacer_10, 1, 3, 1, 1)
 
+        self.horizontalSpacer_11 = QSpacerItem(20, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_11, 1, 0, 1, 1)
+
         self.label_3 = QLabel(self.groupBox_4)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setFont(font7)
 
         self.gridLayout_5.addWidget(self.label_3, 3, 1, 1, 1)
-
-        self.txt_rtls_battery = QLineEdit(self.groupBox_4)
-        self.txt_rtls_battery.setObjectName(u"txt_rtls_battery")
-        self.txt_rtls_battery.setEnabled(False)
-        self.txt_rtls_battery.setFont(font7)
-
-        self.gridLayout_5.addWidget(self.txt_rtls_battery, 3, 2, 1, 1)
 
         self.txt_asset_2 = QLineEdit(self.groupBox_4)
         self.txt_asset_2.setObjectName(u"txt_asset_2")
@@ -847,9 +735,12 @@ class Ui_MainWindow(object):
 
         self.gridLayout_5.addWidget(self.txt_category, 1, 2, 1, 1)
 
-        self.horizontalSpacer_11 = QSpacerItem(20, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
+        self.txt_rtls_battery = QLineEdit(self.groupBox_4)
+        self.txt_rtls_battery.setObjectName(u"txt_rtls_battery")
+        self.txt_rtls_battery.setEnabled(False)
+        self.txt_rtls_battery.setFont(font7)
 
-        self.gridLayout_5.addItem(self.horizontalSpacer_11, 1, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.txt_rtls_battery, 3, 2, 1, 1)
 
 
         self.verticalLayout_10.addWidget(self.groupBox_4)
@@ -1032,9 +923,9 @@ class Ui_MainWindow(object):
         self.btn_clear_2.setObjectName(u"btn_clear_2")
         self.btn_clear_2.setMinimumSize(QSize(0, 50))
         self.btn_clear_2.setCursor(QCursor(Qt.PointingHandCursor))
-        icon12 = QIcon()
-        icon12.addFile(u":/clear_30.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.btn_clear_2.setIcon(icon12)
+        icon11 = QIcon()
+        icon11.addFile(u":/clear_30.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_clear_2.setIcon(icon11)
         self.btn_clear_2.setIconSize(QSize(30, 30))
 
         self.horizontalLayout_10.addWidget(self.btn_clear_2)
@@ -1045,6 +936,157 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.page_check_in)
 
         self.gridLayout.addWidget(self.stackedWidget, 0, 2, 1, 1)
+
+        self.side_menu = QWidget(self.centralwidget)
+        self.side_menu.setObjectName(u"side_menu")
+        self.side_menu.setMaximumSize(QSize(80, 16777215))
+        self.side_menu.setStyleSheet(u"")
+        self.verticalLayout_3 = QVBoxLayout(self.side_menu)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(9, -1, -1, -1)
+        self.btn_user = QPushButton(self.side_menu)
+        self.btn_user.setObjectName(u"btn_user")
+        self.btn_user.setMinimumSize(QSize(35, 40))
+        self.btn_user.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_user.setStyleSheet(u"")
+        self.btn_user.setIcon(icon)
+        self.btn_user.setIconSize(QSize(50, 50))
+        self.btn_user.setCheckable(False)
+
+        self.verticalLayout_3.addWidget(self.btn_user)
+
+        self.frame_user_2 = QFrame(self.side_menu)
+        self.frame_user_2.setObjectName(u"frame_user_2")
+        self.frame_user_2.setMinimumSize(QSize(0, 100))
+        self.frame_user_2.setFrameShape(QFrame.StyledPanel)
+        self.frame_user_2.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_8 = QVBoxLayout(self.frame_user_2)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.btn_change_user_3 = QPushButton(self.frame_user_2)
+        self.btn_change_user_3.setObjectName(u"btn_change_user_3")
+        self.btn_change_user_3.setIcon(icon1)
+        self.btn_change_user_3.setIconSize(QSize(30, 30))
+
+        self.verticalLayout_8.addWidget(self.btn_change_user_3)
+
+        self.btn_logout_8 = QPushButton(self.frame_user_2)
+        self.btn_logout_8.setObjectName(u"btn_logout_8")
+        self.btn_logout_8.setCheckable(False)
+
+        self.verticalLayout_8.addWidget(self.btn_logout_8)
+
+
+        self.verticalLayout_3.addWidget(self.frame_user_2)
+
+        self.btn_menu = QPushButton(self.side_menu)
+        self.btn_menu.setObjectName(u"btn_menu")
+        self.btn_menu.setMinimumSize(QSize(70, 0))
+        self.btn_menu.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_menu.setLayoutDirection(Qt.LeftToRight)
+        self.btn_menu.setStyleSheet(u"")
+        icon12 = QIcon()
+        icon12.addFile(u":/icons8-menu-60.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_menu.setIcon(icon12)
+        self.btn_menu.setIconSize(QSize(40, 40))
+        self.btn_menu.setCheckable(True)
+        self.btn_menu.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_menu)
+
+        self.btn_home = QPushButton(self.side_menu)
+        self.btn_home.setObjectName(u"btn_home")
+        self.btn_home.setMinimumSize(QSize(70, 0))
+        self.btn_home.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_home.setIcon(icon4)
+        self.btn_home.setIconSize(QSize(40, 40))
+        self.btn_home.setCheckable(True)
+        self.btn_home.setChecked(True)
+        self.btn_home.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_home)
+
+        self.btn_check_in = QPushButton(self.side_menu)
+        self.btn_check_in.setObjectName(u"btn_check_in")
+        self.btn_check_in.setEnabled(True)
+        self.btn_check_in.setMinimumSize(QSize(70, 0))
+        self.btn_check_in.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_check_in.setIcon(icon5)
+        self.btn_check_in.setIconSize(QSize(40, 40))
+        self.btn_check_in.setCheckable(True)
+        self.btn_check_in.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_check_in)
+
+        self.btn_dashboard = QPushButton(self.side_menu)
+        self.btn_dashboard.setObjectName(u"btn_dashboard")
+        self.btn_dashboard.setEnabled(True)
+        self.btn_dashboard.setMinimumSize(QSize(70, 0))
+        self.btn_dashboard.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_dashboard.setIcon(icon6)
+        self.btn_dashboard.setIconSize(QSize(40, 40))
+        self.btn_dashboard.setCheckable(True)
+        self.btn_dashboard.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_dashboard)
+
+        self.verticalSpacer = QSpacerItem(20, 300, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_3.addItem(self.verticalSpacer)
+
+        self.btn_setting = QPushButton(self.side_menu)
+        self.btn_setting.setObjectName(u"btn_setting")
+        self.btn_setting.setEnabled(True)
+        self.btn_setting.setMinimumSize(QSize(70, 0))
+        self.btn_setting.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_setting.setIcon(icon7)
+        self.btn_setting.setIconSize(QSize(40, 40))
+        self.btn_setting.setCheckable(True)
+        self.btn_setting.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_setting)
+
+        self.btn_help = QPushButton(self.side_menu)
+        self.btn_help.setObjectName(u"btn_help")
+        self.btn_help.setMinimumSize(QSize(70, 0))
+        self.btn_help.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_help.setIcon(icon8)
+        self.btn_help.setIconSize(QSize(40, 40))
+        self.btn_help.setCheckable(True)
+        self.btn_help.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_help)
+
+        self.btn_report = QPushButton(self.side_menu)
+        self.btn_report.setObjectName(u"btn_report")
+        self.btn_report.setMinimumSize(QSize(70, 0))
+        self.btn_report.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_report.setIcon(icon9)
+        self.btn_report.setIconSize(QSize(40, 40))
+        self.btn_report.setCheckable(True)
+        self.btn_report.setAutoExclusive(True)
+
+        self.verticalLayout_3.addWidget(self.btn_report)
+
+        self.line_2 = QFrame(self.side_menu)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.HLine)
+        self.line_2.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_3.addWidget(self.line_2)
+
+        self.btn_logout = QPushButton(self.side_menu)
+        self.btn_logout.setObjectName(u"btn_logout")
+        self.btn_logout.setMinimumSize(QSize(70, 0))
+        self.btn_logout.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_logout.setStyleSheet(u"")
+        self.btn_logout.setIcon(icon2)
+        self.btn_logout.setIconSize(QSize(40, 40))
+        self.btn_logout.setCheckable(False)
+
+        self.verticalLayout_3.addWidget(self.btn_logout)
+
+
+        self.gridLayout.addWidget(self.side_menu, 0, 0, 2, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         QWidget.setTabOrder(self.txt_asset, self.btn_validate_eq)
@@ -1087,28 +1129,26 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.btn_logout, self.btn_home)
         QWidget.setTabOrder(self.btn_home, self.btn_check_in)
         QWidget.setTabOrder(self.btn_check_in, self.btn_dashboard)
-        QWidget.setTabOrder(self.btn_dashboard, self.btn_login)
-        QWidget.setTabOrder(self.btn_login, self.btn_login_2)
 
         self.retranslateUi(MainWindow)
-        self.btn_menu.pressed.connect(self.side_menu_2.show)
-        self.btn_menu.pressed.connect(self.side_menu.hide)
         self.btn_menu_2.pressed.connect(self.side_menu_2.hide)
-        self.btn_menu_2.pressed.connect(self.side_menu.show)
-        self.btn_home_2.toggled.connect(self.btn_home.setChecked)
         self.btn_check_in_2.toggled.connect(self.btn_check_in.setChecked)
-        self.btn_dashboard_2.toggled.connect(self.btn_dashboard.setChecked)
-        self.btn_setting_2.toggled.connect(self.btn_setting.setChecked)
-        self.btn_help_2.toggled.connect(self.btn_help.setChecked)
+        self.btn_menu_2.pressed.connect(self.side_menu.show)
+        self.btn_check_in.toggled.connect(self.btn_check_in_2.setChecked)
+        self.btn_report.toggled.connect(self.btn_report_2.setChecked)
         self.btn_report_2.toggled.connect(self.btn_report.setChecked)
         self.btn_home.toggled.connect(self.btn_home_2.setChecked)
-        self.btn_check_in.toggled.connect(self.btn_check_in_2.setChecked)
-        self.btn_dashboard.toggled.connect(self.btn_dashboard_2.setChecked)
-        self.btn_setting.toggled.connect(self.btn_setting_2.setChecked)
         self.btn_help.toggled.connect(self.btn_help_2.setChecked)
-        self.btn_report.toggled.connect(self.btn_report_2.setChecked)
+        self.btn_dashboard.toggled.connect(self.btn_dashboard_2.setChecked)
+        self.btn_menu.pressed.connect(self.side_menu_2.show)
+        self.btn_dashboard_2.toggled.connect(self.btn_dashboard.setChecked)
+        self.btn_menu.pressed.connect(self.side_menu.hide)
+        self.btn_setting_2.toggled.connect(self.btn_setting.setChecked)
+        self.btn_home_2.toggled.connect(self.btn_home.setChecked)
+        self.btn_setting.toggled.connect(self.btn_setting_2.setChecked)
+        self.btn_help_2.toggled.connect(self.btn_help.setChecked)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
         self.tabWidget.setCurrentIndex(0)
 
 
@@ -1118,25 +1158,16 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.btn_user_2.setText(QCoreApplication.translate("MainWindow", u"Guest", None))
-        self.btn_login_2.setText(QCoreApplication.translate("MainWindow", u"Login", None))
+        self.btn_change_user.setText(QCoreApplication.translate("MainWindow", u"Switch User", None))
+        self.btn_logout_4.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
         self.btn_menu_2.setText(QCoreApplication.translate("MainWindow", u"Hide", None))
         self.btn_home_2.setText(QCoreApplication.translate("MainWindow", u"Issue Loan", None))
         self.btn_check_in_2.setText(QCoreApplication.translate("MainWindow", u"Return Loan", None))
-        self.btn_dashboard_2.setText(QCoreApplication.translate("MainWindow", u"Limit level", None))
+        self.btn_dashboard_2.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
         self.btn_setting_2.setText(QCoreApplication.translate("MainWindow", u"Setting", None))
         self.btn_help_2.setText(QCoreApplication.translate("MainWindow", u"Help", None))
         self.btn_report_2.setText(QCoreApplication.translate("MainWindow", u"Report Issue", None))
         self.btn_logout_2.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
-        self.btn_user.setText("")
-        self.btn_login.setText("")
-        self.btn_menu.setText("")
-        self.btn_home.setText("")
-        self.btn_check_in.setText("")
-        self.btn_dashboard.setText("")
-        self.btn_setting.setText("")
-        self.btn_help.setText("")
-        self.btn_report.setText("")
-        self.btn_logout.setText("")
         self.lbl_3.setText("")
         self.lbl_confirm_info.setText(QCoreApplication.translate("MainWindow", u"Press confirm to take out equipment", None))
         self.lbl_confirm_icon.setText("")
@@ -1159,7 +1190,10 @@ class Ui_MainWindow(object):
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Category:", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Mobileview battery status:", None))
         self.txt_asset_2.setText("")
+        self.txt_loan_location.setText("")
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Equipment No:", None))
+        self.txt_category.setText("")
+        self.txt_rtls_battery.setText("")
         self.groupBox_8.setTitle(QCoreApplication.translate("MainWindow", u"Checks", None))
         self.chkbx_visual_insp.setText(QCoreApplication.translate("MainWindow", u"Visual Inspection", None))
         self.chkbx_batt_replace.setText(QCoreApplication.translate("MainWindow", u"Battery replaced", None))
@@ -1179,5 +1213,16 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.btn_clear_2.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+C", None))
 #endif // QT_CONFIG(shortcut)
+        self.btn_user.setText("")
+        self.btn_change_user_3.setText(QCoreApplication.translate("MainWindow", u"Change user", None))
+        self.btn_logout_8.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
+        self.btn_menu.setText("")
+        self.btn_home.setText("")
+        self.btn_check_in.setText("")
+        self.btn_dashboard.setText("")
+        self.btn_setting.setText("")
+        self.btn_help.setText("")
+        self.btn_report.setText("")
+        self.btn_logout.setText("")
     # retranslateUi
 

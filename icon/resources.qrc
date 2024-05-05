@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>change-user-30.png</file>
     <file>close-30.png</file>
     <file>print-60.png</file>
     <file>clear-60.png</file>
