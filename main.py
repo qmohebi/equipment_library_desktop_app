@@ -5,7 +5,7 @@ from datetime import datetime
 import csv
 import os
 
-from PySide6.QtCore import Qt, Signal, QTimer, QEvent
+from PySide6.QtCore import Qt, Signal, QTimer, QEvent, QObject
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -55,6 +55,7 @@ JOB_STATUS = {
     "Completed": "69914FCE64344265A0E72EC66528D9FA",
 }
 
+INACTIVE_TIMEOUT = 10
 src_folder = r"K:\main_python_work\equipment_library_desktop_app"
 
 with open("config.json", encoding="utf-8") as config:
@@ -90,6 +91,11 @@ class MainWindow(QMainWindow):
 
         self.login_window = LoginWindow(self)
         self.login_window.hide()
+        self.setMouseTracking(True)
+
+        # tracks mouse movement across the wigdget and resets the timer
+        self.tracker = MouseTracker()
+        self.tracker.mouse_moved.connect(self.reset_countdown)
 
         self.db = Database()
 
@@ -163,7 +169,7 @@ class MainWindow(QMainWindow):
         self.get_location()
         self.disable_buttons()
 
-        self.ui.btn_user_2.clicked.connect(self.on_login_pressed)
+        self.ui.btn_user_2.clicked.connect(self.on_user_btn_pressed)
 
         location_completer = QCompleter(self.location_name, self)
         location_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
@@ -223,7 +229,11 @@ class MainWindow(QMainWindow):
         for button in self.logout_buttons:
             button.clicked.connect(self.log_out)
 
-    def on_login_pressed(self):
+        # tigger the timeout to logout when a user is logged in.
+
+    def on_user_btn_pressed(self):
+        """Actions on what happens when user presses the login
+        but"""
         if self.mpce_staff_logged_in is False:
             self.login_window.setModal(True)
             self.login_window.raise_()
@@ -446,7 +456,7 @@ class MainWindow(QMainWindow):
         self.ui.btn_user_2.setStyleSheet("background-color:#009639")
         self.ui.btn_user_2.setChecked(True)
         self.ui.txt_asset.setFocus()
-        self.start_countdown()
+        self.start_countdown_main_window()
 
     def log_out(self) -> None:
         if self.mpce_staff_logged_in is True:
@@ -457,7 +467,6 @@ class MainWindow(QMainWindow):
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 defaultButton=QMessageBox.StandardButton.No,
             )
-
             if logout_option == QMessageBox.StandardButton.Yes:
                 self.reset_window_on_logout()
 
@@ -475,7 +484,7 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.txt_asset.setFocus()
         self.clear()
-        self.timer.stop()
+        self.countdown_timer.stop()
 
     def switch_user(self):
         """Log the current user and
@@ -494,45 +503,78 @@ class MainWindow(QMainWindow):
         self.login_window.raise_()
         self.login_window.exec()
 
-    def start_countdown(self):
-        self.inactivity_timeout = 1 * 60 * 1000
-        self.timer = QTimer(self)
-        # tigger the timeout to logout when a user is logged in.
-        self.timer.timeout.connect(self.status_bar)
-        self.timer.start(1000)
-
-    def mousePressEvent(self, event: QMouseEvent) -> None:
-        super().mousePressEvent(event)
-        self.reset_timer()
-
-    def reset_timer(self):
-        self.timer.stop()
-        self.timer.start(self.inactivity_timeout)
-        self.start_countdown()
-
     def open_logout_timer_window(self):
-        self.logout_timer_window = LogoutTimer(self)
-        self.logout_timer_window.start_countdown()
-        self.timer.stop()
-        self.logout_timer_window.setModal(True)
-        # self.logout_timer_window.raise_()
-        self.logout_timer_window.show()
+        """class the logout timer window
+        which is a countdown window that allows user
+        if they want to continue or logout"""
 
-        self.logout_timer_window.continue_using_app.connect(self.start_countdown)
+        if self.mpce_staff_logged_in is True:
+            self.logout_timer_window = LogoutTimer(self)
+            self.logout_timer_window.start_countdown()
+
+            self.logout_timer_window.setModal(True)
+            self.logout_timer_window.show()
+
+        self.logout_timer_window.continue_using_app.connect(
+            self.start_countdown_main_window
+        )
         self.logout_timer_window.logout_user.connect(self.reset_window_on_logout)
 
-    def status_bar(self):
-        self.inactivity_timeout -= 1000
-        remaining_time = max(0, self.inactivity_timeout)
+    def start_countdown_main_window(self):
+        """Start the logout countdown timer"""
+        self.countdown_timer = QTimer(self)
+        self.reset_countdown()
+        self.countdown_timer.start(1000)
+        self.countdown_timer.timeout.connect(self.update_countdown)
+
+    def update_countdown(self):
+        """update the countdown, and display in the status bar"""
+        self.time_remaining -= 1000
+        remaining_time = max(0, self.time_remaining)
         minutes = remaining_time // 60000
         seconds = (remaining_time % 60000) // 1000
         self.statusBar().showMessage(f"Timeout in {minutes:02}:{seconds:02}")
-        # print(f"Timeout in {minutes:02}:{seconds:02}")
-        if self.inactivity_timeout <= 50000:
+
+        if self.time_remaining <= 0:
+            self.countdown_timer.stop()
             self.open_logout_timer_window()
+
+    def reset_countdown(self):
+        """reset the time remaining in minutes"""
+
+        if self.mpce_staff_logged_in is True:
+            self.time_remaining = INACTIVE_TIMEOUT * 60 * 1000
+
+
+class MouseTracker(QObject):
+    """Class used for emit signal that connects to the main window
+    when a mose moves across the screen, the signal is used to reset
+    the auto-logout timer."""
+
+    mouse_moved = Signal()
+
+    def __init__(self):
+        super().__init__()
+        self.app = app
+        self.app.installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        """Event filter used to filter mouse move event and emit a signal
+        both are returning false otherwise the change of mouse pointer
+        from hand to arrow would not work"""
+
+        if event.type() == QEvent.MouseMove:
+            self.mouse_moved.emit()
+            return False
+        return False
 
 
 class LoginWindow(QDialog):
+    """Opens login windows and returns true
+    when the username and password matches the record on AD
+    also returns true when the username is found on the MPCE DB
+    else returns false and displays error messages."""
+
     login_successfull = Signal(list)
 
     def __init__(self, parent=None) -> None:
@@ -564,7 +606,7 @@ class LoginWindow(QDialog):
         check_mpce_staff = self.mpce_staff(username=username_enetered)
 
         if authenticate is False:
-            self.ui.frame_error.show()
+            self.ui.frame_error.show()  # show error message
 
         elif authenticate is True and check_mpce_staff is False:
             self.ui.frame_error.show()
@@ -584,6 +626,9 @@ class LoginWindow(QDialog):
             self.close()
 
     def authenticate_user(self, username: str, password: str) -> bool:
+        """takes the username and password typed and passes to LDAP class
+        this carries a simple bind to the AD and if result is true
+        then successful authentication"""
 
         ldap_autho = LDAPAuthentication(
             ldap_server=LDAP_SERVER, serach_base=SEARCH_BASE
@@ -878,4 +923,5 @@ if __name__ == "__main__":
     # )
     window = MainWindow()
     window.show()
+    # tracker = MouseTracker(app)
     sys.exit(app.exec())

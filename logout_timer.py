@@ -21,7 +21,7 @@ class LogoutTimer(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.countdown_timer = QTimer()
-        self.seconds_remaining = 15*1000
+        self.seconds_remaining = 15 * 1000
         self.ui.lbl_countdown.setText("0:15")
         self.ui.btn_continue.clicked.connect(self.on_continue_btn_clicked)
         self.ui.btn_logout.clicked.connect(self.on_logout_btn_clicked)
@@ -36,9 +36,7 @@ class LogoutTimer(QDialog):
         self.seconds_remaining -= 1000
         print(f"on start: {self.seconds_remaining//1000}")
         if self.seconds_remaining <= 0:
-            # self.countdown_label.setText("Time's up!")
-            self.countdown_timer.stop()
-
+            # self.countdown_timer.stop()
             self.logout_user.emit()
             self.close()
         else:
@@ -47,12 +45,10 @@ class LogoutTimer(QDialog):
     def on_continue_btn_clicked(self):
         self.reset_timer()
         self.continue_using_app.emit()
-        print(f"On continue: {self.seconds_remaining//1000}")
         self.close()
 
     def on_logout_btn_clicked(self):
         self.logout_user.emit()
-        # self.countdown_timer.stop()
         self.close()
 
     def closeEvent(self, event):
@@ -63,7 +59,6 @@ class LogoutTimer(QDialog):
         self.countdown_timer.stop()
         self.seconds_remaining = 15 * 1000
         self.countdown_timer.start(1000)
-
 
 
 if __name__ == "__main__":
