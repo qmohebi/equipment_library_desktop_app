@@ -97,8 +97,11 @@ class Database:
         battery_replaced: bool = None,
         battery_checked: bool = None,
         create_job: bool = None,
-    ) -> None:
-        """update the loan and create acceptance job"""
+        location_id: str = None,
+        update_location: str = None,
+    ) -> str:
+        """update the loan and create acceptance job
+        and return job number created for the job"""
 
         sql_command = """
         SET NOCOUNT ON;
@@ -119,6 +122,8 @@ class Database:
         @BatteryReplaced=:batt_replaced,
         @BatteryChecked=:batt_checked,
         @CreateJob=:create_job,
+        @UpdateLocation=:update_location,
+        @LocationId=:location_id,
         @JobNumber = @out OUTPUT;
         SELECT @out AS job_number;
         """
@@ -138,6 +143,8 @@ class Database:
             "batt_replaced": battery_replaced,
             "batt_checked": battery_checked,
             "create_job": create_job,
+            "location_id": location_id,
+            "update_location": update_location,
         }
 
         with self.engine.begin() as conn:
@@ -156,4 +163,3 @@ if __name__ == "__main__":
     #     user_id="962A1467-EC25-42AE-9F86-9F572652C4E5",
     #     create_job=True,
     # )
-

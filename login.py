@@ -1,8 +1,7 @@
 import sys
 
 from PySide6.QtWidgets import QApplication, QDialog, QToolButton, QLineEdit
-from PySide6.QtGui import QPixmap, QIcon, QAction
-from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon
 
 from ui_login import Ui_Dialog
 

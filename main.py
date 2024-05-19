@@ -16,7 +16,6 @@ from PySide6.QtWidgets import (
     QLineEdit,
 )
 
-from logout_timer import LogoutTimer
 
 from PySide6.QtGui import QMouseEvent, QPixmap
 
@@ -24,9 +23,8 @@ from ui_mainwindow import Ui_MainWindow
 
 # from ui.ui_dialogue import Ui_Dialog
 from ui_login import Ui_Dialog
-
+from logout_timer import LogoutTimer
 from database import Database
-
 from authentication import LDAPAuthentication
 
 # pyside6-uic .\ui\loan_dialogue.ui -o .\ui\ui_dialogue.py
@@ -41,12 +39,13 @@ ASSET = {
     "loan_status_id": "",
 }
 
-PERSONNEL_RETURNING_LOAN = {}
-TECHNICIANS = {}
+ASSIGNED_TECHNICIAN = {}
+MPCE_PERSONNEL = {}
 JOB_TYPE = {
     "Repair/Correction": "STG2005061300002",
     "PPM": "STG2005061300001",
     "Function Check": "591F356502204017989184484E650984",
+    "Supply": "STG2009101500001",
 }
 
 RTLS_BATTERY = {"rtls_equipment_no": [], "battery_capacity": []}
@@ -55,7 +54,23 @@ JOB_STATUS = {
     "Completed": "69914FCE64344265A0E72EC66528D9FA",
 }
 
-INACTIVE_TIMEOUT = 10
+SUPPLY_CATEGORY = [
+    "Suction Controller - High Vacuum",
+    "Flowmeter/Regulator - O2 - Low flow",
+    "Suction Controller - Thoracic - Indirect",
+    "Flowmeter/Regulator - O2",
+    "Suction Controller - Low Vacuum - Indirect",
+    "Flowmeter/Regulator - Air",
+    "Flowmeter/Regulator - O2 - Indirect",
+    "Suction Controller - High Vacuum - Indirect",
+    "Suction Controller - Thoracic",
+    "Suction Controller - Low Vacuum",
+    "Nebuliser",
+]
+
+INACTIVE_TIMEOUT = 10  # time in minutes before a user is logged out automatically
+
+# location for the rtl battery report
 src_folder = r"K:\main_python_work\equipment_library_desktop_app"
 
 with open("config.json", encoding="utf-8") as config:
@@ -99,22 +114,29 @@ class MainWindow(QMainWindow):
 
         self.db = Database()
 
+        # date passed to MSSQL needs to be in ISO standard: YY-MM-DD
+        self.today = datetime.today().strftime("%Y-%m-%d")
         self.mpce_staff_logged_in = False
         self.username_logged_in = ""
+        self.logged_in_user = {"username": "", "user_id": "", "first_name": ""}
 
-        # logout countdown
+        # used as flag on whether to create supply job and
+        # permenantly change location of asset
+        self.permenant_supplied_by_library = False
+
         self.location_name = []  # used for location auto complete
-        self.location = {}  # use for getting location id
+        self.location = {}  # used for getting location id
         self.location_id = ""
+        self.job_sticker = {}  # dictionary to be used for printing job sticker
 
         # WWW1 - not a library item
         # WWW2 - available
         # WWW3 - on loan
         # STG2005061300002 - Loan in progress
 
-        self.confirm_pixmap = QPixmap("./icon/tick.png")
-        self.error_pixmap = QPixmap("./icon/cancel.png")
-        self.arrow_pixmap = QPixmap("./icon/arrow.png")
+        self.confirm_pixmap = QPixmap(":/tick.png")
+        self.error_pixmap = QPixmap(":/cancel.png")
+        self.arrow_pixmap = QPixmap(":/arrow.png")
         self.setWindowTitle("Library Loan")
         self.ui.lbl_confirm_info.setVisible(False)
 
@@ -128,17 +150,17 @@ class MainWindow(QMainWindow):
         self.ui.btn_confirm.clicked.connect(self.confirm_loan)
         self.ui.btn_clear.clicked.connect(self.clear)
 
-        self.number_1_pixmap = QPixmap("./icon/1.png")
+        self.number_1_pixmap = QPixmap(":/1.png")
         self.ui.lbl_no_1.setPixmap(self.number_1_pixmap)
-        self.number_2_pixmap = QPixmap("./icon/2.png")
+        self.number_2_pixmap = QPixmap(":/2.png")
         self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
-        self.number_3_pixmap = QPixmap("./icon/3.png")
+        self.number_3_pixmap = QPixmap(":/3.png")
         self.ui.lbl_3.setPixmap(self.number_3_pixmap)
 
         # grey pixmap
-        self.number_1_grey = QPixmap("./icon/1_grey.png")
-        self.number_2_grey = QPixmap("./icon/2_grey.png")
-        self.number_3_grey = QPixmap("./icon/3_grey.png")
+        self.number_1_grey = QPixmap(":/1_grey.png")
+        self.number_2_grey = QPixmap(":/2_grey.png")
+        self.number_3_grey = QPixmap(":/3_grey.png")
         self.get_mpce_personnel()
         self.ui.stackedWidget.setCurrentIndex(0)
 
@@ -211,6 +233,14 @@ class MainWindow(QMainWindow):
         self.ui.btn_menu_2.hide()
         self.ui.btn_menu.hide()
 
+        self.return_loan_chkbox = (
+            self.ui.chkbx_visual_insp,
+            self.ui.chkbx_function,
+            self.ui.chkbx_batt_replace,
+            # self.ui.chkbx_rtls_batt,
+        )
+        self.radio_btn = (self.ui.rb_job, self.ui.rb_ppm)
+
         for button in self.switch_user_buttons:
             button.clicked.connect(self.switch_user)
 
@@ -229,11 +259,21 @@ class MainWindow(QMainWindow):
         for button in self.logout_buttons:
             button.clicked.connect(self.log_out)
 
-        # tigger the timeout to logout when a user is logged in.
+        # create auto completer for MPCE_PERSONNEL in the job tab
+        tech_auto_complete = QCompleter(list(ASSIGNED_TECHNICIAN.keys()), self)
+        tech_auto_complete.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.ui.txt_technician.setCompleter(tech_auto_complete)
+        self.ui.txt_technician.setClearButtonEnabled(True)
+        self.ui.txt_asset.setClearButtonEnabled(True)
+        self.ui.txt_location.setClearButtonEnabled(True)
 
-    def on_user_btn_pressed(self):
+        self.ui.btn_submit.clicked.connect(self.return_loan)
+        self.ui.btn_clear_2.clicked.connect(self.clear_issue_loan)
+
+    def on_user_btn_pressed(self) -> None:
         """Actions on what happens when user presses the login
-        but"""
+        button, if a user is logged in, present them with switch user or logout
+        if user not logged in, open the login window to allow user to login"""
         if self.mpce_staff_logged_in is False:
             self.login_window.setModal(True)
             self.login_window.raise_()
@@ -245,7 +285,7 @@ class MainWindow(QMainWindow):
             for button in self.authenticated_user_btn:
                 button.show()
 
-    def get_location(self):
+    def get_location(self) -> None:
         """get the location from database and create a list and dictionary
         lis to be used for autocompleting the location text box and
         dictionary for get the location_id"""
@@ -253,8 +293,10 @@ class MainWindow(QMainWindow):
         self.location = location
         self.location_name = list(location.keys())
 
-    def get_mpce_personnel(self):
-        """populate the personnel dictionary with mpce personnel from the db"""
+    def get_mpce_personnel(self) -> None:
+        """populate the personnel dictionary with mpce personnel from the db
+        this dictionary is used for getting the PersonnelID, the userID
+        for creating the job"""
         result = self.db.get_mpce_personnel()
 
         # go through personnel json file, clean up spaces at the end of name and email and
@@ -286,7 +328,7 @@ class MainWindow(QMainWindow):
             except Exception:
                 email = None
 
-            PERSONNEL_RETURNING_LOAN[username] = [
+            MPCE_PERSONNEL[username] = [
                 first_name,
                 name,
                 user_id,
@@ -294,9 +336,14 @@ class MainWindow(QMainWindow):
                 username,
                 email,
             ]
-            TECHNICIANS[name] = [personnel_id, user_id]
+            ASSIGNED_TECHNICIAN[name] = [personnel_id, user_id]
 
-    def get_asset_info(self):
+    def get_asset_info(self) -> None:
+        """Run regex on the equipment number that is typed into the text field
+        this is to remove the GS1 additional info that gets scanned
+        if not GS1 code, use the equipment number and fetch info
+        from the database and write to the ASSET dictionary"""
+
         search_value = self.ui.txt_asset.text().strip()
         self.ui.txt_location.clear()
 
@@ -318,9 +365,18 @@ class MainWindow(QMainWindow):
                 ASSET["library_status_id"] = row[2]
                 ASSET["loan_status_id"] = row[3]
                 ASSET["loan_location"] = row[4]
-
-            # if not a library item
-            if ASSET["library_status_id"] == "WWW1":
+            # check if category of asset in those that can be supplied by libarary
+            if (
+                ASSET["category"] in SUPPLY_CATEGORY
+                and self.mpce_staff_logged_in is True
+            ):
+                self.permenant_supplied_by_library = True
+                self.valid_asset_searched()
+                # if not a library item
+            elif (
+                ASSET["library_status_id"] == "WWW1"
+                or ASSET["library_status_id"] is None
+            ):
                 self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
                 QMessageBox.warning(
                     self,
@@ -328,10 +384,11 @@ class MainWindow(QMainWindow):
                     f"Equipment No: {search_value} is not a library item ",
                 )
                 # If on loan check that mpce staff is logged in
-            elif ASSET["library_status_id"] == "WWW3":
                 # if mpce staff logged in, take to checkin page
+            elif ASSET["library_status_id"] == "WWW3":
                 if self.mpce_staff_logged_in is True:
                     self.ui.stackedWidget.setCurrentIndex(1)
+                    self.clear_issue_loan()
                     try:
                         index = RTLS_BATTERY["rtls_equipment_no"].index(search_value)
                         battery_capacity = RTLS_BATTERY["battery_capacity"][index]
@@ -347,24 +404,28 @@ class MainWindow(QMainWindow):
                     QMessageBox.warning(
                         self,
                         "Equipment loan",
-                        "This equipment has not been checked in, please leave this to a side and pick another one",
+                        "This equipment has not been checked-in by libarry staff.\n"
+                        "Please leave to aside and pick another one",
                     )
             else:
-                self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
-                self.ui.lbl_category.setText(ASSET["category"])
-                self.ui.lbl_arrow.setPixmap(self.arrow_pixmap)
-                self.ui.btn_validate_loc.setDisabled(False)
-                self.ui.txt_location.setDisabled(False)
-                self.ui.txt_location.setFocus()
-                self.ui.lbl_equipment.setStyleSheet("color:grey")
-                self.ui.lbl_no_1.setPixmap(self.number_1_grey)
-                self.ui.txt_asset.setStyleSheet("color:grey")
+                self.valid_asset_searched()
         else:
             self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
             self.ui.lbl_loc_validate.clear()
             QMessageBox.critical(self, "Equipment search", "Unable to find an Asset!")
             # self.ui.lbl_category.setText("")
             self.ui.btn_confirm.setDisabled(True)
+
+    def valid_asset_searched(self) -> None:
+        self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
+        self.ui.lbl_category.setText(ASSET["category"])
+        self.ui.lbl_arrow.setPixmap(self.arrow_pixmap)
+        self.ui.btn_validate_loc.setDisabled(False)
+        self.ui.txt_location.setDisabled(False)
+        self.ui.txt_location.setFocus()
+        self.ui.lbl_equipment.setStyleSheet("color:grey")
+        self.ui.lbl_no_1.setPixmap(self.number_1_grey)
+        self.ui.txt_asset.setStyleSheet("color:grey")
 
     def validate_location(self):
         """Checks to make sure the location entered is a correct one
@@ -391,22 +452,50 @@ class MainWindow(QMainWindow):
 
     def confirm_loan(self):
         """issues loan by called the db function"""
-        try:
-            self.db.issue_loan(
-                equipment_id=ASSET["equipment_id"],
-                location_id=ASSET["location_id"],
-            )
-            self.ui.lbl_confirm_icon.setPixmap(self.confirm_pixmap)
-            QMessageBox.question(
+        if self.permenant_supplied_by_library is True:
+            supply_job = QMessageBox.question(
                 self,
-                "Equipment Loan",
-                " Loan succesfully issued!",
+                "Issue permanent loan",
+                "Do you want to change location of this asset"
+                "and issue a supply job?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 defaultButton=QMessageBox.StandardButton.No,
             )
-            self.clear()
-        except Exception:
-            self.ui.lbl_confirm_icon.setPixmap(self.error_pixmap)
+            if supply_job == QMessageBox.StandardButton.Yes:
+                job = self.db.create_job(
+                    update_location=True,
+                    create_job=True,
+                    equipment_id=ASSET["equipment_id"],
+                    location_id=ASSET["location_id"],
+                    job_status_id=JOB_STATUS["Completed"],
+                    job_type_id=JOB_TYPE["Supply"],
+                    tech_id=MPCE_PERSONNEL[self.logged_in_user["username"]][3],
+                    taken_by_id=MPCE_PERSONNEL[self.logged_in_user["username"]][3],
+                    user_id=self.logged_in_user["user_id"],
+                    reported_fault=f"Wards requires supply of the{ASSET['category']}",
+                    work_done=f"Supplied ward with {ASSET['category']}",
+                )
+                if job:
+                    QMessageBox.information(
+                        self,
+                        "Successful Job Creation",
+                        f"A Supply Job with Job number: [{job}] has been created!",
+                    )
+        else:
+            try:
+                self.db.issue_loan(
+                    equipment_id=ASSET["equipment_id"],
+                    location_id=ASSET["location_id"],
+                )
+                self.ui.lbl_confirm_icon.setPixmap(self.confirm_pixmap)
+                QMessageBox.information(
+                    self, "Equipment Loan", " Loan succesfully issued!"
+                )
+                self.clear()
+                # for logged in user only where this button is enabled after loan is issued
+                self.ui.btn_submit.setDisabled(False)
+            except Exception:
+                self.ui.lbl_confirm_icon.setPixmap(self.error_pixmap)
 
     def disable_buttons(self) -> None:
         """Set up windoes for first time by
@@ -445,9 +534,11 @@ class MainWindow(QMainWindow):
         enable buttons for a authenticated user
         and set stylesheet for user button"""
 
-        first_name = value_returned[0]
-        self.username_logged_in = value_returned[1]
-        self.ui.btn_user_2.setText(first_name)
+        self.logged_in_user["first_name"] = value_returned[0]
+        self.logged_in_user["username"] = value_returned[1]
+        self.logged_in_user["user_id"] = MPCE_PERSONNEL[value_returned[1]][2]
+
+        self.ui.btn_user_2.setText(self.logged_in_user["first_name"])
         self.mpce_staff_logged_in = True
         for item in self.logged_user_btn:
             item.show()
@@ -533,7 +624,7 @@ class MainWindow(QMainWindow):
         remaining_time = max(0, self.time_remaining)
         minutes = remaining_time // 60000
         seconds = (remaining_time % 60000) // 1000
-        self.statusBar().showMessage(f"Timeout in {minutes:02}:{seconds:02}")
+        # self.statusBar().showMessage(f"Timeout in {minutes:02}:{seconds:02}")
 
         if self.time_remaining <= 0:
             self.countdown_timer.stop()
@@ -545,28 +636,156 @@ class MainWindow(QMainWindow):
         if self.mpce_staff_logged_in is True:
             self.time_remaining = INACTIVE_TIMEOUT * 60 * 1000
 
+    def return_loan(self):
+        """based on the tab the user is in
+        return loan and created the correct job"""
+        work_done = self.ui.txt_work_done.toPlainText()
+        reported_fault = self.ui.txt_reported_fault.toPlainText()
+        function_check = self.ui.chkbx_function
+        batt_rep = self.ui.chkbx_batt_replace
+        vis_inspec = self.ui.chkbx_visual_insp
 
-class MouseTracker(QObject):
-    """Class used for emit signal that connects to the main window
-    when a mose moves across the screen, the signal is used to reset
-    the auto-logout timer."""
+        repair_job = self.ui.rb_job
+        ppm_job = self.ui.rb_ppm
+        assigned_tech = self.ui.txt_technician.text()
+        logged_user_personnel_id = MPCE_PERSONNEL[self.logged_in_user["username"]][3]
 
-    mouse_moved = Signal()
+        if self.ui.tabWidget.currentIndex() == 0:
+            job_type_id = JOB_TYPE["Function Check"]
+            job_status_id = JOB_STATUS["Completed"]
+            if work_done and not (
+                function_check.isChecked()
+                or batt_rep.isChecked()
+                or vis_inspec.isChecked()
+            ):
+                QMessageBox.information(
+                    self, "Loan Return", "At least one check box needs to be checked!"
+                )
 
-    def __init__(self):
-        super().__init__()
-        self.app = app
-        self.app.installEventFilter(self)
+            elif not work_done and (
+                function_check.isChecked()
+                or batt_rep.isChecked()
+                or vis_inspec.isChecked()
+            ):
+                QMessageBox.information(
+                    self, "Loan Return", "Work done field is emtpy!"
+                )
+            elif not work_done and not (
+                function_check.isChecked()
+                or batt_rep.isChecked()
+                or vis_inspec.isChecked()
+            ):
+                QMessageBox.information(
+                    self,
+                    "Loan Return",
+                    "Fill the workdone field and tick one of the check boxes!",
+                )
+            else:
+                job = self.db.create_job(
+                    job_type_id=job_type_id,
+                    job_status_id=job_status_id,
+                    equipment_id=ASSET["equipment_id"],
+                    reported_fault=REPORTED_FAULT,
+                    work_end_date=self.today,
+                    tech_id=logged_user_personnel_id,
+                    taken_by_id=logged_user_personnel_id,
+                    work_done=work_done,
+                    user_id=self.logged_in_user["user_id"],
+                    visual_inspection=vis_inspec.isChecked(),
+                    function_check=function_check.isChecked(),
+                    battery_replaced=batt_rep.isChecked(),
+                    create_job=True,
+                )
 
-    def eventFilter(self, obj, event):
-        """Event filter used to filter mouse move event and emit a signal
-        both are returning false otherwise the change of mouse pointer
-        from hand to arrow would not work"""
+                if job:  # if job created successfully display a pop up message
+                    QMessageBox.information(
+                        self,
+                        "Loan Return",
+                        f"Loan returned and a Function Job created, job no: {job}",
+                    )
+                    self.ui.btn_submit.setDisabled(True)
+        else:
+            try:
+                job_status_id = JOB_STATUS["Not Started"]
+                assigned_tech = ASSIGNED_TECHNICIAN[self.ui.txt_technician.text()][0]
+                if repair_job.isChecked() and reported_fault and assigned_tech:
+                    job = self.db.create_job(
+                        job_type_id=JOB_TYPE["Repair/Correction"],
+                        job_status_id=job_status_id,
+                        equipment_id=ASSET["equipment_id"],
+                        reported_fault=reported_fault,
+                        tech_id=assigned_tech,
+                        user_id=self.logged_in_user["user_id"],
+                        taken_by_id=logged_user_personnel_id,
+                        create_job=True,
+                    )
+                    if job:
+                        self.ui.btn_submit.setDisabled(True)
+                        self.job_sticker["job_number"] = job
+                        self.job_sticker["assigned_tech"] = (
+                            self.ui.txt_technician.text()
+                        )
+                        self.job_sticker["job_type"] = "Repair"
+                        self.job_sticker["equipment_no"] = ASSET["equipment_no"]
+                        QMessageBox.information(
+                            self,
+                            "Successful Job Creation",
+                            f"A Repair Job with Job number: [{job}] has been created!",
+                        )
 
-        if event.type() == QEvent.MouseMove:
-            self.mouse_moved.emit()
-            return False
-        return False
+                elif ppm_job.isChecked() and reported_fault and assigned_tech:
+                    job_type_id = JOB_TYPE["PPM"]
+                    job = self.db.create_job(
+                        job_status_id=job_status_id,
+                        job_type_id=job_type_id,
+                        equipment_id=ASSET["equipment_id"],
+                        reported_fault=reported_fault,
+                        tech_id=assigned_tech,
+                        taken_by_id=logged_user_personnel_id,
+                        user_id=self.logged_in_user["user_id"],
+                        create_job=True,
+                    )
+                    if job:
+                        self.ui.btn_submit.setDisabled(True)
+                        self.job_sticker["job_number"] = job
+                        self.job_sticker["assigned_tech"] = assigned_tech
+                        self.job_sticker["job_type"] = "PPM"
+                        self.job_sticker["equipment_no"] = ASSET["equipment_no"]
+                        QMessageBox.information(
+                            self,
+                            "Successful Job Creation",
+                            f"A PPM Job with Job number: [{job}] has been created!",
+                        )
+                    else:
+                        QMessageBox.information(
+                            self,
+                            "Create Job",
+                            "Unable to create job, please check all information has been entered correctly",
+                        )
+                else:
+                    QMessageBox.information(
+                        self,
+                        "Create Job",
+                        "Select a job type and fill in the reported fault field!",
+                    )
+            except KeyError:
+                QMessageBox.warning(
+                    self, "Job Creation", "Assigned technician field empty"
+                )
+
+    def print_label(self):
+        pass
+
+    def clear_issue_loan(self):
+        """Clear the form off all entries"""
+        for checkbox in self.return_loan_chkbox:
+            checkbox.setChecked(False)
+        for radio_btn in self.radio_btn:
+            radio_btn.setChecked(False)
+
+        self.ui.txt_technician.setText("")
+        self.ui.txt_reported_fault.clear()
+        self.ui.txt_work_done.clear()
 
 
 class LoginWindow(QDialog):
@@ -580,6 +799,7 @@ class LoginWindow(QDialog):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
+        # self.user = user
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowTitle("Login")
@@ -614,8 +834,9 @@ class LoginWindow(QDialog):
                 "User not part of MPCE staff list, please contact system adminstrator!"
             )
         else:
+            # return first name and username
             return_value = [
-                PERSONNEL_RETURNING_LOAN[username_enetered][0],
+                MPCE_PERSONNEL[username_enetered][0],
                 username_enetered,
             ]
             self.login_successfull.emit(return_value)
@@ -642,273 +863,33 @@ class LoginWindow(QDialog):
 
     def mpce_staff(self, username: str) -> bool:
         """check if user is MPCE member"""
-        if username in PERSONNEL_RETURNING_LOAN:
+        if username in MPCE_PERSONNEL:
             return True
         else:
             return False
 
 
-class LoanReturn(QDialog):
-    """Loan return dialog"""
+class MouseTracker(QObject):
+    """Class used for emit signal that connects to the main window
+    when a mose moves across the screen, the signal is used to reset
+    the auto-logout timer."""
 
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-        self.ui = Ui_Dialog()
-        self.ui.setupUi(self)
-        self.db = Database()
-        self.user_id = ""
-        self.job_sticker = {
-            "job_number": "",
-            "assigned_tech": "",
-            "job_type": "",
-            "equipment_no": "",
-        }
-        self.loan_returned = False
-        # date passed to MSSQL needs to be in ISO standard: YY-MM-DD
-        self.today = datetime.today().strftime("%Y-%m-%d")
-        self.ui.txt_username.setPlaceholderText(
-            "Enter your username and press confirm to unlock the form"
-        )
-        self.setWindowTitle("Loan Return")
+    mouse_moved = Signal()
 
-        # self.ui.btn_clear.clicked.connect(self.check)
-        self.ui.btn_confirm.clicked.connect(self.validate_user)
-        self.radio_btn = (self.ui.rb_return_loan, self.ui.rb_create_job)
-        self.return_loan_options = (
-            self.ui.chkbx_visual_insp,
-            self.ui.chkbx_batt_replace,
-            self.ui.chkbx_function,
-            self.ui.txt_work_done,
-        )
+    def __init__(self):
+        super().__init__()
+        self.app = app
+        self.app.installEventFilter(self)
 
-        self.ui.txt_username.setFocus()
-        self.ui.txt_username.returnPressed.connect(self.validate_user)
+    def eventFilter(self, obj, event):
+        """Event filter used to filter mouse move event and emit a signal
+        both are returning false otherwise the change of mouse pointer
+        from hand to arrow would not work"""
 
-        self.ui.txt_technician.setPlaceholderText("Start typing technician's name")
-
-        self.txt_boxes = (
-            self.ui.txt_technician,
-            self.ui.txt_reported_fault,
-            self.ui.txt_work_done,
-        )
-
-        self.loan_chkbox = (
-            self.ui.chkbx_batt_replace,
-            self.ui.chkbx_function,
-            self.ui.chkbx_visual_insp,
-        )
-        for button in self.radio_btn:
-            button.setDisabled(True)
-
-        self.ui.tabWidget.setDisabled(True)
-
-        self.loan_radio = (self.ui.rb_return_loan, self.ui.rb_create_job)
-        for button in self.loan_radio:
-            button.clicked.connect(self.loan_tab)
-
-        self.job_radio = (self.ui.rb_job, self.ui.rb_ppm)
-
-        # create auto completer for technicians in the job tab
-        tech_auto_complete = QCompleter(list(TECHNICIANS.keys()), self)
-        tech_auto_complete.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-        self.ui.txt_technician.setCompleter(tech_auto_complete)
-        self.ui.btn_submit.clicked.connect(self.return_loan_create_job)
-
-        self.ui.btn_print.clicked.connect(self.print_label)
-        self.ui.btn_clear.clicked.connect(self.clear_form)
-
-    def validate_user(self):
-        """check user entered to see if it a valid mpce user
-        if so allow the user to use the rest of the form"""
-
-        try:
-            username_entered = self.ui.txt_username.text().lower()
-            technician_name = PERSONNEL_RETURNING_LOAN[username_entered][0]
-
-            # user id of the person returning the loan, creating the funcion check job
-            # and creating repair/ppm jobs for the engineers
-            self.user_id = PERSONNEL_RETURNING_LOAN[username_entered][1]
-            self.ui.lbl_technician.setText(technician_name)
-            for button in self.radio_btn:
-                button.setDisabled(False)
-            # self.ui.tabWidget.setDisabled(False)
-        except KeyError:
-            for button in self.radio_btn:
-                button.setDisabled(True)
-            self.ui.tabWidget.setDisabled(True)
-
-            QMessageBox.warning(
-                self,
-                "Username",
-                "Unable to find valid username, type your username name again!",
-            )
-            print(ASSET["equipment_no"])
-
-
-#     def loan_tab(self):
-#         self.ui.tabWidget.setEnabled(True)
-#         if self.ui.rb_create_job.isChecked():
-#             self.ui.tabWidget.setCurrentIndex(1)
-#         else:
-#             self.ui.tabWidget.setCurrentIndex(0)
-
-#     def return_loan_create_job(self):
-#         """makes some checks on the check box, radio buttons for job creation
-#         and ensures the workdone and reported fault fields are not blank.
-#         Makes a call to the return loan function of the DB class to return the loan
-#         and create function if the checkbox has been ticked and work done has been completed.
-#         if no tick box and nothing in the workdone, asks users if they want to just return the loan
-#         without creating a job
-#         """
-
-#         work_done = self.ui.txt_work_done.toPlainText()
-#         reported_fault = self.ui.txt_reported_fault.toPlainText()
-#         func_chk = self.ui.chkbx_function
-#         batt_rep = self.ui.chkbx_batt_replace
-#         vis_inspec = self.ui.chkbx_visual_insp
-
-#         repair_job = self.ui.rb_job
-#         ppm_job = self.ui.rb_ppm
-#         assigned_tech = self.ui.txt_technician.text()
-#         tech_returning_loan = PERSONNEL_RETURNING_LOAN[self.ui.txt_username.text()][2]
-
-#         if self.ui.tabWidget.currentIndex() == 0:
-#             job_type_id = JOB_TYPE["Function Check"]
-#             job_status_id = JOB_STATUS["Completed"]
-
-#             if (
-#                 func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
-#             ) and work_done:
-#                 # if any of the check boxes have been ticket and text in work done,
-#                 # return the device to library and create a functional check job
-#                 # by taking the value from the username field to get the personnel details
-#                 # to be used for the creation of the job
-#                 job = self.db.create_job(
-#                     job_type_id=job_type_id,
-#                     job_status_id=job_status_id,
-#                     equipment_id=ASSET["equipment_id"],
-#                     reported_fault=REPORTED_FAULT,
-#                     work_end_date=self.today,
-#                     tech_id=tech_returning_loan,
-#                     taken_by_id=tech_returning_loan,
-#                     work_done=work_done,
-#                     user_id=self.user_id,
-#                     visual_inspection=vis_inspec.isChecked(),
-#                     function_check=func_chk.isChecked(),
-#                     battery_replaced=batt_rep.isChecked(),
-#                     create_job=True,
-#                 )
-
-#                 if job:
-#                     QMessageBox.information(
-#                         self,
-#                         "Loan Return",
-#                         f"Loan returned and a Function Job created, job no: {job}",
-#                     )
-#                     self.ui.btn_confirm.setDisabled(True)
-
-#             elif work_done and not (
-#                 func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
-#             ):
-#                 QMessageBox.information(
-#                     self, "Loan Return", "At least one check box needs to be checked!"
-#                 )
-
-#             elif not work_done and (
-#                 func_chk.isChecked() or batt_rep.isChecked() or vis_inspec.isChecked()
-#             ):
-#                 QMessageBox.information(
-#                     self, "Loan Return", "Work done field is emtpy!"
-#                 )
-#             else:
-#                 msg_box = QMessageBox.question(
-#                     self,
-#                     "Loan Return",
-#                     "Do you want to return loan without creating a Function Check Job?",
-#                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-#                     defaultButton=QMessageBox.StandardButton.No,
-#                 )
-#                 if msg_box == QMessageBox.StandardButton.Yes:
-#                     # if user doesn't
-#                     self.db.create_job(
-#                         equipment_id=ASSET["equipment_id"],
-#                     )
-#                     QMessageBox.information(
-#                         self,
-#                         "Loan Return",
-#                         f"Successfully returned equipment: {ASSET['equipment_no']} to the library",
-#                     )
-#                     self.ui.btn_confirm.setDisabled(True)
-#         else:
-#             job_status_id = JOB_STATUS["Not Started"]
-#             assigned_tech = TECHNICIANS[self.ui.txt_technician.text()][0]
-#             if repair_job.isChecked() and reported_fault and assigned_tech:
-#                 job = self.db.create_job(
-#                     job_type_id=JOB_TYPE["Repair/Correction"],
-#                     job_status_id=job_status_id,
-#                     equipment_id=ASSET["equipment_id"],
-#                     reported_fault=reported_fault,
-#                     tech_id=assigned_tech,
-#                     user_id=self.user_id,
-#                     taken_by_id=tech_returning_loan,
-#                     create_job=True,
-#                 )
-#                 if job:
-#                     self.job_sticker["job_number"] = job
-#                     self.job_sticker["assigned_tech"] = self.ui.txt_technician.text()
-#                     self.job_sticker["job_type"] = "Repair"
-#                     self.job_sticker["equipment_no"] = ASSET["equipment_no"]
-#                     QMessageBox.information(
-#                         self,
-#                         "Successful Job Creation",
-#                         f"A 'Repair Job' with Job number: [{job}] has been created!",
-#                     )
-#                     self.ui.btn_confirm.setDisabled(True)
-#             elif ppm_job.isChecked() and reported_fault and assigned_tech:
-#                 job_type_id = JOB_TYPE["PPM"]
-#                 job = self.db.create_job(
-#                     job_status_id=job_status_id,
-#                     job_type_id=job_type_id,
-#                     equipment_id=ASSET["equipment_id"],
-#                     reported_fault=reported_fault,
-#                     tech_id=assigned_tech,
-#                     taken_by_id=tech_returning_loan,
-#                     user_id=self.user_id,
-#                     create_job=True,
-#                 )
-#                 if job:
-#                     self.job_sticker["job_number"] = job
-#                     self.job_sticker["assigned_tech"] = assigned_tech
-#                     self.job_sticker["job_type"] = "PPM"
-#                     self.job_sticker["equipment_no"] = ASSET["equipment_no"]
-#                     QMessageBox.information(
-#                         self,
-#                         "Successful Job Creation",
-#                         f"A PPM Job with Job number: [{job}] has been created!",
-#                     )
-#                     self.ui.btn_confirm.setDisabled(True)
-#                 else:
-#                     QMessageBox.information(
-#                         self,
-#                         "Create Job",
-#                         "Unable to create job, please check all information has been entered correctly",
-#                     )
-#             else:
-#                 QMessageBox.information(
-#                     self,
-#                     "Create Job",
-#                     "Select a job type, technician and fill in the reported fault box!",
-#                 )
-
-#     def print_label(self):
-#         print(self.job_sticker)
-
-#     def clear_form(self):
-#         """Clear the form off all entries"""
-#         for text in self.txt_boxes:
-#             text.clear()
-#         for checkbox in self.loan_chkbox:
-#             checkbox.setChecked(False)
+        if event.type() == QEvent.MouseMove:
+            self.mouse_moved.emit()
+            return False
+        return False
 
 
 if __name__ == "__main__":
