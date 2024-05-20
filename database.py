@@ -66,7 +66,7 @@ class Database:
         return self.exec_command(sql_command, parameters)
 
     def issue_loan(self, equipment_id, location_id) -> None:
-        sql_command = "EXEC LibraryCheckout @EquipmentId=:equipment_id,\
+        sql_command = "EXEC LibraryIssueLoan @EquipmentId=:equipment_id,\
             @LocationId=:location_id"
         parameters = {"equipment_id": equipment_id, "location_id": location_id}
 
@@ -79,6 +79,21 @@ class Database:
         # convert tuple to string so it can be loaded to json and parsed
         result_string = f"[{result[0][0]}]"
         return json.loads(result_string)
+
+    def return_loan(self, equipment_id: str) -> None:
+        sql_command = "EXEC LibraryReturnLoan @EquipmentId=:equipment_id"
+        parameters = {"equipment_id": equipment_id}
+
+        self.exec_command(sql_command=sql_command, params=parameters)
+
+    def update_location(self, equipment_id, location_id) -> None:
+        """Update location of given asset
+        for issueing a permenant supply from within library"""
+
+        sql_command = "EXEC LibraryUpdateLocation @EquipmentId=:equipment_id,\
+            @LocationId=:location_id"
+        parameters = {"equipment_id": equipment_id, "location_id": location_id}
+        self.exec_command(sql_command=sql_command, params=parameters)
 
     def create_job(
         self,
@@ -96,9 +111,6 @@ class Database:
         function_check: bool = None,
         battery_replaced: bool = None,
         battery_checked: bool = None,
-        create_job: bool = None,
-        location_id: str = None,
-        update_location: str = None,
     ) -> str:
         """update the loan and create acceptance job
         and return job number created for the job"""
@@ -121,9 +133,6 @@ class Database:
         @FunctionCheck=:funct_check,
         @BatteryReplaced=:batt_replaced,
         @BatteryChecked=:batt_checked,
-        @CreateJob=:create_job,
-        @UpdateLocation=:update_location,
-        @LocationId=:location_id,
         @JobNumber = @out OUTPUT;
         SELECT @out AS job_number;
         """
@@ -142,9 +151,6 @@ class Database:
             "funct_check": function_check,
             "batt_replaced": battery_replaced,
             "batt_checked": battery_checked,
-            "create_job": create_job,
-            "location_id": location_id,
-            "update_location": update_location,
         }
 
         with self.engine.begin() as conn:
@@ -154,12 +160,4 @@ class Database:
 
 if __name__ == "__main__":
     db = Database()
-    # db.create_job(
-    #     equipment_id="5F96806AEDDE45ADA9717BA14604665C                  ",
-    #     job_type_id="STG2005061300001",
-    #     job_status_id="STG2005071800000",
-    #     reported_fault="Test",
-    #     tech_id="4641D85257D046CABB36FB7A575DECC2                  ",
-    #     user_id="962A1467-EC25-42AE-9F86-9F572652C4E5",
-    #     create_job=True,
-    # )
+    db.return_loan(equipment_id="5F96806AEDDE45ADA9717BA14604665C")
