@@ -34,6 +34,7 @@ font: 14pt
 }
 
 
+
 QWidget#side_menu {
 background-color: #16161a;
 border-radius: 15px;
@@ -80,7 +81,7 @@ QPushButton#btn_user{
 	font-weight: bold;
 	padding: 10px 10px;
 	border-radius: 20px;
-	text-align: left;
+	text-align: centre;
 }
 
 QPushButton#btn_user_2{
@@ -176,6 +177,16 @@ QTabWidget::pane { /* The tab widget frame */
     border-top: 2px solid #C2C7CB;
 }
 
+/*QTabBar::tab {
+    background: blue;
+    border: 2px solid black;
+	color: white;
+    border-bottom-color: #C2C7CB;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    min-width: 8ex;
+    padding: 2px;
+}*/
 
 QTabBar::tab:selected{
     background: 
@@ -278,15 +289,6 @@ border: 0px;
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
           <item>
            <widget class="QPushButton" name="btn_switch_user">
             <property name="cursor">
@@ -347,7 +349,7 @@ border: 0px;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_home">
+        <widget class="QPushButton" name="btn_home_2">
          <property name="minimumSize">
           <size>
            <width>210</width>
@@ -382,7 +384,7 @@ border: 0px;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_check_in">
+        <widget class="QPushButton" name="btn_check_in_2">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -417,7 +419,7 @@ border: 0px;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_dashboard">
+        <widget class="QPushButton" name="btn_dashboard_2">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -465,7 +467,7 @@ border: 0px;
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_setting">
+        <widget class="QPushButton" name="btn_setting_2">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -500,7 +502,7 @@ border: 0px;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_help">
+        <widget class="QPushButton" name="btn_help_2">
          <property name="minimumSize">
           <size>
            <width>210</width>
@@ -532,7 +534,7 @@ border: 0px;
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_report">
+        <widget class="QPushButton" name="btn_report_2">
          <property name="minimumSize">
           <size>
            <width>210</width>
@@ -1183,6 +1185,31 @@ border: 0px;
         <property name="bottomMargin">
          <number>30</number>
         </property>
+        <item>
+         <widget class="QFrame" name="frame_return_loan">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Return Loan</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::PlainText</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
         <item>
          <widget class="QFrame" name="frame_12">
           <property name="minimumSize">
@@ -2030,8 +2057,8 @@ padding: 10px 20px;
 }
 
 QPushButton{
-font: 25pt;
-text-align: centre;
+font: 30px;
+text-alignment: centre;
 padding: 10px 20px
 }</string>
        </property>
@@ -2177,12 +2204,12 @@ padding: 10px 20px
   <tabstop>txt_technician</tabstop>
   <tabstop>txt_reported_fault</tabstop>
   <tabstop>btn_user</tabstop>
-  <tabstop>btn_home</tabstop>
-  <tabstop>btn_check_in</tabstop>
-  <tabstop>btn_dashboard</tabstop>
-  <tabstop>btn_setting</tabstop>
-  <tabstop>btn_help</tabstop>
-  <tabstop>btn_report</tabstop>
+  <tabstop>btn_home_2</tabstop>
+  <tabstop>btn_check_in_2</tabstop>
+  <tabstop>btn_dashboard_2</tabstop>
+  <tabstop>btn_setting_2</tabstop>
+  <tabstop>btn_help_2</tabstop>
+  <tabstop>btn_report_2</tabstop>
   <tabstop>btn_logout_2</tabstop>
   <tabstop>txt_category</tabstop>
   <tabstop>txt_loan_location</tabstop>

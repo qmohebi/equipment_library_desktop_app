@@ -12,20 +12,15 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QCompleter,
     QMessageBox,
-    QDialog,
-    QLineEdit,
 )
-
 
 from PySide6.QtGui import QMouseEvent, QPixmap
 
 from ui_mainwindow import Ui_MainWindow
 
-# from ui.ui_dialogue import Ui_Dialog
-from ui_login import Ui_Dialog
 from logout_timer import LogoutTimer
 from database import Database
-from authentication import LDAPAuthentication
+from login import LoginWindow
 
 # pyside6-uic .\ui\loan_dialogue.ui -o .\ui\ui_dialogue.py
 
@@ -104,7 +99,12 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.login_window = LoginWindow(self)
+        self.login_window = LoginWindow(
+            parent=self,
+            mpce_staff=MPCE_PERSONNEL,
+            ldap_server=LDAP_SERVER,
+            search_base=SEARCH_BASE,
+        )
         self.login_window.hide()
         self.setMouseTracking(True)
 
@@ -164,6 +164,7 @@ class MainWindow(QMainWindow):
         self.get_mpce_personnel()
         self.ui.stackedWidget.setCurrentIndex(0)
 
+        self.ui.frame_user.show()
         self.confirm_labels = (
             self.ui.lbl_3,
             self.ui.lbl_confirm_icon,
@@ -190,7 +191,7 @@ class MainWindow(QMainWindow):
         self.get_location()
         self.disable_buttons()
 
-        self.ui.btn_user_2.clicked.connect(self.on_user_btn_pressed)
+        self.ui.btn_user.clicked.connect(self.on_user_btn_pressed)
 
         location_completer = QCompleter(self.location_name, self)
         location_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
@@ -200,37 +201,27 @@ class MainWindow(QMainWindow):
         self.login_window.login_successfull.connect(self.on_successful_login)
         # self.logout_timer_window.logout_user.connect(self.action_from_timer)
 
-        self.home_btn = (self.ui.btn_home, self.ui.btn_home_2)
-        self.return_loan_btn = (self.ui.btn_check_in, self.ui.btn_check_in_2)
+        self.home_btn = (self.ui.btn_home, self.ui.btn_home)
+        self.return_loan_btn = (self.ui.btn_check_in, self.ui.btn_check_in)
 
         self.logged_user_btn = (
             self.ui.btn_check_in,
-            self.ui.btn_check_in_2,
+            self.ui.btn_check_in,
             self.ui.btn_setting,
-            self.ui.btn_setting_2,
+            self.ui.btn_setting,
             self.ui.btn_dashboard,
-            self.ui.btn_dashboard_2,
+            self.ui.btn_dashboard,
         )
 
         self.authenticated_user_btn = (
-            self.ui.btn_change_user,
-            self.ui.btn_change_user_3,
-            self.ui.btn_logout_4,
-            self.ui.btn_logout_8,
+            self.ui.btn_switch_user,
+            self.ui.btn_logout
         )
 
         self.logout_buttons = (
-            self.ui.btn_logout_4,
-            self.ui.btn_logout_8,
             self.ui.btn_logout_2,
             self.ui.btn_logout,
         )
-
-        self.switch_user_buttons = (self.ui.btn_change_user, self.ui.btn_change_user_3)
-
-        self.ui.side_menu.hide()
-        self.ui.btn_menu_2.hide()
-        self.ui.btn_menu.hide()
 
         self.return_loan_chkbox = (
             self.ui.chkbx_visual_insp,
@@ -240,8 +231,7 @@ class MainWindow(QMainWindow):
         )
         self.radio_btn = (self.ui.rb_job, self.ui.rb_ppm)
 
-        for button in self.switch_user_buttons:
-            button.clicked.connect(self.switch_user)
+        self.ui.btn_switch_user.clicked.connect(self.switch_user)
 
         for button in self.authenticated_user_btn:
             button.hide()
@@ -285,7 +275,7 @@ class MainWindow(QMainWindow):
             self.login_window.setModal(True)
             self.login_window.raise_()
             self.login_window.exec()
-        elif self.ui.btn_change_user.isVisible():
+        elif self.ui.btn_switch_user.isVisible():
             for button in self.authenticated_user_btn:
                 button.hide()
         else:
@@ -395,6 +385,7 @@ class MainWindow(QMainWindow):
                 # if mpce staff logged in, take to checkin page
             elif ASSET["library_status_id"] == "WWW3":
                 if self.mpce_staff_logged_in is True:
+                    self.ui.btn_check_in.setDisabled(False)
                     self.ui.stackedWidget.setCurrentIndex(1)
                     self.clear_return_loan()
                     self.ui.btn_submit.setDisabled(False)
@@ -408,7 +399,7 @@ class MainWindow(QMainWindow):
                     self.ui.txt_loan_location.setText(ASSET["loan_location"])
                     self.ui.txt_asset_2.setText(search_value)
                     self.ui.txt_category.setText(ASSET["category"])
-                    self.ui.btn_check_in_2.setChecked(True)
+                    self.ui.btn_check_in.setChecked(True)
                 else:
                     QMessageBox.warning(
                         self,
@@ -504,7 +495,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.information(
                     self, "Equipment Loan", " Loan succesfully issued!"
                 )
-                self.clear()
+                self.clear(clear_all=True)
                 # for logged in user only where this button is enabled after loan is issued
                 self.ui.btn_submit.setDisabled(False)
             except Exception:
@@ -545,7 +536,7 @@ class MainWindow(QMainWindow):
         if clear_all is True:
             for item in self.txt_boxes:
                 item.setText("")
-            self.reset_issue_loan_form()
+        self.reset_issue_loan_form()
 
     def on_successful_login(self, value_returned: list):
         """capture the first name and change the user button text
@@ -557,15 +548,16 @@ class MainWindow(QMainWindow):
         self.logged_in_user["username"] = value_returned[1]
         self.logged_in_user["user_id"] = MPCE_PERSONNEL[value_returned[1]][2]
 
-        self.ui.btn_user_2.setText(self.logged_in_user["first_name"])
+        self.ui.btn_user.setText(self.logged_in_user["first_name"])
         self.mpce_staff_logged_in = True
         for item in self.logged_user_btn:
             item.show()
             item.setEnabled(True)
-        self.ui.btn_user_2.setChecked(True)
-        self.ui.btn_user_2.setStyleSheet("background-color:#009639")
-        self.ui.btn_user_2.setChecked(True)
+        self.ui.btn_user.setChecked(True)
+        self.ui.btn_user.setStyleSheet("background-color:#009639")
+        self.ui.btn_user.setChecked(True)
         self.ui.txt_asset.setFocus()
+        self.ui.btn_check_in.setDisabled(True)
         self.start_countdown_main_window()
 
     def log_out(self) -> None:
@@ -582,8 +574,8 @@ class MainWindow(QMainWindow):
 
     def reset_window_on_logout(self):
         """Resets the windows fields for guest users"""
-        self.ui.btn_user_2.setText("Guest")
-        self.ui.btn_user_2.setStyleSheet("color:white")
+        self.ui.btn_user.setText("Guest")
+        self.ui.btn_user.setStyleSheet("color:white")
         self.mpce_staff_logged_in = False
         self.username_logged_in = ""
         for item in self.logged_user_btn:
@@ -600,8 +592,8 @@ class MainWindow(QMainWindow):
         """Log the current user and
         open the login page when switch user is pressed."""
 
-        self.ui.btn_user_2.setText("Guest")
-        self.ui.btn_user_2.setStyleSheet("color:white")
+        self.ui.btn_user.setText("Guest")
+        self.ui.btn_user.setStyleSheet("color:white")
         self.mpce_staff_logged_in = False
         self.username_logged_in = ""
         for item in self.logged_user_btn:
@@ -610,6 +602,7 @@ class MainWindow(QMainWindow):
         for button in self.authenticated_user_btn:
             button.hide()
         self.login_window.setModal(True)
+        self.login_window.reset_form()
         self.login_window.raise_()
         self.login_window.exec()
 
@@ -804,87 +797,6 @@ class MainWindow(QMainWindow):
         self.ui.txt_technician.setText("")
         self.ui.txt_reported_fault.clear()
         self.ui.txt_work_done.clear()
-
-
-class LoginWindow(QDialog):
-    """Opens login windows and returns true
-    when the username and password matches the record on AD
-    also returns true when the username is found on the MPCE DB
-    else returns false and displays error messages."""
-
-    login_successfull = Signal(list)
-
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-
-        # self.user = user
-        self.ui = Ui_Dialog()
-        self.ui.setupUi(self)
-        self.setWindowTitle("Login")
-
-        self.ui.frame_error.hide()
-        self.ui.txt_password.setEchoMode(QLineEdit.Password)
-        self.ui.txt_username.setFocus()
-
-        # self.ui.btn_login.clicked.connect(lambda: self.ui.frame_error.show())
-        self.ui.btn_close_error.clicked.connect(lambda: self.ui.frame_error.hide())
-
-        self.ui.btn_guest.clicked.connect(lambda: self.close())
-        self.ui.btn_login.clicked.connect(self.on_login_btn_clicked)
-
-    def on_login_btn_clicked(self):
-        """take input for username and password and pass to the
-        authentication funciton to check if correct username and password"""
-        username_enetered = self.ui.txt_username.text()
-        password_entered = self.ui.txt_password.text()
-        authenticate = self.authenticate_user(
-            username=username_enetered, password=password_entered
-        )
-
-        check_mpce_staff = self.mpce_staff(username=username_enetered)
-
-        if authenticate is False:
-            self.ui.frame_error.show()  # show error message
-
-        elif authenticate is True and check_mpce_staff is False:
-            self.ui.frame_error.show()
-            self.ui.lbl_error.setText(
-                "User not part of MPCE staff list, please contact system adminstrator!"
-            )
-        else:
-            # return first name and username
-            return_value = [
-                MPCE_PERSONNEL[username_enetered][0],
-                username_enetered,
-            ]
-            self.login_successfull.emit(return_value)
-            self.ui.txt_password.clear()
-            self.ui.txt_username.clear()
-            self.ui.txt_username.setFocus()
-            self.ui.frame_error.hide()
-            self.close()
-
-    def authenticate_user(self, username: str, password: str) -> bool:
-        """takes the username and password typed and passes to LDAP class
-        this carries a simple bind to the AD and if result is true
-        then successful authentication"""
-
-        ldap_autho = LDAPAuthentication(
-            ldap_server=LDAP_SERVER, serach_base=SEARCH_BASE
-        )
-        authentiate = ldap_autho.authenticate(username=username, password=password)
-        if authentiate is True:
-            return True
-
-        else:
-            return False
-
-    def mpce_staff(self, username: str) -> bool:
-        """check if user is MPCE member"""
-        if username in MPCE_PERSONNEL:
-            return True
-        else:
-            return False
 
 
 class MouseTracker(QObject):
