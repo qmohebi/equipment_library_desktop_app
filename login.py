@@ -27,6 +27,7 @@ class LoginWindow(QDialog):
 
         self.ui.txt_password.setEchoMode(QLineEdit.Password)
         self.ui.txt_password.setPlaceholderText("Enter your password")
+        self.ui.txt_username.setPlaceholderText("Enter username")
         self.ui.txt_username.setClearButtonEnabled(True)
         self.ui.txt_password.setClearButtonEnabled(True)
 

@@ -65,10 +65,14 @@ class Database:
 
         return self.exec_command(sql_command, parameters)
 
-    def issue_loan(self, equipment_id, location_id) -> None:
+    def issue_loan(self, equipment_id, location_id, notes) -> None:
         sql_command = "EXEC LibraryIssueLoan @EquipmentId=:equipment_id,\
-            @LocationId=:location_id"
-        parameters = {"equipment_id": equipment_id, "location_id": location_id}
+            @LocationId=:location_id, @LoanNotes=loan_notes:"
+        parameters = {
+            "equipment_id": equipment_id,
+            "location_id": location_id,
+            "loan_notes": notes,
+        }
 
         self.exec_command(sql_command=sql_command, params=parameters)
 

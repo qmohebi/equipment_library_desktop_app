@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from PySide6.QtGui import QMouseEvent, QPixmap
+from PySide6.QtGui import QMouseEvent, QPixmap, QIntValidator
 
 from ui_mainwindow import Ui_MainWindow
 
@@ -75,6 +75,7 @@ with open("config.json", encoding="utf-8") as config:
     LDAP_SERVER = data["ldap_server"]
     SEARCH_BASE = data["search_base"]
     BATTERY_REPORT = data["battery_report"]
+    INVALID_ASSET_ERROR = data["error_message"]
 
 for filname in os.listdir(src_folder):
     if filname.endswith(".CSV"):
@@ -143,6 +144,7 @@ class MainWindow(QMainWindow):
         self.ui.txt_asset.setFocus()
         self.ui.txt_asset.setPlaceholderText("Enter Equipment No")
         self.ui.txt_location.setPlaceholderText("Start typing the location")
+        self.ui.txt_badge.setPlaceholderText("Staff badge number")
         self.ui.btn_validate_eq.clicked.connect(self.get_asset_info)
         self.ui.txt_asset.returnPressed.connect(self.get_asset_info)
         self.ui.btn_validate_loc.clicked.connect(self.validate_location)
@@ -156,31 +158,33 @@ class MainWindow(QMainWindow):
         self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
         self.number_3_pixmap = QPixmap(":/3.png")
         self.ui.lbl_3.setPixmap(self.number_3_pixmap)
+        self.number_4_pixmap = QPixmap(":/4.png")
+        self.ui.lbl_4.setPixmap(self.number_4_pixmap)
 
         # grey pixmap
         self.number_1_grey = QPixmap(":/1_grey.png")
         self.number_2_grey = QPixmap(":/2_grey.png")
         self.number_3_grey = QPixmap(":/3_grey.png")
+        self.number_4_grey = QPixmap(":/4_grey.png")
+
         self.get_mpce_personnel()
         self.ui.stackedWidget.setCurrentIndex(0)
 
         self.ui.frame_user.show()
         self.confirm_labels = (
-            self.ui.lbl_3,
+            self.ui.lbl_4,
             self.ui.lbl_confirm_icon,
             self.ui.lbl_confirm_info,
         )
         for label in self.confirm_labels:
             label.setVisible(False)
 
-        self.txt_boxes = (self.ui.txt_asset, self.ui.txt_location)
-        self.btns = (
-            self.ui.btn_validate_loc,
-            self.ui.btn_confirm,
-        )
+        self.txt_boxes = (self.ui.txt_asset, self.ui.txt_location, self.ui.txt_badge)
+        self.btns = (self.ui.btn_validate_loc, self.ui.btn_confirm, self.ui.btn_badge)
         self.icon_labels = (
             self.ui.lbl_eq_validate,
             self.ui.lbl_confirm_icon,
+            self.ui.lbl_badge_validate,
         )
         self.details_lables = (
             self.ui.lbl_category,
@@ -213,10 +217,7 @@ class MainWindow(QMainWindow):
             self.ui.btn_dashboard,
         )
 
-        self.authenticated_user_btn = (
-            self.ui.btn_switch_user,
-            self.ui.btn_logout
-        )
+        self.authenticated_user_btn = (self.ui.btn_switch_user, self.ui.btn_logout)
 
         self.logout_buttons = (
             self.ui.btn_logout_2,
@@ -229,7 +230,12 @@ class MainWindow(QMainWindow):
             self.ui.chkbx_batt_replace,
             # self.ui.chkbx_rtls_batt,
         )
-        self.radio_btn = (self.ui.rb_job, self.ui.rb_ppm)
+
+        only_integer = QIntValidator()
+        
+        self.ui.txt_badge.setValidator(only_integer)
+
+        # self.ui.lbl_loan.setStyleSheet("color:white")
 
         self.ui.btn_switch_user.clicked.connect(self.switch_user)
 
@@ -251,8 +257,8 @@ class MainWindow(QMainWindow):
         # create auto completer for MPCE_PERSONNEL in the job tab
         tech_auto_complete = QCompleter(list(ASSIGNED_TECHNICIAN.keys()), self)
         tech_auto_complete.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-        self.ui.txt_technician.setCompleter(tech_auto_complete)
-        self.ui.txt_technician.setClearButtonEnabled(True)
+        # self.ui.txt_technician.setCompleter(tech_auto_complete)
+        # self.ui.txt_technician.setClearButtonEnabled(True)
         self.ui.txt_asset.setClearButtonEnabled(True)
         self.ui.txt_location.setClearButtonEnabled(True)
 
@@ -260,6 +266,8 @@ class MainWindow(QMainWindow):
         self.ui.btn_clear_2.clicked.connect(self.clear_return_loan)
         self.ui.txt_asset.textChanged.connect(self.on_clear_txt_clicked)
         self.ui.txt_location.textChanged.connect(self.on_clear_txt_clicked)
+        self.ui.btn_badge.clicked.connect(self.validate_badge)
+        self.ui.txt_badge.returnPressed.connect(self.validate_badge)
 
     def on_clear_txt_clicked(self) -> None:
         """When clear button in the asset or location is pressed
@@ -376,11 +384,8 @@ class MainWindow(QMainWindow):
                 or ASSET["library_status_id"] is None
             ):
                 self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
-                QMessageBox.warning(
-                    self,
-                    "Equipment",
-                    f"Equipment No: {search_value} is not a library item ",
-                )
+                self.invalid_asset()
+                
                 # If on loan check that mpce staff is logged in
                 # if mpce staff logged in, take to checkin page
             elif ASSET["library_status_id"] == "WWW3":
@@ -401,12 +406,7 @@ class MainWindow(QMainWindow):
                     self.ui.txt_category.setText(ASSET["category"])
                     self.ui.btn_check_in.setChecked(True)
                 else:
-                    QMessageBox.warning(
-                        self,
-                        "Equipment loan",
-                        "This equipment has not been checked-in by libarry staff.\n"
-                        "Please leave to aside and pick another one",
-                    )
+                    self.invalid_asset()
             else:
                 self.on_valid_asset_searched()
                 self.permenant_supplied_by_library = False
@@ -417,9 +417,18 @@ class MainWindow(QMainWindow):
             # self.ui.lbl_category.setText("")
             self.ui.btn_confirm.setDisabled(True)
 
+    def invalid_asset(self):
+        """Set messaging for invalid asset"""
+        print("triggered this")
+        self.ui.lbl_4.setVisible(True)
+        self.ui.lbl_4.setPixmap(self.error_pixmap)
+        self.ui.lbl_confirm_info.setVisible(True)
+        self.ui.lbl_confirm_info.setText(INVALID_ASSET_ERROR)
+
     def on_valid_asset_searched(self) -> None:
         """Sets up the form when a valid library asset has been searched"""
-        self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
+        self.ui.btn_validate_eq.setStyleSheet("background-color:#4abc96")
+        # self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
         self.ui.lbl_category.setText(ASSET["category"])
         self.ui.lbl_arrow.setPixmap(self.arrow_pixmap)
         self.ui.btn_validate_loc.setDisabled(False)
@@ -436,15 +445,15 @@ class MainWindow(QMainWindow):
         loc_inputted = self.ui.txt_location.text().strip()
         try:
             ASSET["location_id"] = self.location[loc_inputted]
-            self.ui.lbl_loc_validate.setPixmap(self.confirm_pixmap)
+            # self.ui.lbl_loc_validate.setPixmap(self.confirm_pixmap)
             self.ui.lbl_location.setText(loc_inputted)
-            self.ui.btn_confirm.setDisabled(False)
-            self.ui.btn_clear.setDisabled(False)
-            self.ui.lbl_confirm_info.setVisible(True)
-            self.ui.lbl_3.setVisible(True)
             self.ui.lbl_loan.setStyleSheet("color:grey")
+            self.ui.btn_validate_loc.setStyleSheet("background-color:#4abc96")
             self.ui.lbl_no_2.setPixmap(self.number_2_grey)
             self.ui.txt_location.setStyleSheet("color:grey")
+            self.ui.btn_badge.setDisabled(False)
+            self.ui.txt_badge.setFocus()
+
         except KeyError:
             self.ui.lbl_loc_validate.setPixmap(self.error_pixmap)
             # self.ui.lbl_location.setText("")
@@ -452,8 +461,23 @@ class MainWindow(QMainWindow):
             for label in self.confirm_labels:
                 label.setVisible(False)
 
+    def validate_badge(self):
+        badget_number = self.ui.txt_badge.text()
+        if len(badget_number) == 10:
+            self.ui.lbl_4.setVisible(True)
+            self.ui.lbl_confirm_info.setVisible(True)
+            self.ui.btn_confirm.setDisabled(False)
+            self.ui.lbl_badge.setStyleSheet("color:grey")
+            self.ui.lbl_3.setPixmap(self.number_3_grey)
+            self.ui.btn_badge.setStyleSheet("background-color:#4abc96")
+            # self.ui.lbl_badge_validate.setPixmap(self.confirm_pixmap)
+        # validate staff badge and show info
+
     def confirm_loan(self):
         """issues loan by called the db function"""
+
+        loan_note = f"Badge ID: {self.ui.txt_badge.text()}\
+            - Created by library checkout "
         if self.permenant_supplied_by_library is True:
             supply_job = QMessageBox.question(
                 self,
@@ -490,6 +514,7 @@ class MainWindow(QMainWindow):
                 self.db.issue_loan(
                     equipment_id=ASSET["equipment_id"],
                     location_id=ASSET["location_id"],
+                    notes=loan_note,
                 )
                 self.ui.lbl_confirm_icon.setPixmap(self.confirm_pixmap)
                 QMessageBox.information(
@@ -524,8 +549,11 @@ class MainWindow(QMainWindow):
 
         self.ui.lbl_equipment.setStyleSheet("color:black")
         self.ui.lbl_loan.setStyleSheet("color:black")
+        self.ui.lbl_badge.setStyleSheet("color:black")
+
         self.ui.lbl_no_1.setPixmap(self.number_1_pixmap)
         self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
+        self.ui.lbl_3.setPixmap(self.number_3_pixmap)
         for text in self.txt_boxes:
             text.setStyleSheet("color:black")
 

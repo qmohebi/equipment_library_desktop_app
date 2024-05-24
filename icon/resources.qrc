@@ -1,6 +1,9 @@
 <RCC>
   <qresource>
+    <file>4_grey.png</file>
+    <file>4.png</file>
     <file>eye_show.png</file>
+    <file>tick_white.png</file>
     <file>eye_hide.png</file>
     <file>change-user-30.png</file>
     <file>close-30.png</file>
