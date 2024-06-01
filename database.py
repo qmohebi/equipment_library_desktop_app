@@ -67,13 +67,12 @@ class Database:
 
     def issue_loan(self, equipment_id, location_id, notes) -> None:
         sql_command = "EXEC LibraryIssueLoan @EquipmentId=:equipment_id,\
-            @LocationId=:location_id, @LoanNotes=loan_notes:"
+            @LocationId=:location_id, @Notes=:loan_notes"
         parameters = {
             "equipment_id": equipment_id,
             "location_id": location_id,
             "loan_notes": notes,
         }
-
         self.exec_command(sql_command=sql_command, params=parameters)
 
     def get_mpce_personnel(self) -> dict:
@@ -115,7 +114,7 @@ class Database:
         function_check: bool = None,
         battery_replaced: bool = None,
         battery_checked: bool = None,
-    ) -> str:
+    ) -> int:
         """update the loan and create acceptance job
         and return job number created for the job"""
 

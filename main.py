@@ -14,13 +14,14 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from PySide6.QtGui import QMouseEvent, QPixmap, QIntValidator
+from PySide6.QtGui import QPixmap, QIntValidator
 
 from ui_mainwindow import Ui_MainWindow
 
 from logout_timer import LogoutTimer
 from database import Database
 from login import LoginWindow
+from assing_technician import AssignTech
 
 # pyside6-uic .\ui\loan_dialogue.ui -o .\ui\ui_dialogue.py
 
@@ -35,7 +36,9 @@ ASSET = {
 }
 
 ASSIGNED_TECHNICIAN = {}
+
 MPCE_PERSONNEL = {}
+
 JOB_TYPE = {
     "Repair/Correction": "STG2005061300002",
     "PPM": "STG2005061300001",
@@ -44,6 +47,7 @@ JOB_TYPE = {
 }
 
 RTLS_BATTERY = {"rtls_equipment_no": [], "battery_capacity": []}
+
 JOB_STATUS = {
     "Not Started": "STG2005071800000",
     "Completed": "69914FCE64344265A0E72EC66528D9FA",
@@ -106,12 +110,14 @@ class MainWindow(QMainWindow):
             ldap_server=LDAP_SERVER,
             search_base=SEARCH_BASE,
         )
+
         self.login_window.hide()
         self.setMouseTracking(True)
 
+        #   -------------------------------------
         # tracks mouse movement across the wigdget and resets the timer
-        self.tracker = MouseTracker()
-        self.tracker.mouse_moved.connect(self.reset_countdown)
+        # self.tracker = MouseTracker()
+        # self.tracker.mouse_moved.connect(self.reset_countdown)
 
         self.db = Database()
 
@@ -139,7 +145,6 @@ class MainWindow(QMainWindow):
         self.error_pixmap = QPixmap(":/cancel.png")
         self.arrow_pixmap = QPixmap(":/arrow.png")
         self.setWindowTitle("Library Loan")
-        self.ui.lbl_confirm_info.setVisible(False)
 
         self.ui.txt_asset.setFocus()
         self.ui.txt_asset.setPlaceholderText("Enter Equipment No")
@@ -161,6 +166,15 @@ class MainWindow(QMainWindow):
         self.number_4_pixmap = QPixmap(":/4.png")
         self.ui.lbl_4.setPixmap(self.number_4_pixmap)
 
+        self.mandatory_check_box = (
+            self.ui.rb_function_fail,
+            self.ui.rb_function_pass,
+            self.ui.rb_ppm_no,
+            self.ui.rb_ppm_yes,
+            self.ui.chkbx_function,
+            self.ui.chkbx_batt_replace,
+        )
+
         # grey pixmap
         self.number_1_grey = QPixmap(":/1_grey.png")
         self.number_2_grey = QPixmap(":/2_grey.png")
@@ -170,14 +184,15 @@ class MainWindow(QMainWindow):
         self.get_mpce_personnel()
         self.ui.stackedWidget.setCurrentIndex(0)
 
+        self.assing_tech_window = AssignTech(technicians=ASSIGNED_TECHNICIAN)
+        self.assing_tech_window.hide()
+
         self.ui.frame_user.show()
         self.confirm_labels = (
             self.ui.lbl_4,
             self.ui.lbl_confirm_icon,
             self.ui.lbl_confirm_info,
         )
-        for label in self.confirm_labels:
-            label.setVisible(False)
 
         self.txt_boxes = (self.ui.txt_asset, self.ui.txt_location, self.ui.txt_badge)
         self.btns = (self.ui.btn_validate_loc, self.ui.btn_confirm, self.ui.btn_badge)
@@ -195,6 +210,8 @@ class MainWindow(QMainWindow):
         self.get_location()
         self.disable_buttons()
 
+        self.ui.lbl_4.clear()
+
         self.ui.btn_user.clicked.connect(self.on_user_btn_pressed)
 
         location_completer = QCompleter(self.location_name, self)
@@ -203,7 +220,6 @@ class MainWindow(QMainWindow):
 
         # capture the value returned from the login windows
         self.login_window.login_successfull.connect(self.on_successful_login)
-        # self.logout_timer_window.logout_user.connect(self.action_from_timer)
 
         self.home_btn = (self.ui.btn_home, self.ui.btn_home)
         self.return_loan_btn = (self.ui.btn_check_in, self.ui.btn_check_in)
@@ -231,9 +247,9 @@ class MainWindow(QMainWindow):
             # self.ui.chkbx_rtls_batt,
         )
 
-        only_integer = QIntValidator()
-        
-        self.ui.txt_badge.setValidator(only_integer)
+        # only_integer = QIntValidator()
+
+        # self.ui.txt_badge.setValidator(only_integer)
 
         # self.ui.lbl_loan.setStyleSheet("color:white")
 
@@ -261,19 +277,37 @@ class MainWindow(QMainWindow):
         # self.ui.txt_technician.setClearButtonEnabled(True)
         self.ui.txt_asset.setClearButtonEnabled(True)
         self.ui.txt_location.setClearButtonEnabled(True)
+        self.ui.txt_badge.setClearButtonEnabled(True)
 
         self.ui.btn_submit.clicked.connect(self.return_loan)
         self.ui.btn_clear_2.clicked.connect(self.clear_return_loan)
         self.ui.txt_asset.textChanged.connect(self.on_clear_txt_clicked)
         self.ui.txt_location.textChanged.connect(self.on_clear_txt_clicked)
+        self.ui.txt_badge.textChanged.connect(self.on_clear_txt_clicked)
         self.ui.btn_badge.clicked.connect(self.validate_badge)
         self.ui.txt_badge.returnPressed.connect(self.validate_badge)
+
+        self.ui.rb_function_fail.toggled.connect(self.on_failed_function_check)
+        self.ui.rb_ppm_yes.toggled.connect(self.on_ppm_required)
+
+        self.assing_tech_window.job_created.connect(self.on_job_by_dialog)
 
     def on_clear_txt_clicked(self) -> None:
         """When clear button in the asset or location is pressed
         reset"""
-        if self.ui.txt_asset.text() == "" or self.ui.txt_location.text() == "":
+        if self.ui.txt_asset.text() == "":
             self.reset_issue_loan_form()
+        elif self.ui.txt_location.text() == "":
+            self.ui.lbl_loan.setStyleSheet("color: black")
+            self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
+            self.ui.lbl_loc_validate.clear()
+            self.ui.btn_badge.setDisabled(True)
+            self.ui.txt_badge.setDisabled(True)
+        elif self.ui.txt_badge.text() == "":
+            self.ui.lbl_badge_validate.clear()
+            self.ui.lbl_4.clear()
+            self.ui.lbl_confirm_info.clear()
+            self.ui.btn_confirm.setDisabled(True)
 
     def on_user_btn_pressed(self) -> None:
         """Actions on what happens when user presses the login
@@ -281,6 +315,8 @@ class MainWindow(QMainWindow):
         if user not logged in, open the login window to allow user to login"""
         if self.mpce_staff_logged_in is False:
             self.login_window.setModal(True)
+            self.login_window.ui.txt_username.clear()
+            self.login_window.ui.txt_password.clear()
             self.login_window.raise_()
             self.login_window.exec()
         elif self.ui.btn_switch_user.isVisible():
@@ -385,7 +421,7 @@ class MainWindow(QMainWindow):
             ):
                 self.ui.lbl_eq_validate.setPixmap(self.error_pixmap)
                 self.invalid_asset()
-                
+
                 # If on loan check that mpce staff is logged in
                 # if mpce staff logged in, take to checkin page
             elif ASSET["library_status_id"] == "WWW3":
@@ -419,16 +455,21 @@ class MainWindow(QMainWindow):
 
     def invalid_asset(self):
         """Set messaging for invalid asset"""
-        print("triggered this")
+
         self.ui.lbl_4.setVisible(True)
         self.ui.lbl_4.setPixmap(self.error_pixmap)
         self.ui.lbl_confirm_info.setVisible(True)
+        self.ui.lbl_confirm_info.setWordWrap(True)
+        self.ui.frame_confirm.setStyleSheet(
+            "background-color: pink; border-radius: 10px;"
+        )
+        self.ui.lbl_confirm_info.setStyleSheet("font: 20pt")
         self.ui.lbl_confirm_info.setText(INVALID_ASSET_ERROR)
 
     def on_valid_asset_searched(self) -> None:
         """Sets up the form when a valid library asset has been searched"""
-        self.ui.btn_validate_eq.setStyleSheet("background-color:#4abc96")
-        # self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
+        # self.ui.btn_validate_eq.setStyleSheet("background-color:#4abc96")
+        self.ui.lbl_eq_validate.setPixmap(self.confirm_pixmap)
         self.ui.lbl_category.setText(ASSET["category"])
         self.ui.lbl_arrow.setPixmap(self.arrow_pixmap)
         self.ui.btn_validate_loc.setDisabled(False)
@@ -437,21 +478,23 @@ class MainWindow(QMainWindow):
         self.ui.lbl_equipment.setStyleSheet("color:grey")
         self.ui.lbl_no_1.setPixmap(self.number_1_grey)
         self.ui.txt_asset.setStyleSheet("color:grey")
+        self.reset_confirm_label()
 
     def validate_location(self):
         """Checks to make sure the location entered is a correct one
-        by comparing to location dictionary
-        """
+        by comparing to location dictionary"""
+
         loc_inputted = self.ui.txt_location.text().strip()
         try:
             ASSET["location_id"] = self.location[loc_inputted]
-            # self.ui.lbl_loc_validate.setPixmap(self.confirm_pixmap)
+            self.ui.lbl_loc_validate.setPixmap(self.confirm_pixmap)
             self.ui.lbl_location.setText(loc_inputted)
             self.ui.lbl_loan.setStyleSheet("color:grey")
-            self.ui.btn_validate_loc.setStyleSheet("background-color:#4abc96")
+            # self.ui.btn_validate_loc.setStyleSheet("background-color:#4abc96")
             self.ui.lbl_no_2.setPixmap(self.number_2_grey)
             self.ui.txt_location.setStyleSheet("color:grey")
             self.ui.btn_badge.setDisabled(False)
+            self.ui.txt_badge.setDisabled(False)
             self.ui.txt_badge.setFocus()
 
         except KeyError:
@@ -461,23 +504,48 @@ class MainWindow(QMainWindow):
             for label in self.confirm_labels:
                 label.setVisible(False)
 
+    def reset_confirm_label(self):
+        self.ui.frame_confirm.setStyleSheet("background-color: transparent")
+        for label in self.confirm_labels:
+            label.clear()
+
     def validate_badge(self):
+        """Check the entered badge number is integer
+        and above 10 digits long"""
+
         badget_number = self.ui.txt_badge.text()
-        if len(badget_number) == 10:
-            self.ui.lbl_4.setVisible(True)
-            self.ui.lbl_confirm_info.setVisible(True)
-            self.ui.btn_confirm.setDisabled(False)
-            self.ui.lbl_badge.setStyleSheet("color:grey")
-            self.ui.lbl_3.setPixmap(self.number_3_grey)
-            self.ui.btn_badge.setStyleSheet("background-color:#4abc96")
-            # self.ui.lbl_badge_validate.setPixmap(self.confirm_pixmap)
+
+        try:
+            if int(badget_number) and len(badget_number) >= 10:
+
+                self.ui.lbl_4.setVisible(True)
+                self.ui.lbl_4.setPixmap(self.number_4_pixmap)
+                self.ui.lbl_confirm_info.setVisible(True)
+                self.ui.lbl_confirm_info.setWordWrap(False)
+                self.ui.frame_confirm.setStyleSheet(
+                    "border-color: green; border-radius: 10px;"
+                )
+                self.ui.lbl_confirm_info.setText("Press confirm to take out equipment.")
+                self.ui.lbl_confirm_info.setStyleSheet("font:30pt")
+                self.ui.btn_confirm.setDisabled(False)
+                self.ui.lbl_badge_validate.setPixmap(self.confirm_pixmap)
+            else:
+                self.ui.lbl_badge_validate.setPixmap(self.error_pixmap)
+                QMessageBox.warning(self, "Library Loan", "Incorrect badge number!")
+                self.ui.txt_badge.setFocus()
+        except Exception:
+            self.ui.lbl_badge_validate.setPixmap(self.error_pixmap)
+            QMessageBox.warning(self, "Library Loan", "Incorrect badge number")
+            self.ui.txt_badge.setFocus()
+
         # validate staff badge and show info
 
     def confirm_loan(self):
         """issues loan by called the db function"""
 
-        loan_note = f"Badge ID: {self.ui.txt_badge.text()}\
-            - Created by library checkout "
+        loan_note = (
+            f"Badge ID: {self.ui.txt_badge.text()} - Created by library checkout"
+        )
         if self.permenant_supplied_by_library is True:
             supply_job = QMessageBox.question(
                 self,
@@ -532,6 +600,7 @@ class MainWindow(QMainWindow):
         for button in self.btns:
             button.setDisabled(True)
         self.ui.txt_location.setDisabled(True)
+        self.ui.txt_badge.setDisabled(True)
 
     def reset_issue_loan_form(self) -> None:
         """clears the issue loan form and disables the button"""
@@ -543,17 +612,19 @@ class MainWindow(QMainWindow):
 
         self.disable_buttons()
 
-        for label in self.confirm_labels:
-            label.setVisible(False)
+        # for label in self.confirm_labels:
+        #     label.setVisible(False)
         self.ui.txt_asset.setFocus()
 
         self.ui.lbl_equipment.setStyleSheet("color:black")
         self.ui.lbl_loan.setStyleSheet("color:black")
         self.ui.lbl_badge.setStyleSheet("color:black")
+        self.ui.frame_confirm.setStyleSheet("color:transparent")
 
         self.ui.lbl_no_1.setPixmap(self.number_1_pixmap)
         self.ui.lbl_no_2.setPixmap(self.number_2_pixmap)
         self.ui.lbl_3.setPixmap(self.number_3_pixmap)
+        self.ui.lbl_4.setVisible(False)
         for text in self.txt_boxes:
             text.setStyleSheet("color:black")
 
@@ -564,6 +635,7 @@ class MainWindow(QMainWindow):
         if clear_all is True:
             for item in self.txt_boxes:
                 item.setText("")
+
         self.reset_issue_loan_form()
 
     def on_successful_login(self, value_returned: list):
@@ -664,7 +736,7 @@ class MainWindow(QMainWindow):
         remaining_time = max(0, self.time_remaining)
         minutes = remaining_time // 60000
         seconds = (remaining_time % 60000) // 1000
-        # self.statusBar().showMessage(f"Timeout in {minutes:02}:{seconds:02}")
+        self.statusBar().showMessage(f"Timeout in {minutes:02}:{seconds:02}")
 
         if self.time_remaining <= 0:
             self.countdown_timer.stop()
@@ -680,137 +752,74 @@ class MainWindow(QMainWindow):
         """based on the tab the user is in
         return loan and created the correct job"""
         work_done = self.ui.txt_work_done.toPlainText()
-        reported_fault = self.ui.txt_reported_fault.toPlainText()
+        # reported_fault = self.ui.txt_reported_fault.toPlainText()
         function_check = self.ui.chkbx_function
         batt_rep = self.ui.chkbx_batt_replace
         vis_inspec = self.ui.chkbx_visual_insp
 
-        repair_job = self.ui.rb_job
-        ppm_job = self.ui.rb_ppm
-        assigned_tech = self.ui.txt_technician.text()
         logged_user_personnel_id = MPCE_PERSONNEL[self.logged_in_user["username"]][3]
 
-        if self.ui.tabWidget.currentIndex() == 0:
-            job_type_id = JOB_TYPE["Function Check"]
-            job_status_id = JOB_STATUS["Completed"]
-            if work_done and not (
-                function_check.isChecked()
-                or batt_rep.isChecked()
-                or vis_inspec.isChecked()
-            ):
-                QMessageBox.information(
-                    self, "Loan Return", "At least one check box needs to be checked!"
-                )
+        job_type_id = JOB_TYPE["Function Check"]
+        job_status_id = JOB_STATUS["Completed"]
 
-            elif not work_done and (
-                function_check.isChecked()
-                or batt_rep.isChecked()
-                or vis_inspec.isChecked()
-            ):
-                QMessageBox.information(
-                    self, "Loan Return", "Work done field is emtpy!"
-                )
-            elif not work_done and not (
-                function_check.isChecked()
-                or batt_rep.isChecked()
-                or vis_inspec.isChecked()
-            ):
+        if work_done and not (function_check.isChecked() or batt_rep.isChecked()):
+            QMessageBox.information(
+                self, "Loan Return", "Fill in the mandatory fields."
+            )
+
+        elif not work_done and (function_check.isChecked() or vis_inspec.isChecked()):
+            QMessageBox.information(self, "Loan Return", "Work done field is emtpy!")
+        elif not work_done and not (
+            function_check.isChecked() or vis_inspec.isChecked()
+        ):
+            QMessageBox.information(
+                self,
+                "Loan Return",
+                "Fill the workdone field and tick one of the check boxes!",
+            )
+        elif not (self.ui.rb_function_pass.isChecked()):
+            QMessageBox.information(
+                self,
+                "Loan Return",
+                "Select funcitonal check pass/fail and PPM required",
+            )
+        elif not (self.ui.rb_ppm_no.isChecked() or self.ui.rb_ppm_yes.isChecked()):
+            QMessageBox.information(
+                self,
+                "Loan Return",
+                "Select PPM required",
+            )
+        else:
+            print("create job")
+            self.db.return_loan(equipment_id=ASSET["equipment_id"])
+            job = self.db.create_job(
+                job_type_id=job_type_id,
+                job_status_id=job_status_id,
+                equipment_id=ASSET["equipment_id"],
+                reported_fault=REPORTED_FAULT,
+                work_end_date=self.today,
+                tech_id=logged_user_personnel_id,
+                taken_by_id=logged_user_personnel_id,
+                work_done=work_done,
+                user_id=self.logged_in_user["user_id"],
+                visual_inspection=vis_inspec.isChecked(),
+                function_check=function_check.isChecked(),
+                battery_replaced=batt_rep.isChecked(),
+            )
+            if (
+                job
+            ):  # if job created successfully display a pop up message and update the job fields
                 QMessageBox.information(
                     self,
                     "Loan Return",
-                    "Fill the workdone field and tick one of the check boxes!",
+                    f"Loan returned and a Function Job created, job no: {job}",
                 )
-            else:
-                self.db.return_loan(equipment_id=ASSET["equipment_id"])
-                job = self.db.create_job(
-                    job_type_id=job_type_id,
-                    job_status_id=job_status_id,
-                    equipment_id=ASSET["equipment_id"],
-                    reported_fault=REPORTED_FAULT,
-                    work_end_date=self.today,
-                    tech_id=logged_user_personnel_id,
-                    taken_by_id=logged_user_personnel_id,
-                    work_done=work_done,
-                    user_id=self.logged_in_user["user_id"],
-                    visual_inspection=vis_inspec.isChecked(),
-                    function_check=function_check.isChecked(),
-                    battery_replaced=batt_rep.isChecked(),
-                )
-                if job:  # if job created successfully display a pop up message
-                    QMessageBox.information(
-                        self,
-                        "Loan Return",
-                        f"Loan returned and a Function Job created, job no: {job}",
-                    )
-                    self.ui.btn_submit.setDisabled(True)
-        else:
-            try:
-                job_status_id = JOB_STATUS["Not Started"]
-                assigned_tech = ASSIGNED_TECHNICIAN[self.ui.txt_technician.text()][0]
-                if repair_job.isChecked() and reported_fault and assigned_tech:
-                    self.db.return_loan(equipment_id=ASSET["equipment_id"])
-                    job = self.db.create_job(
-                        job_type_id=JOB_TYPE["Repair/Correction"],
-                        job_status_id=job_status_id,
-                        equipment_id=ASSET["equipment_id"],
-                        reported_fault=reported_fault,
-                        tech_id=assigned_tech,
-                        user_id=self.logged_in_user["user_id"],
-                        taken_by_id=logged_user_personnel_id,
-                    )
-                    if job:
-                        self.ui.btn_submit.setDisabled(True)
-                        self.job_sticker["job_number"] = job
-                        self.job_sticker["assigned_tech"] = (
-                            self.ui.txt_technician.text()
-                        )
-                        self.job_sticker["job_type"] = "Repair"
-                        self.job_sticker["equipment_no"] = ASSET["equipment_no"]
-                        QMessageBox.information(
-                            self,
-                            "Successful Job Creation",
-                            f"A Repair Job with Job number: [{job}] has been created!",
-                        )
-
-                elif ppm_job.isChecked() and reported_fault and assigned_tech:
-                    job_type_id = JOB_TYPE["PPM"]
-                    self.db.return_loan(equipment_id=ASSET["equipment_id"])
-                    job = self.db.create_job(
-                        job_status_id=job_status_id,
-                        job_type_id=job_type_id,
-                        equipment_id=ASSET["equipment_id"],
-                        reported_fault=reported_fault,
-                        tech_id=assigned_tech,
-                        taken_by_id=logged_user_personnel_id,
-                        user_id=self.logged_in_user["user_id"],
-                    )
-                    if job:
-                        self.ui.btn_submit.setDisabled(True)
-                        self.job_sticker["job_number"] = job
-                        self.job_sticker["assigned_tech"] = assigned_tech
-                        self.job_sticker["job_type"] = "PPM"
-                        self.job_sticker["equipment_no"] = ASSET["equipment_no"]
-                        QMessageBox.information(
-                            self,
-                            "Successful Job Creation",
-                            f"A PPM Job with Job number: [{job}] has been created!",
-                        )
-                    else:
-                        QMessageBox.information(
-                            self,
-                            "Create Job",
-                            "Unable to create job, please check all information has been entered correctly",
-                        )
-                else:
-                    QMessageBox.information(
-                        self,
-                        "Create Job",
-                        "Select a job type and fill in the reported fault field!",
-                    )
-            except KeyError:
-                QMessageBox.warning(
-                    self, "Job Creation", "Assigned technician field empty"
-                )
+                self.ui.btn_submit.setDisabled(True)
+                self.ui.txt_job_number.setText(str(job))
+                self.ui.txt_job_type.setText("Function Check")
+                self.ui.txt_assinged_tech.setText(
+                    MPCE_PERSONNEL[self.logged_in_user["username"]][1]
+                )  # Get full name of MPCE personnel
 
     def print_label(self):
         pass
@@ -819,12 +828,57 @@ class MainWindow(QMainWindow):
         """Clear the return loan form off all entries"""
         for checkbox in self.return_loan_chkbox:
             checkbox.setChecked(False)
-        for radio_btn in self.radio_btn:
-            radio_btn.setChecked(False)
 
-        self.ui.txt_technician.setText("")
-        self.ui.txt_reported_fault.clear()
+        # self.ui.txt_technician.setText("")
+        # self.ui.txt_reported_fault.clear()
         self.ui.txt_work_done.clear()
+
+    def on_failed_function_check(self) -> None:
+        """Open the repair/ppm job dialogue"""
+
+        self.assing_tech_window.equipment_id = ASSET["equipment_id"]
+        self.assing_tech_window.job_type_id = JOB_TYPE["Repair/Correction"]
+        self.assing_tech_window.job_status_id = JOB_STATUS["Not Started"]
+        self.assing_tech_window.taken_by_id = MPCE_PERSONNEL[
+            self.logged_in_user["username"]
+        ][3]
+        self.assing_tech_window.user_id = self.logged_in_user["user_id"]
+
+        self.assing_tech_window.setModal(True)
+        if self.ui.rb_function_fail.isChecked():
+            self.assing_tech_window.show()
+            self.ui.txt_job_type.setText("Repair/Correction")
+            self.assing_tech_window.ui.txt_technician.setFocus()
+            self.assing_tech_window.ui.groupBox_2.setVisible(True)
+            self.assing_tech_window.ui.lbl_title.setText("Create Repair Job")
+
+    def on_ppm_required(self) -> None:
+        """Open the repair/ppm job dialogue"""
+
+        self.assing_tech_window.equipment_id = ASSET["equipment_id"]
+        self.assing_tech_window.job_type_id = JOB_TYPE["PPM"]
+        self.assing_tech_window.job_status_id = JOB_STATUS["Not Started"]
+        self.assing_tech_window.taken_by_id = MPCE_PERSONNEL[
+            self.logged_in_user["username"]
+        ][3]
+        self.assing_tech_window.user_id = self.logged_in_user["user_id"]
+        self.ui.txt_job_type.setText("PPM")
+        self.assing_tech_window.setModal(True)
+
+        if self.ui.rb_ppm_yes.isChecked():
+            self.assing_tech_window.show()
+            self.assing_tech_window.ui.txt_technician.setFocus()
+            self.assing_tech_window.ui.groupBox_2.setVisible(False)
+            self.assing_tech_window.ui.lbl_title.setText("Create PPM Job")
+
+    def on_job_by_dialog(self, job_info: list) -> None:
+        """Populate the created job fields"""
+
+        print("triggered this")
+        self.ui.txt_job_number.setText() = job_info[0]
+        self.ui.txt_assinged_tech.setText() = job_info[1]
+
+        print(job_info)
 
 
 class MouseTracker(QObject):

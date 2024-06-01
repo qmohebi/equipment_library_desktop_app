@@ -55,13 +55,13 @@ class LoginWindow(QDialog):
         if echo_mode == QLineEdit.Password:
             self.ui.txt_password.setClearButtonEnabled(False)
             reveal_password = self.ui.txt_password.addAction(
-                QIcon(":/eye_hide.png"), QLineEdit.TrailingPosition
+                QIcon(":/eye_show.png"), QLineEdit.TrailingPosition
             )
             reveal_password.triggered.connect(self.password_reveal_hide)
         else:
             self.ui.txt_password.setClearButtonEnabled(False)
             reveal_password = self.ui.txt_password.addAction(
-                QIcon(":/eye_show.png"), QLineEdit.TrailingPosition
+                QIcon(":/eye_hide.png"), QLineEdit.TrailingPosition
             )
             reveal_password.triggered.connect(self.password_reveal_hide)
 
