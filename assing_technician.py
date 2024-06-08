@@ -10,8 +10,8 @@ from database import Database
 
 class AssignTech(QDialog):
     # technician = Signal(str)
-    # job_number = Signal(str)
-    job_created = Signal(list)
+    close_buton_clicked = Signal(bool)
+    job_created = Signal(str)
 
     def __init__(
         self,
@@ -30,52 +30,84 @@ class AssignTech(QDialog):
         self.job_status_id = ""
         self.taken_by_id = ""
         self.user_id = ""
+        self.job_type = ""
+        # capture if dialogue is opend by accident,
+        #  use this signal to clear radio button in main window
 
+        # self.job_created.emit(False)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.ui.txt_technician.setPlaceholderText("Start typing technician's name")
         self.ui.txt_reported_fault.setPlaceholderText("Enter reported fault")
-
+        self.ui.lbl_title.setText(f"Create {self.job_type} Job")
         auto_completer = QCompleter(list(technicians.keys()))
         auto_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.ui.txt_technician.setCompleter(auto_completer)
         self.ui.txt_technician.setClearButtonEnabled(True)
         self.ui.btn_confirm.clicked.connect(self.on_confirm_clicked)
-        self.ui.btn_cancel.clicked.connect(self.on_cancel_clicked)
+        self.ui.btn_close.clicked.connect(self.on_close_clicked)
 
-    def on_confirm_clicked(self) -> str:
+        self.ui.btn_print.clicked.connect(self.print_job_sticker)
+
+        self.text_fields = (
+            self.ui.txt_job_number,
+            self.ui.txt_reported_fault,
+            self.ui.txt_technician,
+        )
+
+    def on_confirm_clicked(self) -> list:
         """Create a repair or ppm job"""
         # assigned_tech_id = self.technician[self.ui.txt_technician.text()]
-        self.reported_fault = self.ui.txt_reported_fault.toPlainText()
-        self.technician_id = self.technicians[self.ui.txt_technician.text()][0]
-        
-        self.db.return_loan(equipment_id=self.equipment_id)
-
-        job = self.db.create_job(
-            equipment_id=self.equipment_id,
-            job_type_id=self.job_type_id,
-            job_status_id=self.job_status_id,
-            reported_fault=self.ui.txt_reported_fault.toPlainText(),
-            tech_id=self.technician_id,
-            user_id=self.user_id,
-            taken_by_id=self.taken_by_id,
-        )
-        if job:
-            return_value = [job, self.ui.txt_technician.text()]
-            print(return_value)
-            self.job_created.emit(return_value)
-            # self.technician.emit(self.ui.txt_technician.text())
-            # self.job_number.emit(str(job))
-            QMessageBox.information(
+        try:
+            self.reported_fault = self.ui.txt_reported_fault.toPlainText()
+            self.technician_id = self.technicians[self.ui.txt_technician.text()][0]
+        except KeyError:
+            QMessageBox.warning(
                 self,
-                "Loan Return",
-                f"Loan returned and a Function Job created, job no: {job}",
+                f"Creating {self.job_type} job",
+                "Technician field is mandatory!",
             )
-
-            self.hide()
+        if not self.reported_fault:
+            self.reported_fault = "Unit due for PPM"
+        # self.db.return_loan(equipment_id=self.equipment_id)
+        if self.job_type == "repair":
+            if not (self.reported_fault):
+                QMessageBox.warning(
+                    self,
+                    f"Creating {self.job_type} job",
+                    "Reported fault is mandatory!",
+                )
         else:
-            QMessageBox.warning(self, "Loan Return", "Unable to create job")
+            job = self.db.create_job(
+                equipment_id=self.equipment_id,
+                job_type_id=self.job_type_id,
+                job_status_id=self.job_status_id,
+                reported_fault=self.ui.txt_reported_fault.toPlainText(),
+                tech_id=self.technician_id,
+                user_id=self.user_id,
+                taken_by_id=self.taken_by_id,
+            )
+            if job:
+                # return_value = [job, self.ui.txt_technician.text()]
+                # self.job_created.emit(return_value)
+                # self.technician.emit(self.ui.txt_technician.text())
+                # self.job_number.emit(str(job))
+                QMessageBox.information(
+                    self,
+                    f"Creating {self.job_type} job",
+                    f"Created a {self.job_type} job with job no: {job}",
+                )
+                self.ui.txt_job_number.setText(str(job))
+                self.job_created.emit("yes")
+            else:
+                QMessageBox.warning(self, "Loan Return", "Unable to create job")
 
-    def on_cancel_clicked(self):
-        self.ui.txt_reported_fault.clear()
-        self.ui.txt_reported_fault.clear()
+    def print_job_sticker(self) -> None:
+        # TODO Create/desgin the ZPL code, send to Zebra printer
+        # TODO collet the information needed to send to printer
+        pass
+
+    def on_close_clicked(self):
+        """Clear the form and hide the dialogue"""
+        for textbox in self.text_fields:
+            textbox.clear()
         self.hide()

@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 import resources_rc
+import resources_rc
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -32,13 +33,13 @@ class Ui_Dialog(object):
 "QLineEdit {\n"
 "	border-radius: 20px;\n"
 "	border: 1px solid white;\n"
-"	padding: 10px;\n"
+"	padding: 14px;\n"
 "	font: 14pt;\n"
 "}\n"
 "\n"
 "QLineEdit:focus{\n"
 "    border: 0px solid white;\n"
-"    padding: 10px;\n"
+"    padding: 14px;\n"
 "    border: 2px solid #fbc531;\n"
 "}\n"
 "\n"
@@ -111,6 +112,7 @@ class Ui_Dialog(object):
 "")
         self.gridLayout_3 = QGridLayout(Dialog)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setVerticalSpacing(15)
         self.frame_4 = QFrame(Dialog)
         self.frame_4.setObjectName(u"frame_4")
         self.frame_4.setLayoutDirection(Qt.RightToLeft)
@@ -163,10 +165,6 @@ class Ui_Dialog(object):
 
 
         self.gridLayout_3.addWidget(self.frame_guest, 3, 0, 1, 1)
-
-        self.verticalSpacer_3 = QSpacerItem(20, 45, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_3.addItem(self.verticalSpacer_3, 4, 0, 1, 1)
 
         self.frame_5 = QFrame(Dialog)
         self.frame_5.setObjectName(u"frame_5")
@@ -262,6 +260,10 @@ class Ui_Dialog(object):
 
 
         self.gridLayout_3.addWidget(self.frame_5, 0, 0, 1, 1)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 45, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_3.addItem(self.verticalSpacer_3, 4, 0, 1, 1)
 
 
         self.retranslateUi(Dialog)

@@ -21,13 +21,13 @@ background-color:#f5f6fa;
 QLineEdit {
 	border-radius: 20px;
 	border: 1px solid white;
-	padding: 10px;
+	padding: 14px;
 	font: 14pt;
 }
 
 QLineEdit:focus{
     border: 0px solid white;
-    padding: 10px;
+    padding: 14px;
     border: 2px solid #fbc531;
 }
 
@@ -99,6 +99,9 @@ background-color:transparent;
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
+   <property name="verticalSpacing">
+    <number>15</number>
+   </property>
    <item row="2" column="0">
     <widget class="QFrame" name="frame_4">
      <property name="layoutDirection">
@@ -252,7 +255,7 @@ background-color:transparent;
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap>:/user_bw.png</pixmap>
+            <pixmap resource="../icon/resources.qrc">:/user_bw.png</pixmap>
            </property>
            <property name="scaledContents">
             <bool>false</bool>
@@ -289,7 +292,7 @@ background-color:transparent;
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/error-30.png</pixmap>
+               <pixmap resource="../icon/resources.qrc">:/error-30.png</pixmap>
               </property>
              </widget>
             </item>
@@ -327,7 +330,7 @@ background-color:transparent;
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../icon/resources.qrc">
                 <normaloff>:/close-30.png</normaloff>:/close-30.png</iconset>
               </property>
              </widget>

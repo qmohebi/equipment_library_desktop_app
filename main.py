@@ -51,6 +51,7 @@ RTLS_BATTERY = {"rtls_equipment_no": [], "battery_capacity": []}
 JOB_STATUS = {
     "Not Started": "STG2005071800000",
     "Completed": "69914FCE64344265A0E72EC66528D9FA",
+    "Failed": "63203D88-A1C4-4B3E-AB70-4EC232A72DF3",
 }
 
 SUPPLY_CATEGORY = [
@@ -166,13 +167,12 @@ class MainWindow(QMainWindow):
         self.number_4_pixmap = QPixmap(":/4.png")
         self.ui.lbl_4.setPixmap(self.number_4_pixmap)
 
-        self.mandatory_check_box = (
+        self.mandatory_check_box = (self.ui.chkbx_function, self.ui.chkbx_visual_insp)
+        self.mandatory_radio_button = (
             self.ui.rb_function_fail,
             self.ui.rb_function_pass,
             self.ui.rb_ppm_no,
             self.ui.rb_ppm_yes,
-            self.ui.chkbx_function,
-            self.ui.chkbx_batt_replace,
         )
 
         # grey pixmap
@@ -247,11 +247,16 @@ class MainWindow(QMainWindow):
             # self.ui.chkbx_rtls_batt,
         )
 
-        # only_integer = QIntValidator()
+        # to be used to hide badge when mpce users are logged in
+        self.badge_info = (
+            self.ui.lbl_badge,
+            self.ui.lbl_3,
+            self.ui.lbl_badge_validate,
+            self.ui.btn_badge,
+            self.ui.txt_badge,
+        )
 
-        # self.ui.txt_badge.setValidator(only_integer)
-
-        # self.ui.lbl_loan.setStyleSheet("color:white")
+        self.ppm_required_radio = (self.ui.rb_ppm_no, self.ui.rb_ppm_yes)
 
         self.ui.btn_switch_user.clicked.connect(self.switch_user)
 
@@ -279,7 +284,7 @@ class MainWindow(QMainWindow):
         self.ui.txt_location.setClearButtonEnabled(True)
         self.ui.txt_badge.setClearButtonEnabled(True)
 
-        self.ui.btn_submit.clicked.connect(self.return_loan)
+        self.ui.btn_submit.clicked.connect(self.on_submit_return_loan)
         self.ui.btn_clear_2.clicked.connect(self.clear_return_loan)
         self.ui.txt_asset.textChanged.connect(self.on_clear_txt_clicked)
         self.ui.txt_location.textChanged.connect(self.on_clear_txt_clicked)
@@ -289,8 +294,10 @@ class MainWindow(QMainWindow):
 
         self.ui.rb_function_fail.toggled.connect(self.on_failed_function_check)
         self.ui.rb_ppm_yes.toggled.connect(self.on_ppm_required)
+        self.ui.btn_issue_loan.clicked.connect(self.return_to_home_screen)
 
-        self.assing_tech_window.job_created.connect(self.on_job_by_dialog)
+        # self.assing_tech_window.close_buton_clicked.connect(self.on_job_by_dialog)
+        self.assing_tech_window.job_created.connect(self.on_close_job_dialog)
 
     def on_clear_txt_clicked(self) -> None:
         """When clear button in the asset or location is pressed
@@ -479,10 +486,15 @@ class MainWindow(QMainWindow):
         self.ui.lbl_no_1.setPixmap(self.number_1_grey)
         self.ui.txt_asset.setStyleSheet("color:grey")
         self.reset_confirm_label()
+        # enable the radio button for job dialog based on valid asset only
+        self.ui.group_function_check.setDisabled(False)
+        self.ui.group_ppm.setDisabled(False)
 
     def validate_location(self):
         """Checks to make sure the location entered is a correct one
-        by comparing to location dictionary"""
+        by comparing to location dictionary,
+        if mpce user logged in, enable the confirm
+        """
 
         loc_inputted = self.ui.txt_location.text().strip()
         try:
@@ -493,9 +505,12 @@ class MainWindow(QMainWindow):
             # self.ui.btn_validate_loc.setStyleSheet("background-color:#4abc96")
             self.ui.lbl_no_2.setPixmap(self.number_2_grey)
             self.ui.txt_location.setStyleSheet("color:grey")
-            self.ui.btn_badge.setDisabled(False)
-            self.ui.txt_badge.setDisabled(False)
-            self.ui.txt_badge.setFocus()
+            if self.mpce_staff_logged_in is False:
+                self.ui.btn_badge.setDisabled(False)
+                self.ui.txt_badge.setDisabled(False)
+                self.ui.txt_badge.setFocus()
+            else:
+                self.ui.btn_confirm.setDisabled(False)
 
         except KeyError:
             self.ui.lbl_loc_validate.setPixmap(self.error_pixmap)
@@ -635,14 +650,15 @@ class MainWindow(QMainWindow):
         if clear_all is True:
             for item in self.txt_boxes:
                 item.setText("")
-
+        self.ui.txt_asset.setText("")
         self.reset_issue_loan_form()
 
     def on_successful_login(self, value_returned: list):
         """capture the first name and change the user button text
         caputre the username that is logged in
-        enable buttons for a authenticated user
-        and set stylesheet for user button"""
+        enable buttons for a authenticated user,
+        set stylesheet for user button
+        and hides the badget info"""
 
         self.logged_in_user["first_name"] = value_returned[0]
         self.logged_in_user["username"] = value_returned[1]
@@ -658,6 +674,8 @@ class MainWindow(QMainWindow):
         self.ui.btn_user.setChecked(True)
         self.ui.txt_asset.setFocus()
         self.ui.btn_check_in.setDisabled(True)
+        for item in self.badge_info:
+            item.hide()
         self.start_countdown_main_window()
 
     def log_out(self) -> None:
@@ -687,6 +705,8 @@ class MainWindow(QMainWindow):
         self.ui.txt_asset.setFocus()
         self.clear(clear_all=True)
         self.countdown_timer.stop()
+        for item in self.badge_info:
+            item.show()
 
     def switch_user(self):
         """Log the current user and
@@ -696,6 +716,9 @@ class MainWindow(QMainWindow):
         self.ui.btn_user.setStyleSheet("color:white")
         self.mpce_staff_logged_in = False
         self.username_logged_in = ""
+        self.ui.btn_home.setChecked(True)
+        self.reset_window_on_logout()
+
         for item in self.logged_user_btn:
             item.hide()
 
@@ -748,9 +771,13 @@ class MainWindow(QMainWindow):
         if self.mpce_staff_logged_in is True:
             self.time_remaining = INACTIVE_TIMEOUT * 60 * 1000
 
-    def return_loan(self):
-        """based on the tab the user is in
-        return loan and created the correct job"""
+    def on_submit_return_loan(self):
+        """Check the users have filled all the mandatory fields which are:
+        -visual inspection, function check tick boxes
+        -visual inspection pass/fail
+        -work done. If so return the loan
+        and create a function check job"""
+
         work_done = self.ui.txt_work_done.toPlainText()
         # reported_fault = self.ui.txt_reported_fault.toPlainText()
         function_check = self.ui.chkbx_function
@@ -760,7 +787,6 @@ class MainWindow(QMainWindow):
         logged_user_personnel_id = MPCE_PERSONNEL[self.logged_in_user["username"]][3]
 
         job_type_id = JOB_TYPE["Function Check"]
-        job_status_id = JOB_STATUS["Completed"]
 
         if work_done and not (function_check.isChecked() or batt_rep.isChecked()):
             QMessageBox.information(
@@ -777,21 +803,30 @@ class MainWindow(QMainWindow):
                 "Loan Return",
                 "Fill the workdone field and tick one of the check boxes!",
             )
-        elif not (self.ui.rb_function_pass.isChecked()):
+        elif not (
+            self.ui.rb_function_pass.isChecked() or self.ui.rb_function_fail.isChecked()
+        ):
             QMessageBox.information(
                 self,
                 "Loan Return",
                 "Select funcitonal check pass/fail and PPM required",
             )
+
         elif not (self.ui.rb_ppm_no.isChecked() or self.ui.rb_ppm_yes.isChecked()):
             QMessageBox.information(
                 self,
                 "Loan Return",
                 "Select PPM required",
             )
+
         else:
-            print("create job")
             self.db.return_loan(equipment_id=ASSET["equipment_id"])
+            # check whether to complete the function job or fail it
+            if self.ui.rb_function_fail.isChecked():
+                job_status_id = JOB_STATUS["Failed"]
+            else:
+                job_status_id = JOB_STATUS["Completed"]
+
             job = self.db.create_job(
                 job_type_id=job_type_id,
                 job_status_id=job_status_id,
@@ -819,22 +854,26 @@ class MainWindow(QMainWindow):
                 self.ui.txt_job_type.setText("Function Check")
                 self.ui.txt_assinged_tech.setText(
                     MPCE_PERSONNEL[self.logged_in_user["username"]][1]
-                )  # Get full name of MPCE personnel
-
-    def print_label(self):
-        pass
+                )
 
     def clear_return_loan(self):
         """Clear the return loan form off all entries"""
         for checkbox in self.return_loan_chkbox:
             checkbox.setChecked(False)
 
-        # self.ui.txt_technician.setText("")
-        # self.ui.txt_reported_fault.clear()
+        # set the radio
+        for button in self.mandatory_radio_button:
+            button.setAutoExclusive(False)
+            button.setChecked(False)
+
+        for button in self.mandatory_radio_button:
+            button.setAutoExclusive(True)
+
         self.ui.txt_work_done.clear()
 
     def on_failed_function_check(self) -> None:
-        """Open the repair/ppm job dialogue"""
+        """set the ppm required check box to no and
+        Open the repair/ppm job dialogue"""
 
         self.assing_tech_window.equipment_id = ASSET["equipment_id"]
         self.assing_tech_window.job_type_id = JOB_TYPE["Repair/Correction"]
@@ -846,11 +885,18 @@ class MainWindow(QMainWindow):
 
         self.assing_tech_window.setModal(True)
         if self.ui.rb_function_fail.isChecked():
+            self.ui.rb_ppm_no.setChecked(True)
             self.assing_tech_window.show()
-            self.ui.txt_job_type.setText("Repair/Correction")
             self.assing_tech_window.ui.txt_technician.setFocus()
             self.assing_tech_window.ui.groupBox_2.setVisible(True)
-            self.assing_tech_window.ui.lbl_title.setText("Create Repair Job")
+            self.assing_tech_window.job_type = "Repair"
+        else:
+            # if the pass radio is selected, ensure the ppm require radio
+            # that was set to No is unchecked
+            for button in self.ppm_required_radio:
+                button.setAutoExclusive(False)
+                button.setChecked(False)
+                button.setAutoExclusive(True)
 
     def on_ppm_required(self) -> None:
         """Open the repair/ppm job dialogue"""
@@ -862,23 +908,45 @@ class MainWindow(QMainWindow):
             self.logged_in_user["username"]
         ][3]
         self.assing_tech_window.user_id = self.logged_in_user["user_id"]
-        self.ui.txt_job_type.setText("PPM")
         self.assing_tech_window.setModal(True)
 
         if self.ui.rb_ppm_yes.isChecked():
             self.assing_tech_window.show()
             self.assing_tech_window.ui.txt_technician.setFocus()
             self.assing_tech_window.ui.groupBox_2.setVisible(False)
-            self.assing_tech_window.ui.lbl_title.setText("Create PPM Job")
+            self.assing_tech_window.job_type = "PPM"
 
-    def on_job_by_dialog(self, job_info: list) -> None:
-        """Populate the created job fields"""
+    def return_to_home_screen(self) -> None:
+        """when home screen is pressed, clear the return loan form,
+        go back to home screen and clear the input in that screen too"""
 
-        print("triggered this")
-        self.ui.txt_job_number.setText() = job_info[0]
-        self.ui.txt_assinged_tech.setText() = job_info[1]
+        self.clear_return_loan()
+        self.ui.txt_asset.clear()
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.btn_home.setChecked(True)
 
-        print(job_info)
+    # def on_job_by_dialog(self, job_info: list) -> None:
+    #     # """Populate the created job fields"""
+
+    #     # # TODO lock the form, write to the job ticket fields
+    #     print("triggered the job dialog")
+
+    # self.ui.txt_job_number.setText(str(job_info[0]))
+    # self.ui.txt_assinged_tech.setText(str(job_info[1]))
+
+    def on_close_job_dialog(self, job_created: str) -> None:
+        """Clear the radio button if users accidently presses on them
+        to oepn the job creation dialogue"""
+
+        print(job_created)
+        if job_created == "yes":
+            self.ui.group_function_check.setDisabled(True)
+            self.ui.group_ppm.setDisabled(True)
+        else:
+            for radio_button in self.mandatory_radio_button:
+                radio_button.setAutoExclusive(False)
+                radio_button.setChecked(False)
+                radio_button.setAutoExclusive(True)
 
 
 class MouseTracker(QObject):
@@ -905,6 +973,7 @@ class MouseTracker(QObject):
 
 
 if __name__ == "__main__":
+
     app = QApplication(sys.argv)
     # app.setStyleSheet(
     #     """QMessageBox QPushButton{min-width: 100px;

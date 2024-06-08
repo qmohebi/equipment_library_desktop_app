@@ -7,23 +7,36 @@
     <x>0</x>
     <y>0</y>
     <width>1341</width>
-    <height>836</height>
+    <height>835</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QWidget{
+   <string notr="true">QWidget{
 background-color: white;
 }
+
+QPushButton{
+	background-color: #16161a;
+	border-radius: none;
+	padding:5px;
+	color: white;
+	margin-right: 10px;
+	text-align: left;
+	font: 13pt;	
+	padding-left:7px;
+	border-radius: 20px;
+}
+
+QMessageBox QPushButton{min-width: 100px;
+background-color:#e5e5e5;
+ }
+QPushButton:default{
+ background-color:#16161a;
+  }
+
 QLineEdit{
 border-radius: 15px;
 border: 1px solid black;
@@ -63,17 +76,6 @@ background-color: #16161a;
 border-radius: 15px;
 }
 
-QPushButton{
-	background-color: #16161a;
-	border-radius: none;
-	padding:5px;
-	color: white;
-	margin-right: 10px;
-	text-align: left;
-	font: 13pt;	
-	padding-left:7px;
-	border-radius: 20px;
-}
 
 
 QPushButton:disabled {
@@ -143,7 +145,7 @@ padding-left: 20px;
 border-radius: 35px;
 }
 
-QPushButton#btn_submit, #btn_print{
+QPushButton#btn_submit, #btn_issue_loan{
 text-align: centre;
 font: 25px;
 padding: 10px 30px;
@@ -213,6 +215,13 @@ border: 0px;
 }
 
 </string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0">
@@ -259,6 +268,9 @@ border: 0px;
            <width>50</width>
            <height>50</height>
           </size>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+Shift+L</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -1377,12 +1389,18 @@ border: 0px;
       </widget>
       <widget class="QWidget" name="page_check_in">
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="2" column="0">
-         <widget class="QFrame" name="frame_2">
+        <item row="1" column="0" colspan="2">
+         <widget class="QFrame" name="frame_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>40</width>
-            <height>0</height>
+            <width>0</width>
+            <height>60</height>
            </size>
           </property>
           <property name="frameShape">
@@ -1391,75 +1409,79 @@ border: 0px;
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>15</number>
+           </property>
            <item>
-            <widget class="QFrame" name="frame_17">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+            <widget class="QCheckBox" name="chkbx_visual_insp">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_8">
-              <item>
-               <widget class="QGroupBox" name="groupBox_12">
-                <property name="title">
-                 <string>* Functional check</string>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_4">
-                 <item>
-                  <widget class="QRadioButton" name="rb_function_pass">
-                   <property name="text">
-                    <string>Pass</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="rb_function_fail">
-                   <property name="text">
-                    <string>Fail</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
+             <property name="text">
+              <string>Visual Inspection *</string>
+             </property>
             </widget>
            </item>
            <item>
-            <widget class="QFrame" name="frame_18">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+            <widget class="QCheckBox" name="chkbx_function">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_13">
-              <item>
-               <widget class="QGroupBox" name="groupBox_13">
-                <property name="title">
-                 <string>* PPM Required</string>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_6">
-                 <item>
-                  <widget class="QRadioButton" name="rb_ppm_yes">
-                   <property name="text">
-                    <string>Yes</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="rb_ppm_no">
-                   <property name="text">
-                    <string>No</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
+             <property name="text">
+              <string>Function Check *</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkbx_batt_replace">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="text">
+              <string>Battery replaced</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkbx_rtls_batt">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="text">
+              <string>MobileView Battery Replaced</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -1764,7 +1786,7 @@ border: 0px;
           </layout>
          </widget>
         </item>
-        <item row="4" column="0" colspan="2">
+        <item row="5" column="0" colspan="2">
          <widget class="QFrame" name="frame_7">
           <property name="minimumSize">
            <size>
@@ -1807,7 +1829,7 @@ border: 0px;
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="btn_print">
+            <widget class="QPushButton" name="btn_issue_loan">
              <property name="enabled">
               <bool>true</bool>
              </property>
@@ -1828,7 +1850,17 @@ border: 0px;
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
              <property name="text">
-              <string>Print</string>
+              <string>Issue Loan</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../icon/resources.qrc">
+               <normaloff>:/icons8-home-60.png</normaloff>:/icons8-home-60.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -1848,7 +1880,7 @@ border: 0px;
              </property>
              <property name="icon">
               <iconset resource="../icon/resources.qrc">
-               <normaloff>:/clear_30.png</normaloff>:/clear_30.png</iconset>
+               <normaloff>:/clear-60.png</normaloff>:/clear-60.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1857,25 +1889,19 @@ border: 0px;
               </size>
              </property>
              <property name="shortcut">
-              <string>Ctrl+C</string>
+              <string/>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QFrame" name="frame_4">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <item row="4" column="0">
+         <widget class="QFrame" name="frame_2">
           <property name="minimumSize">
            <size>
-            <width>0</width>
-            <height>60</height>
+            <width>40</width>
+            <height>0</height>
            </size>
           </property>
           <property name="frameShape">
@@ -1884,79 +1910,75 @@ border: 0px;
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>15</number>
-           </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
            <item>
-            <widget class="QCheckBox" name="chkbx_visual_insp">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
+            <widget class="QFrame" name="frame_17">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
              </property>
-             <property name="text">
-              <string>Visual Inspection *</string>
-             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <widget class="QGroupBox" name="group_function_check">
+                <property name="title">
+                 <string>* Functional check</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_4">
+                 <item>
+                  <widget class="QRadioButton" name="rb_function_pass">
+                   <property name="text">
+                    <string>Pass</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="rb_function_fail">
+                   <property name="text">
+                    <string>Fail</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="chkbx_function">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
+            <widget class="QFrame" name="frame_18">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
              </property>
-             <property name="text">
-              <string>Function Check *</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="chkbx_batt_replace">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string>Battery replaced</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="chkbx_rtls_batt">
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string>MobileView Battery Replaced</string>
-             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <widget class="QGroupBox" name="group_ppm">
+                <property name="title">
+                 <string>* PPM Required</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <item>
+                  <widget class="QRadioButton" name="rb_ppm_yes">
+                   <property name="text">
+                    <string>Yes</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="rb_ppm_no">
+                   <property name="text">
+                    <string>No</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -2258,7 +2280,7 @@ padding: 10px 20px
   <tabstop>btn_confirm</tabstop>
   <tabstop>txt_work_done</tabstop>
   <tabstop>btn_submit</tabstop>
-  <tabstop>btn_print</tabstop>
+  <tabstop>btn_issue_loan</tabstop>
   <tabstop>btn_clear_2</tabstop>
   <tabstop>btn_user</tabstop>
   <tabstop>btn_home</tabstop>
